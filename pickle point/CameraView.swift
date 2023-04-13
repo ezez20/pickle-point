@@ -14,11 +14,22 @@ struct CameraView: View {
     
     @Environment(\.managedObjectContext) private var viewContext
     
+    @State private var gameStart = false
+    
+    @State private var team1Score = 0
+    @State private var team2Score = 0
+    @State private var currentServer = 2
+    @State private var currentlyTeam1Serving = true
+    @State private var currentlyTeam2Serving = false
+    
+//    @StateObject private var camera = CameraModel()
+//    var session = AVCaptureSession()
+    
     var body: some View {
         
         ZStack {
             
-            HStack {
+            HStack(alignment: .top) {
                 
                 VStack(alignment: .leading) {
                     
@@ -26,26 +37,28 @@ struct CameraView: View {
                     HStack(spacing: 30) {
                         
                         // Undo point: Button
-                        Text("0")
+                        Text("\(team1Score)")
                             .font(.largeTitle)
                           
-                        Image(systemName: "soccerball")
+                        Image(systemName: currentlyTeam1Serving ? "soccerball" : "")
                             .fixedSize()
                         
                     }
                     .padding(40)
               
         
-                    // switch: Button
+                    // next point: Button
                     Button {
-                        // User hits record - video
+                        // next point func
+                        nextPoint()
+                        
                         
                     } label: {
                         ZStack {
                             Image(systemName: "circle")
                                 .resizable()
                                 .frame(width: 70, height: 70)
-                            Text("2")
+                            Text("\(currentServer)")
                                 .font(.largeTitle)
                                
                         }
@@ -55,10 +68,10 @@ struct CameraView: View {
                     HStack(spacing: 30) {
                         
                         // Undo point: Button
-                        Text("0")
+                        Text("\(team1Score)")
                             .font(.largeTitle)
                         
-                        Image(systemName: "soccerball")
+                        Image(systemName: currentlyTeam2Serving ? "soccerball" : "")
                             .fixedSize()
                             
                         
@@ -68,11 +81,27 @@ struct CameraView: View {
                     
                     
                 }
-                .foregroundColor(.white)
-                
+                .foregroundColor(.gray)
                 
                 Spacer()
                 
+                HStack {
+                    Text("0")
+                        .font(.title)
+                        .foregroundColor(.gray)
+                    Text(":")
+                        .font(.title)
+                        .foregroundColor(.gray)
+                    Text("0")
+                        .font(.title)
+                        .foregroundColor(.gray)
+                    Text("0")
+                        .font(.title)
+                        .foregroundColor(.gray)
+                }
+                .padding(30)
+                
+                Spacer()
                 
                 
                 // BUTTONS: right side
@@ -93,11 +122,13 @@ struct CameraView: View {
                     // Record/Stop video: Button
                     Button {
                         // User hits record - video
+                        startGame()
                         
                     } label: {
                         Image(systemName: "circle")
                             .resizable()
                             .frame(width: 90, height: 90)
+                            .foregroundColor(gameStart ? .red : .green)
                     }
               
                     // Undo point: Button
@@ -113,13 +144,23 @@ struct CameraView: View {
                     
                     
                 }
-                .foregroundColor(.white)
+                .foregroundColor(.gray)
                 
                 
             }
             
         }
-        .background(.gray)
+       
+        
+    }
+    
+    func startGame() {
+        
+        gameStart.toggle()
+        
+    }
+    
+    func nextPoint() {
         
     }
     

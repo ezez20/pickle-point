@@ -14,6 +14,8 @@
 		51BB2DBB29E5C85500E52302 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51BB2DBA29E5C85500E52302 /* Persistence.swift */; };
 		51BB2DBE29E5C85500E52302 /* pickle_point.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 51BB2DBC29E5C85500E52302 /* pickle_point.xcdatamodeld */; };
 		51BB2DC529E5C8B700E52302 /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51BB2DC429E5C8B700E52302 /* CameraView.swift */; };
+		51BB2DC729E6133900E52302 /* CameraModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51BB2DC629E6133900E52302 /* CameraModel.swift */; };
+		51BB2DC929E620BE00E52302 /* CameraPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51BB2DC829E620BE00E52302 /* CameraPreview.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -25,6 +27,8 @@
 		51BB2DBA29E5C85500E52302 /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
 		51BB2DBD29E5C85500E52302 /* pickle_point.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = pickle_point.xcdatamodel; sourceTree = "<group>"; };
 		51BB2DC429E5C8B700E52302 /* CameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
+		51BB2DC629E6133900E52302 /* CameraModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraModel.swift; sourceTree = "<group>"; };
+		51BB2DC829E620BE00E52302 /* CameraPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPreview.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,6 +64,8 @@
 				51BB2DB129E5C85400E52302 /* pickle_pointApp.swift */,
 				51BB2DB329E5C85400E52302 /* ContentView.swift */,
 				51BB2DC429E5C8B700E52302 /* CameraView.swift */,
+				51BB2DC629E6133900E52302 /* CameraModel.swift */,
+				51BB2DC829E620BE00E52302 /* CameraPreview.swift */,
 				51BB2DB529E5C85500E52302 /* Assets.xcassets */,
 				51BB2DBA29E5C85500E52302 /* Persistence.swift */,
 				51BB2DBC29E5C85500E52302 /* pickle_point.xcdatamodeld */,
@@ -148,6 +154,8 @@
 			files = (
 				51BB2DBB29E5C85500E52302 /* Persistence.swift in Sources */,
 				51BB2DB429E5C85400E52302 /* ContentView.swift in Sources */,
+				51BB2DC729E6133900E52302 /* CameraModel.swift in Sources */,
+				51BB2DC929E620BE00E52302 /* CameraPreview.swift in Sources */,
 				51BB2DBE29E5C85500E52302 /* pickle_point.xcdatamodeld in Sources */,
 				51BB2DC529E5C8B700E52302 /* CameraView.swift in Sources */,
 				51BB2DB229E5C85400E52302 /* pickle_pointApp.swift in Sources */,
@@ -282,11 +290,13 @@
 				DEVELOPMENT_TEAM = XUZG54S76B;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSCameraUsageDescription = "\"Please enable to user camera\"";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationLandscapeRight;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -311,11 +321,13 @@
 				DEVELOPMENT_TEAM = XUZG54S76B;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSCameraUsageDescription = "\"Please enable to user camera\"";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationLandscapeRight;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
