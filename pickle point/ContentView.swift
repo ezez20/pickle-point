@@ -24,10 +24,11 @@ struct ContentView: View {
         ZStack {
             CameraPreview(session: session)
                 .ignoresSafeArea(.all, edges: .all)
-            CameraView()
+            ControlsView()
                 .ignoresSafeArea(.all, edges: .bottom)
             
         }
+       
 //            .onAppear {
 //                camera.start { err in
 //                    print("err: \(err)")

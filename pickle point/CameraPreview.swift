@@ -54,7 +54,7 @@ struct CameraPreview: View {
 
         // Get the capture device
         if let frontCameraDevice = AVCaptureDevice.default(
-            .builtInWideAngleCamera,
+            .builtInUltraWideCamera,
             for: .video,
             position: .back
         ) {

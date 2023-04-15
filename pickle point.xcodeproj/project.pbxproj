@@ -13,9 +13,11 @@
 		51BB2DB929E5C85500E52302 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 51BB2DB829E5C85500E52302 /* Preview Assets.xcassets */; };
 		51BB2DBB29E5C85500E52302 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51BB2DBA29E5C85500E52302 /* Persistence.swift */; };
 		51BB2DBE29E5C85500E52302 /* pickle_point.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 51BB2DBC29E5C85500E52302 /* pickle_point.xcdatamodeld */; };
-		51BB2DC529E5C8B700E52302 /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51BB2DC429E5C8B700E52302 /* CameraView.swift */; };
+		51BB2DC529E5C8B700E52302 /* ControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51BB2DC429E5C8B700E52302 /* ControlsView.swift */; };
 		51BB2DC729E6133900E52302 /* CameraModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51BB2DC629E6133900E52302 /* CameraModel.swift */; };
 		51BB2DC929E620BE00E52302 /* CameraPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51BB2DC829E620BE00E52302 /* CameraPreview.swift */; };
+		51BB2DCB29E8DF2100E52302 /* ScreenRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51BB2DCA29E8DF2100E52302 /* ScreenRecord.swift */; };
+		51BB2DCF29E8EA4500E52302 /* ShareSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51BB2DCE29E8EA4500E52302 /* ShareSheet.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,9 +28,11 @@
 		51BB2DB829E5C85500E52302 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		51BB2DBA29E5C85500E52302 /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
 		51BB2DBD29E5C85500E52302 /* pickle_point.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = pickle_point.xcdatamodel; sourceTree = "<group>"; };
-		51BB2DC429E5C8B700E52302 /* CameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
+		51BB2DC429E5C8B700E52302 /* ControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlsView.swift; sourceTree = "<group>"; };
 		51BB2DC629E6133900E52302 /* CameraModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraModel.swift; sourceTree = "<group>"; };
 		51BB2DC829E620BE00E52302 /* CameraPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPreview.swift; sourceTree = "<group>"; };
+		51BB2DCA29E8DF2100E52302 /* ScreenRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenRecord.swift; sourceTree = "<group>"; };
+		51BB2DCE29E8EA4500E52302 /* ShareSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareSheet.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,9 +67,11 @@
 			children = (
 				51BB2DB129E5C85400E52302 /* pickle_pointApp.swift */,
 				51BB2DB329E5C85400E52302 /* ContentView.swift */,
-				51BB2DC429E5C8B700E52302 /* CameraView.swift */,
-				51BB2DC629E6133900E52302 /* CameraModel.swift */,
+				51BB2DC429E5C8B700E52302 /* ControlsView.swift */,
 				51BB2DC829E620BE00E52302 /* CameraPreview.swift */,
+				51BB2DC629E6133900E52302 /* CameraModel.swift */,
+				51BB2DCA29E8DF2100E52302 /* ScreenRecord.swift */,
+				51BB2DCE29E8EA4500E52302 /* ShareSheet.swift */,
 				51BB2DB529E5C85500E52302 /* Assets.xcassets */,
 				51BB2DBA29E5C85500E52302 /* Persistence.swift */,
 				51BB2DBC29E5C85500E52302 /* pickle_point.xcdatamodeld */,
@@ -156,8 +162,10 @@
 				51BB2DB429E5C85400E52302 /* ContentView.swift in Sources */,
 				51BB2DC729E6133900E52302 /* CameraModel.swift in Sources */,
 				51BB2DC929E620BE00E52302 /* CameraPreview.swift in Sources */,
+				51BB2DCB29E8DF2100E52302 /* ScreenRecord.swift in Sources */,
 				51BB2DBE29E5C85500E52302 /* pickle_point.xcdatamodeld in Sources */,
-				51BB2DC529E5C8B700E52302 /* CameraView.swift in Sources */,
+				51BB2DC529E5C8B700E52302 /* ControlsView.swift in Sources */,
+				51BB2DCF29E8EA4500E52302 /* ShareSheet.swift in Sources */,
 				51BB2DB229E5C85400E52302 /* pickle_pointApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -290,7 +298,10 @@
 				DEVELOPMENT_TEAM = XUZG54S76B;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_NSCameraUsageDescription = "\"Please enable to user camera\"";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -321,7 +332,10 @@
 				DEVELOPMENT_TEAM = XUZG54S76B;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_NSCameraUsageDescription = "\"Please enable to user camera\"";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
