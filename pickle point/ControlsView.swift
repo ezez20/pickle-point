@@ -22,12 +22,24 @@ struct ControlsView: View {
     @State private var currentlyTeam2Serving = false
     @State private var sideout = false
     
+    @State private var undoTeam1Score = 0
+    @State private var undoTeam2Score = 0
+    @State private var undoServerScore = [1, 2]
+    @State private var undoCurrentServer = 2
+    @State private var undoCurrentlyTeam1Serving = true
+    @State private var undoCurrentlyTeam2Serving = false
+    @State private var undoSideout = false
+    
     @State var timePassed = 0
     @State private var timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     
     @State private var gameStart = false
     @State private var url: URL?
     @State private var shareVideo = false
+    @State private var videoCurrentlySaving = false
+
+    
+    @State var reachable = false
     
     var body: some View {
         
@@ -40,24 +52,41 @@ struct ControlsView: View {
                     Spacer()
         
                     // next point: Button
-                    Button {
-                        // next point func
-                        nextServer()
+                    HStack {
+                        Button {
+                            // next point func
+                            saveLastMove()
+                            nextServer()
+                        } label: {
+                            ZStack {
+                                Text("\(sideout ? "S" : "\(currentServer)")")
+                                    .font(.callout)
+                                
+                                Image(systemName: "circle")
+                                    .resizable()
+                                    .frame(width: 50, height: 50)
+                            }
+                            .padding(EdgeInsets(top: 30, leading: 30, bottom: 30, trailing: 30))
+                            .foregroundColor(.white)
+                            .shadow(color: .green, radius: 2)
+                        }
                         
-                    } label: {
-                        ZStack {
+                        // Record/Stop video: Button
+                        Button {
+                            // User hits record - video
+                            startStopGame()
+                            
+                        } label: {
                             Image(systemName: "circle")
                                 .resizable()
-                                .frame(width: 60, height: 60)
-                            Text("\(sideout ? "S" : "\(currentServer)")")
-                                .font(.largeTitle)
-                               
+                                .frame(width: 50, height: 50)
+                                .foregroundColor(gameStart ? .red : .green)
                         }
+                        
                     }
-                    .padding(10)
                     
                 }
-                .foregroundColor(.gray)
+                .foregroundColor(.white)
                 
                 Spacer()
                 Spacer()
@@ -73,24 +102,29 @@ struct ControlsView: View {
                                 Image(systemName: currentlyTeam1Serving ? "soccerball" : "")
                                     .fixedSize()
                                 .frame(width: 10, height: 10)
+                                .foregroundColor(.green)
                                 
-                                Text("\(sideout ? "" : "\(currentServer)")")
-                                    .font(.callout)
-                                    .foregroundColor(.gray)
+                                if currentlyTeam1Serving {
+                                    Text("\(sideout ? "" : "\(currentServer)")")
+                                        .font(.callout)
+                                        .foregroundColor(.white)
+                                }
                                 
                             }
                             
                             // Undo point: Button
                             Text("\(team1Score)")
                                 .font(.largeTitle)
+                                .foregroundColor(.white)
+                                .shadow(color: .green, radius: 2)
                             
                         }
-                        .foregroundColor(.gray)
+                        .foregroundColor(.white)
                         
                         Text("\(convertSecondsToTime(secondsIn: timePassed))")
                             .font(.largeTitle)
-                            .foregroundColor(.gray)
-                            .padding(20)
+                            .foregroundColor(.white)
+                            .shadow(color: .red, radius: 2)
                             .onReceive(timer) { _ in
                                 timePassed += 1
                             }
@@ -100,31 +134,46 @@ struct ControlsView: View {
                             
                             Text("\(team2Score)")
                                 .font(.largeTitle)
+                                .foregroundColor(.white)
+                                .shadow(color: .yellow, radius: 2)
                             
                             VStack {
                                 
                                 Image(systemName: currentlyTeam2Serving ? "soccerball" : "")
                                     .fixedSize()
-                                .frame(width: 10, height: 10)
+                                    .frame(width: 10, height: 10)
+                                    .foregroundColor(.green)
                                 
-                                Text("\(sideout ? "" : "\(currentServer)")")
-                                    .font(.callout)
-                                    .foregroundColor(.gray)
+                                if currentlyTeam2Serving {
+                                    Text("\(sideout ? "" : "\(currentServer)")")
+                                        .font(.callout)
+                                        .foregroundColor(.white)
+                                }
                                 
                             }
                             
                         }
-                        .foregroundColor(.gray)
+                        .foregroundColor(.white)
+                        
+        
                     }
+                    .padding(10)
                     
                     Text(sideout ? "Side Out" : "")
                         .font(.title)
-                        .foregroundColor(.gray)
+                        .foregroundColor(.white)
+                    
+                    Spacer()
                     
                 }
+                .simultaneousGesture(
+                    LongPressGesture(minimumDuration: 1.0).onEnded({ _ in
+                        resetGame()
+                    })
+                )
                 
                 Spacer()
-            
+                Spacer()
                 
                 // BUTTONS: right side
                 VStack(alignment: .trailing) {
@@ -132,54 +181,74 @@ struct ControlsView: View {
                     Spacer()
                     Spacer()
                     
-                    // Record/Stop video: Button
-                    Button {
-                        // User hits record - video
-                        startGame()
+                    HStack(alignment: .center) {
                         
-                    } label: {
-                        Image(systemName: "circle")
-                            .resizable()
-                            .frame(width: 65, height: 65)
-                            .foregroundColor(gameStart ? .red : .green)
-                    }
-                  
-                    
-                    Spacer()
-                    
-                    HStack(alignment: .top) {
+                        Button {
+                            // Connect to WatchOS
+//                            if model.session.isReachable {
+//                                self.reachable = true
+//                                print("DDD: \(model.session.isReachable)")
+//                            } else {
+//                                self.reachable = false
+//                                print("DDD: \(model.session.isReachable)")
+//                            }
+//
+//                            self.model.session.sendMessage(["message" : "message receieved"], replyHandler: nil) { (error) in
+//                                                print(error.localizedDescription)
+//                                            }
+                        } label: {
+                            Image(systemName: "applewatch")
+                                .resizable()
+                                .frame(width: 20, height: 20)
+                                .foregroundColor(reachable ? .green : .red)
+                        }
+                        
                         // Undo point: Button
                         Button {
                             undoPoint()
                         } label: {
-                            Image(systemName: "arrow.uturn.backward.circle")
+                            Image(systemName: "arrow.uturn.backward")
                                 .resizable()
-                                .frame(width: 60, height: 60)
+                                .frame(width: 30, height: 30)
                         }
-                        .padding(10)
+                        .padding(20)
                         
                         // Add point: Button
                         Button() {
+                            saveLastMove()
                             addPoint()
                         } label: {
-                            Image(systemName: "plus.circle")
+                            Image(systemName: "plus")
                                 .resizable()
-                                .frame(width: 60, height: 60)
+                                .frame(width: 30, height: 30)
                         }
-                        .padding(10)
+                        .padding(20)
                     }
+                    .padding(10)
                   
                     
                 }
-                .foregroundColor(.gray)
+                .foregroundColor(.white)
                 
                
             }
+            
+            if videoCurrentlySaving {
+                HStack {
+                    Text("Video currently saving")
+                    ProgressView().progressViewStyle(CircularProgressViewStyle(tint: Color.white))
+                        .padding(10)
+                        .foregroundColor(.white)
+                }
+                .foregroundColor(.white)
+            }
+
             
         }
         .shareSheet(show: $shareVideo, items: [url])
         .onAppear {
             timer.upstream.connect().cancel()
+    
         }
         
     }
@@ -189,7 +258,7 @@ struct ControlsView: View {
 
 extension ControlsView {
     
-    func startGame() {
+    func startStopGame() {
         
         gameStart.toggle()
         
@@ -207,15 +276,18 @@ extension ControlsView {
             //Stop timer
             timer.upstream.connect().cancel()
             timePassed = 0
+            videoCurrentlySaving = true
             
             // Stop recording
             Task {
                 do {
                     self.url = try await stopRecording()
                     shareVideo.toggle()
-
+                    videoCurrentlySaving = false
+                    resetGame()
                 } catch {
                     print("Error stopping video recording: \(error.localizedDescription)")
+                    videoCurrentlySaving = false
                 }
             }
             
@@ -253,32 +325,75 @@ extension ControlsView {
         
     }
     
+    func saveLastMove() {
+        undoTeam1Score = team1Score
+        undoTeam2Score = team2Score
+        undoCurrentServer = currentServer
+        undoCurrentlyTeam1Serving = currentlyTeam1Serving
+        undoCurrentlyTeam2Serving = currentlyTeam2Serving
+        undoSideout = sideout
+        print("undoTeam1Score: \(undoTeam1Score)")
+    }
+    
     func undoPoint() {
         
-        if sideout == false {
-            if currentlyTeam1Serving {
+        if currentlyTeam1Serving {
+            if team1Score != undoTeam1Score || team1Score <= undoTeam1Score {
                 team1Score -= 1
-            } else {
+            }
+            
+            if team1Score <= 0 {
+                team1Score = 0
+            }
+        }
+        
+        if currentlyTeam2Serving {
+            if team2Score != undoTeam2Score || team2Score <= undoTeam2Score {
                 team2Score -= 1
             }
             
-            if team1Score < 0 || team2Score < 0 {
-                team1Score = 0
+            if team2Score <= 0 {
                 team2Score = 0
             }
         }
-        if sideout == true {
-            currentlyTeam1Serving.toggle()
-            currentlyTeam2Serving.toggle()
-            currentServer = 2
-            if currentlyTeam1Serving {
-                team1Score -= 1
-            } else {
-                team2Score -= 1
-            }
-            sideout = false
+        
+        if currentServer != undoCurrentServer {
+            currentServer = undoCurrentServer
         }
         
+        if currentlyTeam1Serving != undoCurrentlyTeam1Serving {
+            currentlyTeam1Serving = undoCurrentlyTeam1Serving
+        }
+        
+        if currentlyTeam2Serving != undoCurrentlyTeam2Serving {
+            currentlyTeam2Serving = undoCurrentlyTeam2Serving
+        }
+        
+        if sideout != undoSideout {
+            sideout = undoSideout
+        }
+        
+        
+        if sideout == true {
+            if currentlyTeam1Serving {
+                currentlyTeam2Serving = true
+                currentlyTeam1Serving = false
+            }
+            if currentlyTeam2Serving {
+                currentlyTeam1Serving = true
+                currentlyTeam2Serving = false
+            }
+        }
+        
+    }
+    
+    func resetGame() {
+        team1Score = 0
+        team2Score = 0
+        currentServer = 2
+        currentlyTeam1Serving = true
+        currentlyTeam2Serving = false
+        sideout = false
     }
     
     
