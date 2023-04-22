@@ -18,6 +18,11 @@
 		51BB2DC929E620BE00E52302 /* CameraPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51BB2DC829E620BE00E52302 /* CameraPreview.swift */; };
 		51BB2DCB29E8DF2100E52302 /* ScreenRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51BB2DCA29E8DF2100E52302 /* ScreenRecord.swift */; };
 		51BB2DCF29E8EA4500E52302 /* ShareSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51BB2DCE29E8EA4500E52302 /* ShareSheet.swift */; };
+		51D07FCE29F396860089B505 /* pickle_point_watchOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D07FCD29F396860089B505 /* pickle_point_watchOSApp.swift */; };
+		51D07FD029F396860089B505 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D07FCF29F396860089B505 /* ContentView.swift */; };
+		51D07FD229F396870089B505 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 51D07FD129F396870089B505 /* Assets.xcassets */; };
+		51D07FD529F396870089B505 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 51D07FD429F396870089B505 /* Preview Assets.xcassets */; };
+		51D07FDA29F396F60089B505 /* ControlViewWatchOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D07FD929F396F60089B505 /* ControlViewWatchOS.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -33,10 +38,23 @@
 		51BB2DC829E620BE00E52302 /* CameraPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPreview.swift; sourceTree = "<group>"; };
 		51BB2DCA29E8DF2100E52302 /* ScreenRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenRecord.swift; sourceTree = "<group>"; };
 		51BB2DCE29E8EA4500E52302 /* ShareSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareSheet.swift; sourceTree = "<group>"; };
+		51D07FCB29F396860089B505 /* pickle-point-watchOS Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "pickle-point-watchOS Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		51D07FCD29F396860089B505 /* pickle_point_watchOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = pickle_point_watchOSApp.swift; sourceTree = "<group>"; };
+		51D07FCF29F396860089B505 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		51D07FD129F396870089B505 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		51D07FD429F396870089B505 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		51D07FD929F396F60089B505 /* ControlViewWatchOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlViewWatchOS.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		51BB2DAB29E5C85400E52302 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		51D07FC829F396860089B505 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -50,6 +68,7 @@
 			isa = PBXGroup;
 			children = (
 				51BB2DB029E5C85400E52302 /* pickle point */,
+				51D07FCC29F396860089B505 /* pickle-point-watchOS Watch App */,
 				51BB2DAF29E5C85400E52302 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -58,6 +77,7 @@
 			isa = PBXGroup;
 			children = (
 				51BB2DAE29E5C85400E52302 /* pickle point.app */,
+				51D07FCB29F396860089B505 /* pickle-point-watchOS Watch App.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -88,6 +108,26 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
+		51D07FCC29F396860089B505 /* pickle-point-watchOS Watch App */ = {
+			isa = PBXGroup;
+			children = (
+				51D07FCD29F396860089B505 /* pickle_point_watchOSApp.swift */,
+				51D07FCF29F396860089B505 /* ContentView.swift */,
+				51D07FD929F396F60089B505 /* ControlViewWatchOS.swift */,
+				51D07FD129F396870089B505 /* Assets.xcassets */,
+				51D07FD329F396870089B505 /* Preview Content */,
+			);
+			path = "pickle-point-watchOS Watch App";
+			sourceTree = "<group>";
+		};
+		51D07FD329F396870089B505 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				51D07FD429F396870089B505 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -108,6 +148,23 @@
 			productReference = 51BB2DAE29E5C85400E52302 /* pickle point.app */;
 			productType = "com.apple.product-type.application";
 		};
+		51D07FCA29F396860089B505 /* pickle-point-watchOS Watch App */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 51D07FD629F396870089B505 /* Build configuration list for PBXNativeTarget "pickle-point-watchOS Watch App" */;
+			buildPhases = (
+				51D07FC729F396860089B505 /* Sources */,
+				51D07FC829F396860089B505 /* Frameworks */,
+				51D07FC929F396860089B505 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "pickle-point-watchOS Watch App";
+			productName = "pickle-point-watchOS Watch App";
+			productReference = 51D07FCB29F396860089B505 /* pickle-point-watchOS Watch App.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -119,6 +176,9 @@
 				LastUpgradeCheck = 1420;
 				TargetAttributes = {
 					51BB2DAD29E5C85400E52302 = {
+						CreatedOnToolsVersion = 14.2;
+					};
+					51D07FCA29F396860089B505 = {
 						CreatedOnToolsVersion = 14.2;
 					};
 				};
@@ -137,6 +197,7 @@
 			projectRoot = "";
 			targets = (
 				51BB2DAD29E5C85400E52302 /* pickle point */,
+				51D07FCA29F396860089B505 /* pickle-point-watchOS Watch App */,
 			);
 		};
 /* End PBXProject section */
@@ -148,6 +209,15 @@
 			files = (
 				51BB2DB929E5C85500E52302 /* Preview Assets.xcassets in Resources */,
 				51BB2DB629E5C85500E52302 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		51D07FC929F396860089B505 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				51D07FD529F396870089B505 /* Preview Assets.xcassets in Resources */,
+				51D07FD229F396870089B505 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -167,6 +237,16 @@
 				51BB2DC529E5C8B700E52302 /* ControlsView.swift in Sources */,
 				51BB2DCF29E8EA4500E52302 /* ShareSheet.swift in Sources */,
 				51BB2DB229E5C85400E52302 /* pickle_pointApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		51D07FC729F396860089B505 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				51D07FDA29F396F60089B505 /* ControlViewWatchOS.swift in Sources */,
+				51D07FD029F396860089B505 /* ContentView.swift in Sources */,
+				51D07FCE29F396860089B505 /* pickle_point_watchOSApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -355,6 +435,66 @@
 			};
 			name = Release;
 		};
+		51D07FD729F396870089B505 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"pickle-point-watchOS Watch App/Preview Content\"";
+				DEVELOPMENT_TEAM = XUZG54S76B;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "pickle-point-watchOS";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = .watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 9.1;
+			};
+			name = Debug;
+		};
+		51D07FD829F396870089B505 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"pickle-point-watchOS Watch App/Preview Content\"";
+				DEVELOPMENT_TEAM = XUZG54S76B;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "pickle-point-watchOS";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = .watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 9.1;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -372,6 +512,15 @@
 			buildConfigurations = (
 				51BB2DC229E5C85500E52302 /* Debug */,
 				51BB2DC329E5C85500E52302 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		51D07FD629F396870089B505 /* Build configuration list for PBXNativeTarget "pickle-point-watchOS Watch App" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				51D07FD729F396870089B505 /* Debug */,
+				51D07FD829F396870089B505 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
