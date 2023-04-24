@@ -9,6 +9,7 @@ import Foundation
 import SwiftUI
 import AVFoundation
 import CoreData
+import WatchConnectivity
 
 struct ControlsView: View {
     
@@ -40,6 +41,7 @@ struct ControlsView: View {
 
     
     @State var reachable = false
+    @ObservedObject var viewModelPhone = ViewModelPhone()
     
     var body: some View {
         
@@ -185,17 +187,18 @@ struct ControlsView: View {
                         
                         Button {
                             // Connect to WatchOS
-//                            if model.session.isReachable {
-//                                self.reachable = true
-//                                print("DDD: \(model.session.isReachable)")
-//                            } else {
-//                                self.reachable = false
-//                                print("DDD: \(model.session.isReachable)")
-//                            }
-//
-//                            self.model.session.sendMessage(["message" : "message receieved"], replyHandler: nil) { (error) in
-//                                                print(error.localizedDescription)
-//                                            }
+                            
+                            viewModelPhone.session.activate()
+                            print("Phone debug: \(viewModelPhone.session.activationState)")
+                            
+                            if viewModelPhone.session.isReachable {
+                                reachable = true
+                            } else {
+                                reachable = false
+                            }
+                            
+                            viewModelPhone.send(message: ["message" : "activated"])
+                            
                         } label: {
                             Image(systemName: "applewatch")
                                 .resizable()
@@ -248,7 +251,14 @@ struct ControlsView: View {
         .shareSheet(show: $shareVideo, items: [url])
         .onAppear {
             timer.upstream.connect().cancel()
-    
+            
+            viewModelPhone.session.activate()
+            
+            if viewModelPhone.session.isReachable {
+                reachable = true
+            } else {
+                reachable = false
+            }
         }
         
     }
