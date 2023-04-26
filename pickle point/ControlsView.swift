@@ -188,7 +188,8 @@ struct ControlsView: View {
                         Button {
                             // Connect to WatchOS
                             
-                            viewModelPhone.session.activate()
+//                            viewModelPhone.session.activate()
+                            
                             print("Phone debug: \(viewModelPhone.session.activationState)")
                             
                             if viewModelPhone.session.isReachable {

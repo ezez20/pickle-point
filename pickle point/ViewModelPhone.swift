@@ -18,6 +18,7 @@ class ViewModelPhone: NSObject, WCSessionDelegate, ObservableObject {
         super.init()
         self.session.delegate = self
         
+        session.activate()
     }
     
     func send(message: [String : Any]) -> Void {
