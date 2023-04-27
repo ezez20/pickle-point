@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		512546FA29F9A41A003594C8 /* pickle-point-watchOS Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 51D07FCB29F396860089B505 /* pickle-point-watchOS Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		512546FE29FAD27F003594C8 /* pickle-point-watchOS Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 51D07FCB29F396860089B505 /* pickle-point-watchOS Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		51BB2DB229E5C85400E52302 /* pickle_pointApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51BB2DB129E5C85400E52302 /* pickle_pointApp.swift */; };
 		51BB2DB429E5C85400E52302 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51BB2DB329E5C85400E52302 /* ContentView.swift */; };
 		51BB2DB629E5C85500E52302 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 51BB2DB529E5C85500E52302 /* Assets.xcassets */; };
@@ -28,6 +28,16 @@
 		51D07FDA29F396F60089B505 /* ControlViewWatchOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D07FD929F396F60089B505 /* ControlViewWatchOS.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		512546FF29FAD27F003594C8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 51BB2DA629E5C85400E52302 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 51D07FCA29F396860089B505;
+			remoteInfo = "pickle-point-watchOS Watch App";
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXCopyFilesBuildPhase section */
 		512546FD29F9A41A003594C8 /* Embed Watch Content */ = {
 			isa = PBXCopyFilesBuildPhase;
@@ -35,7 +45,7 @@
 			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
 			dstSubfolderSpec = 16;
 			files = (
-				512546FA29F9A41A003594C8 /* pickle-point-watchOS Watch App.app in Embed Watch Content */,
+				512546FE29FAD27F003594C8 /* pickle-point-watchOS Watch App.app in Embed Watch Content */,
 			);
 			name = "Embed Watch Content";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -172,6 +182,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				5125470029FAD27F003594C8 /* PBXTargetDependency */,
 			);
 			name = "pickle point";
 			productName = "pickle point";
@@ -283,6 +294,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		5125470029FAD27F003594C8 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 51D07FCA29F396860089B505 /* pickle-point-watchOS Watch App */;
+			targetProxy = 512546FF29FAD27F003594C8 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		51BB2DBF29E5C85500E52302 /* Debug */ = {
@@ -494,7 +513,7 @@
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 4;
-				WATCHOS_DEPLOYMENT_TARGET = 9.1;
+				WATCHOS_DEPLOYMENT_TARGET = 8.0;
 			};
 			name = Debug;
 		};
@@ -525,7 +544,7 @@
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 4;
-				WATCHOS_DEPLOYMENT_TARGET = 9.1;
+				WATCHOS_DEPLOYMENT_TARGET = 8.0;
 			};
 			name = Release;
 		};

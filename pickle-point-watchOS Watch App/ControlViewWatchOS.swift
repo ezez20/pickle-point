@@ -16,26 +16,11 @@ struct ControlViewWatchOS: View {
         GeometryReader { rect in
             
             ZStack {
+                
                 VStack {
                     
                     ZStack {
-                        
                         HStack {
-//                            Text("0")
-//                                .foregroundColor(.white)
-//                                .font(.largeTitle)
-//                            Text("-")
-//                                .foregroundColor(.white)
-//                                .font(.largeTitle)
-//                            Text("2")
-//                                .foregroundColor(.white)
-//                                .font(.largeTitle)
-//                            Text("-")
-//                                .foregroundColor(.white)
-//                                .font(.largeTitle)
-//                            Text("0")
-//                                .foregroundColor(.white)
-//                                .font(.largeTitle)
                             Text("\(viewModelWatch.messageText)")
                                 .foregroundColor(.white)
                                 .font(.largeTitle)
@@ -46,14 +31,11 @@ struct ControlViewWatchOS: View {
                             print("WatchOS: \(  viewModelWatch.session.isReachable)")
                         }
                         .buttonStyle(BorderedButtonStyle(tint: .clear))
-                     
-                        
                     }
                     
                     Spacer()
                     
                     HStack {
-                        
                         Button {
                             
                         } label: {
@@ -66,8 +48,11 @@ struct ControlViewWatchOS: View {
                             Image(systemName: "plus")
                         }
                     }
+                    
                 }
+                
             }
+            
         }
 
     }
