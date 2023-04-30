@@ -187,17 +187,7 @@ struct ControlsView: View {
                         
                         Button {
                             // Connect to WatchOS
-                            
-//                            viewModelPhone.session.activate()
-                            
-                            print("Phone debug: \(viewModelPhone.session.activationState)")
-                            
-                            if viewModelPhone.session.isReachable {
-                                reachable = true
-                            } else {
-                                reachable = false
-                            }
-                            
+                            connectAppleWatch()
                             viewModelPhone.send(message: ["message" : "activated"])
                             
                         } label: {
@@ -420,6 +410,23 @@ extension ControlsView {
     func fireTimer() {
         print("Timer fired!")
     }
+    
+    func connectAppleWatch() {
+        
+        viewModelPhone.session.activate()
+        
+        if viewModelPhone.session.isPaired && viewModelPhone.session.isReachable {
+            
+            if viewModelPhone.session.isReachable {
+                reachable = true
+            } else {
+                reachable = false
+            }
+            
+        }
+        
+    }
+    
 }
 
 struct CameraView_Previews: PreviewProvider {

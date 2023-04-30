@@ -18,7 +18,9 @@ class ViewModelPhone: NSObject, WCSessionDelegate, ObservableObject {
         super.init()
         self.session.delegate = self
         
-        session.activate()
+        if WCSession.isSupported() {
+            session.activate()
+        }
     }
     
     func send(message: [String : Any]) -> Void {
@@ -29,6 +31,9 @@ class ViewModelPhone: NSObject, WCSessionDelegate, ObservableObject {
     
     func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
         // code
+        print("iOS with Watch activationState: \(session.activationState)")
+        print("iOS with Watch: \(session.isReachable)")
+        print("iOS with Watch: isWatchAppInstalled: \(session.isWatchAppInstalled)")
     }
     
     func sessionDidBecomeInactive(_ session: WCSession) {

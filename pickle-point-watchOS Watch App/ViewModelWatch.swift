@@ -7,8 +7,9 @@
 
 import Foundation
 import WatchConnectivity
+import UIKit
 
-class ViewModelWatch : NSObject,  WCSessionDelegate, ObservableObject {
+class ViewModelWatch : NSObject, WCSessionDelegate, ObservableObject {
     
     var session: WCSession
     @Published var messageText = ""
@@ -19,17 +20,25 @@ class ViewModelWatch : NSObject,  WCSessionDelegate, ObservableObject {
         self.session = session
         super.init()
         self.session.delegate = self
-        session.activate()
+        
+        if WCSession.isSupported() {
+            session.activate()
+        }
        
     }
+    
     func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
-        print("ViewModelWatch: \(session.activationState)")
-        print("ViewModelWatch: \(session.isReachable)")
+        print("WatchOS activationState: \(session.activationState)")
+        print("WatchOS isReachable: \(session.isReachable)")
+        print("WatchOS isCompanionAppInstalled: \(session.isCompanionAppInstalled)")
     }
+    
     func session(_ session: WCSession, didReceiveMessage message: [String : Any]) {
         DispatchQueue.main.async {
             self.messageText = message["message"] as? String ?? "Unknown"
         }
     }
+    
+    
     
 }
