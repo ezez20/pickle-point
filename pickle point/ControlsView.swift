@@ -126,7 +126,7 @@ struct ControlsView: View {
                         Text("\(convertSecondsToTime(secondsIn: timePassed))")
                             .font(.largeTitle)
                             .foregroundColor(.white)
-                            .shadow(color: .red, radius: 2)
+                            .shadow(color: .white, radius: 2)
                             .onReceive(timer) { _ in
                                 timePassed += 1
                             }
@@ -137,7 +137,7 @@ struct ControlsView: View {
                             Text("\(team2Score)")
                                 .font(.largeTitle)
                                 .foregroundColor(.white)
-                                .shadow(color: .yellow, radius: 2)
+                                .shadow(color: .red, radius: 2)
                             
                             VStack {
                                 
@@ -187,14 +187,16 @@ struct ControlsView: View {
                         
                         Button {
                             // Connect to WatchOS
+                            print("Apple Watch button pressed")
                             connectAppleWatch()
-                            viewModelPhone.send(message: ["message" : "activated"])
-                            
+                        
+                        
                         } label: {
                             Image(systemName: "applewatch")
                                 .resizable()
                                 .frame(width: 20, height: 20)
                                 .foregroundColor(reachable ? .green : .red)
+                                .padding(20)
                         }
                         
                         // Undo point: Button
@@ -251,6 +253,20 @@ struct ControlsView: View {
                 reachable = false
             }
         }
+        .onReceive(viewModelPhone.$messageText) { message in
+            print("Message recieved on iphone ControlsView: \(message)")
+            if message == K.watchOSMessage[0] {
+                
+                addPoint()
+            }
+        }
+        .onChange(of: viewModelPhone.session.activationState.rawValue) { activationState in
+            
+//            if activationState == 2 {
+//                
+//            }
+        }
+        
         
     }
     
@@ -317,7 +333,7 @@ extension ControlsView {
     func addPoint() {
         
         guard sideout == false else { return }
-        
+    
         if currentlyTeam1Serving {
             team1Score += 1
         } else {
@@ -327,35 +343,41 @@ extension ControlsView {
     }
     
     func saveLastMove() {
+        
         undoTeam1Score = team1Score
         undoTeam2Score = team2Score
         undoCurrentServer = currentServer
         undoCurrentlyTeam1Serving = currentlyTeam1Serving
         undoCurrentlyTeam2Serving = currentlyTeam2Serving
         undoSideout = sideout
-        print("undoTeam1Score: \(undoTeam1Score)")
+        
     }
     
     func undoPoint() {
         
-        if currentlyTeam1Serving {
-            if team1Score != undoTeam1Score || team1Score <= undoTeam1Score {
-                team1Score -= 1
+        if sideout == false {
+            
+            if currentlyTeam1Serving && currentServer == undoCurrentServer {
+                if team1Score >= undoTeam1Score {
+                    team1Score -= 1
+                }
+                
+                if team1Score <= 0 {
+                    team1Score = 0
+                }
             }
             
-            if team1Score <= 0 {
-                team1Score = 0
-            }
-        }
-        
-        if currentlyTeam2Serving {
-            if team2Score != undoTeam2Score || team2Score <= undoTeam2Score {
-                team2Score -= 1
+            
+            if currentlyTeam2Serving && currentServer == undoCurrentServer {
+                if team2Score >= undoTeam2Score {
+                    team2Score -= 1
+                }
+                
+                if team2Score <= 0 {
+                    team2Score = 0
+                }
             }
             
-            if team2Score <= 0 {
-                team2Score = 0
-            }
         }
         
         if currentServer != undoCurrentServer {
@@ -419,8 +441,10 @@ extension ControlsView {
             
             if viewModelPhone.session.isReachable {
                 reachable = true
+                print("Apple watch is connected")
             } else {
                 reachable = false
+                print("Apple watch is NOT connected")
             }
             
         }

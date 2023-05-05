@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		512546FE29FAD27F003594C8 /* pickle-point-watchOS Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 51D07FCB29F396860089B505 /* pickle-point-watchOS Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		51A3C71A2A05A5BE00E01355 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51A3C7192A05A5BE00E01355 /* Constants.swift */; };
+		51A3C71B2A05A71A00E01355 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51A3C7192A05A5BE00E01355 /* Constants.swift */; };
 		51BB2DB229E5C85400E52302 /* pickle_pointApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51BB2DB129E5C85400E52302 /* pickle_pointApp.swift */; };
 		51BB2DB429E5C85400E52302 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51BB2DB329E5C85400E52302 /* ContentView.swift */; };
 		51BB2DB629E5C85500E52302 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 51BB2DB529E5C85500E52302 /* Assets.xcassets */; };
@@ -53,6 +55,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		51A3C7192A05A5BE00E01355 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		51BB2DAE29E5C85400E52302 /* pickle point.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "pickle point.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		51BB2DB129E5C85400E52302 /* pickle_pointApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = pickle_pointApp.swift; sourceTree = "<group>"; };
 		51BB2DB329E5C85400E52302 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -133,6 +136,7 @@
 				51BB2DBA29E5C85500E52302 /* Persistence.swift */,
 				51BB2DBC29E5C85500E52302 /* pickle_point.xcdatamodeld */,
 				51C5CADC29F4B3CF005B5AB3 /* ViewModelPhone.swift */,
+				51A3C7192A05A5BE00E01355 /* Constants.swift */,
 				51BB2DB729E5C85500E52302 /* Preview Content */,
 			);
 			path = "pickle point";
@@ -270,6 +274,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				51BB2DBB29E5C85500E52302 /* Persistence.swift in Sources */,
+				51A3C71A2A05A5BE00E01355 /* Constants.swift in Sources */,
 				51BB2DB429E5C85400E52302 /* ContentView.swift in Sources */,
 				51BB2DC729E6133900E52302 /* CameraModel.swift in Sources */,
 				51BB2DC929E620BE00E52302 /* CameraPreview.swift in Sources */,
@@ -286,6 +291,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				51A3C71B2A05A71A00E01355 /* Constants.swift in Sources */,
 				51D07FDA29F396F60089B505 /* ControlViewWatchOS.swift in Sources */,
 				51D07FD029F396860089B505 /* ContentView.swift in Sources */,
 				51C5CAE129F4B966005B5AB3 /* ViewModelWatch.swift in Sources */,

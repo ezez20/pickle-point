@@ -12,15 +12,17 @@ import SwiftUI
 class ViewModelPhone: NSObject, WCSessionDelegate, ObservableObject {
     
     @Published var session: WCSession
+    @Published var messageText = ""
     
     init(session: WCSession = .default) {
         self.session = session
         super.init()
         self.session.delegate = self
         
-        if WCSession.isSupported() {
-            session.activate()
-        }
+//        if WCSession.isSupported() {
+//            session.activate()
+//            print("ViewModelPhone: WCSession activated")
+//        }
     }
     
     func send(message: [String : Any]) -> Void {
@@ -42,6 +44,14 @@ class ViewModelPhone: NSObject, WCSessionDelegate, ObservableObject {
     
     func sessionDidDeactivate(_ session: WCSession) {
         // code
+    }
+    
+    func session(_ session: WCSession, didReceiveMessage message: [String : Any]) {
+     
+        DispatchQueue.main.async {
+            self.messageText = message["message"] as? String ?? "Unknown"
+            print("messageText: \(self.messageText)")
+        }
     }
     
 }

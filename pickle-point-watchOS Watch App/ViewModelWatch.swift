@@ -13,6 +13,8 @@ class ViewModelWatch : NSObject, WCSessionDelegate, ObservableObject {
     
     var session: WCSession
     @Published var messageText = ""
+    @Published var watchIsConnected = false
+    @Published var sessionActivation = WCSession.default.activationState.rawValue
     
     init(session: WCSession = .default) {
         print("ViewModelWatch initialized")
@@ -23,6 +25,7 @@ class ViewModelWatch : NSObject, WCSessionDelegate, ObservableObject {
         
         if WCSession.isSupported() {
             session.activate()
+            print("ViewModelWatch: WCSession activated")
         }
        
     }
@@ -31,9 +34,12 @@ class ViewModelWatch : NSObject, WCSessionDelegate, ObservableObject {
         print("WatchOS activationState: \(session.activationState)")
         print("WatchOS isReachable: \(session.isReachable)")
         print("WatchOS isCompanionAppInstalled: \(session.isCompanionAppInstalled)")
+        watchIsConnected = true
     }
     
     func session(_ session: WCSession, didReceiveMessage message: [String : Any]) {
+        print("Watch OS didReceiveMessage")
+        watchIsConnected = true
         DispatchQueue.main.async {
             self.messageText = message["message"] as? String ?? "Unknown"
         }

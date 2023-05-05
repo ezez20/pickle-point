@@ -10,6 +10,7 @@ import SwiftUI
 struct ControlViewWatchOS: View {
     
     @ObservedObject var viewModelWatch = ViewModelWatch()
+
     
     @State private var team1Score = 0
     @State private var team2Score = 0
@@ -26,7 +27,8 @@ struct ControlViewWatchOS: View {
     @State private var undoCurrentlyTeam1Serving = true
     @State private var undoCurrentlyTeam2Serving = false
     @State private var undoSideout = false
-    @State private var watchConnected = true
+    @State private var watchConnected = false
+    @State private var watchSessionOn = false
     
     var body: some View {
         
@@ -38,9 +40,11 @@ struct ControlViewWatchOS: View {
                     
                     HStack {
                         if watchAppInstalledOniOSBool() {
+                            
                             Image(systemName: "iphone.radiowaves.left.and.right")
-                                .foregroundColor(watchIsReachable() ? .green : .gray)
+                                .foregroundColor(watchSessionOn ? .green : .gray)
                                 
+                         
                         } else {
                             Image(systemName: "")
                                 .padding(11)
@@ -48,46 +52,45 @@ struct ControlViewWatchOS: View {
                     }
                     
                     Spacer()
-                    
-                    ZStack {
+                
+                    HStack {
                         
-        
-                            HStack {
-                                Text("\(currentlyTeam1Serving ? team1Score : team2Score)")
-                                    .font(.system(size: 70))
-                                    .foregroundColor(currentlyTeam1Serving ? .green : .red)
-                                
-                                Text("-")
-                                    .font(.title)
-                                
-                                Text("\(sideout ? "S" : String(currentServer))")
-                                    .font(.system(size: 30))
-                                
-                                Text("-")
-                                    .font(.title)
-                                
-                                Text("\(currentlyTeam1Serving ? team2Score : team1Score)")
-                                    .font(.system(size: 50))
-                                    .foregroundColor(currentlyTeam2Serving ? .green : .red)
-                                //                            Text("\(viewModelWatch.messageText)")
-                                //                                .foregroundColor(.white)
-                                //                                .font(.largeTitle)
-                            }
-                            .onTapGesture(count: 2) {
-                                nextServer()
-                                print("Team 1 serving: \(currentlyTeam1Serving)")
-                                print("Team 2 serving: \(currentlyTeam2Serving)")
-                            }
-                            .simultaneousGesture(
-                                LongPressGesture(minimumDuration: 1.0).onEnded({ _ in
-                                    resetGame()
-                                })
-                            )
-                            
+                        Text("\(currentlyTeam1Serving ? team1Score : team2Score)")
+                            .font(.system(size: 70))
+                            .fixedSize()
+                            .foregroundColor(currentlyTeam1Serving ? .green : .red)
+                        
+                        Text("-")
+                            .font(.title)
+                            .fixedSize()
+                        
+                        Text("\(sideout ? "S" : String(currentServer))")
+                            .font(.system(size: 30))
+                            .fixedSize()
+                        
+                        Text("-")
+                            .font(.title)
+                            .fixedSize()
+                        
+                        Text("\(currentlyTeam1Serving ? team2Score : team1Score)")
+                            .font(.system(size: 30))
+                            .fixedSize()
+                            .foregroundColor(currentlyTeam2Serving ? .green : .red)
+          
                     }
-                    
+                    .fixedSize()
+                    .onTapGesture(count: 2) {
+                        nextServer()
+                        print("Team 1 serving: \(currentlyTeam1Serving)")
+                        print("Team 2 serving: \(currentlyTeam2Serving)")
+                    }
+                    .simultaneousGesture(
+                        LongPressGesture(minimumDuration: 1.0).onEnded({ _ in
+                            resetGame()
+                        })
+                    )
+                            
                     Spacer()
-                    
                     
                     HStack {
                         Button {
@@ -107,10 +110,17 @@ struct ControlViewWatchOS: View {
                 }
                 
             }
+            .frame(width: rect.size.width, height: rect.size.width + 20)
             .edgesIgnoringSafeArea(.top)
-            .onAppear {
-                connectAppleWatch()
+            .onChange(of: viewModelWatch.session.activationState.rawValue) { activationState in
+                
+                if activationState == 2 {
+                    watchSessionOn = true
+                } else {
+                    watchSessionOn = false
+                }
             }
+            
         }
 
     }
@@ -131,6 +141,7 @@ struct ControlViewWatchOS: View {
             currentlyTeam2Serving.toggle()
         }
         
+        
     }
     
     func addPoint() {
@@ -143,9 +154,16 @@ struct ControlViewWatchOS: View {
             team2Score += 1
         }
         
+        if watchIsReachable() {
+            print("viewModelWatch sent message")
+            
+            viewModelWatch.session.sendMessage(["message" : K.watchOSMessage[0]], replyHandler: nil)
+        }
+        
     }
     
     func saveLastMove() {
+        
         undoTeam1Score = team1Score
         undoTeam2Score = team2Score
         undoCurrentServer = currentServer
@@ -153,48 +171,50 @@ struct ControlViewWatchOS: View {
         undoCurrentlyTeam2Serving = currentlyTeam2Serving
         undoSideout = sideout
         print("undoTeam1Score: \(undoTeam1Score)")
+        
     }
     
     func undoPoint() {
         
-        if currentlyTeam1Serving {
-            if team1Score != undoTeam1Score || team1Score <= undoTeam1Score {
-                team1Score -= 1
+        if sideout == false {
+            
+            if currentlyTeam1Serving && currentServer == undoCurrentServer {
+                if team1Score >= undoTeam1Score {
+                    team1Score -= 1
+                }
+                
+                if team1Score <= 0 {
+                    team1Score = 0
+                }
             }
             
-            if team1Score <= 0 {
-                team1Score = 0
-            }
-        }
-        
-        if currentlyTeam2Serving {
-            if team2Score != undoTeam2Score || team2Score <= undoTeam2Score {
-                team2Score -= 1
+            
+            if currentlyTeam2Serving && currentServer == undoCurrentServer {
+                if team2Score >= undoTeam2Score {
+                    team2Score -= 1
+                }
+                
+                if team2Score <= 0 {
+                    team2Score = 0
+                }
             }
             
-            if team2Score <= 0 {
-                team2Score = 0
-            }
         }
         
         if currentServer != undoCurrentServer {
             currentServer = undoCurrentServer
-            print("DD1")
         }
         
         if currentlyTeam1Serving != undoCurrentlyTeam1Serving {
             currentlyTeam1Serving = undoCurrentlyTeam1Serving
-            print("DD2")
         }
         
         if currentlyTeam2Serving != undoCurrentlyTeam2Serving {
             currentlyTeam2Serving = undoCurrentlyTeam2Serving
-            print("DD3")
         }
         
         if sideout != undoSideout {
             sideout = undoSideout
-            print("DD4")
         }
         
         
@@ -219,12 +239,19 @@ struct ControlViewWatchOS: View {
         currentlyTeam2Serving = false
         sideout = false
     }
-                          
+
+                        
+}
+
+extension ControlViewWatchOS {
+    
+    
     func connectAppleWatch() {
         if viewModelWatch.session.isCompanionAppInstalled && viewModelWatch.session.isReachable {
             watchConnected = true
         } else {
-            viewModelWatch.session.activate()
+            watchConnected = false
+            //            viewModelWatch.session.activate()
         }
     }
     
@@ -239,14 +266,17 @@ struct ControlViewWatchOS: View {
     
     func watchIsReachable() -> Bool {
         if viewModelWatch.session.isCompanionAppInstalled && viewModelWatch.session.isReachable {
+            watchConnected = true
             return true
         } else {
+            watchConnected = false
             return false
         }
     }
-                        
     
 }
+    
+
 
 struct ControlViewWatchOS_Previews: PreviewProvider {
     static var previews: some View {
