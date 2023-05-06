@@ -243,15 +243,15 @@ struct ControlsView: View {
         }
         .shareSheet(show: $shareVideo, items: [url])
         .onAppear {
-            timer.upstream.connect().cancel()
             
-            viewModelPhone.session.activate()
+            timer.upstream.connect().cancel()
             
             if viewModelPhone.session.isReachable {
                 reachable = true
             } else {
                 reachable = false
             }
+            
         }
         .onReceive(viewModelPhone.$messageText) { message in
             print("Message recieved on iphone ControlsView: \(message)")
@@ -263,7 +263,7 @@ struct ControlsView: View {
         .onChange(of: viewModelPhone.session.activationState.rawValue) { activationState in
             
 //            if activationState == 2 {
-//                
+//
 //            }
         }
         
@@ -434,21 +434,20 @@ extension ControlsView {
     }
     
     func connectAppleWatch() {
-        
         viewModelPhone.session.activate()
-        
-        if viewModelPhone.session.isPaired && viewModelPhone.session.isReachable {
+        checkWatchConnection()
+    }
+    
+    func checkWatchConnection() {
             
-            if viewModelPhone.session.isReachable {
-                reachable = true
-                print("Apple watch is connected")
-            } else {
-                reachable = false
-                print("Apple watch is NOT connected")
-            }
-            
+        if viewModelPhone.session.activationState.rawValue == 2 {
+            reachable = true
+            print("Apple watch is connected")
+        } else {
+            reachable = false
+            print("Apple watch is NOT connected")
         }
-        
+            
     }
     
 }

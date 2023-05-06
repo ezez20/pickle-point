@@ -54,4 +54,5 @@ class ViewModelPhone: NSObject, WCSessionDelegate, ObservableObject {
         }
     }
     
+    
 }

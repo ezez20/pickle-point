@@ -29,6 +29,7 @@ struct ControlViewWatchOS: View {
     @State private var undoSideout = false
     @State private var watchConnected = false
     @State private var watchSessionOn = false
+
     
     var body: some View {
         
@@ -39,16 +40,13 @@ struct ControlViewWatchOS: View {
                 VStack {
                     
                     HStack {
-                        if watchAppInstalledOniOSBool() {
-                            
-                            Image(systemName: "iphone.radiowaves.left.and.right")
-                                .foregroundColor(watchSessionOn ? .green : .gray)
-                                
-                         
-                        } else {
-                            Image(systemName: "")
-                                .padding(11)
-                        }
+                        
+                        Image(systemName: "iphone.radiowaves.left.and.right")
+                            .foregroundColor(watchSessionOn ? .green : .gray)
+                            .padding()
+                    }
+                    .onTapGesture {
+                        connectAppleWatch()
                     }
                     
                     Spacer()
@@ -56,20 +54,20 @@ struct ControlViewWatchOS: View {
                     HStack {
                         
                         Text("\(currentlyTeam1Serving ? team1Score : team2Score)")
-                            .font(.system(size: 70))
+                            .font(.system(size: 50))
                             .fixedSize()
                             .foregroundColor(currentlyTeam1Serving ? .green : .red)
                         
                         Text("-")
-                            .font(.title)
+                            .font(.system(size: 20))
                             .fixedSize()
                         
                         Text("\(sideout ? "S" : String(currentServer))")
-                            .font(.system(size: 30))
+                            .font(.system(size: 20))
                             .fixedSize()
                         
                         Text("-")
-                            .font(.title)
+                            .font(.system(size: 20))
                             .fixedSize()
                         
                         Text("\(currentlyTeam1Serving ? team2Score : team1Score)")
@@ -78,7 +76,7 @@ struct ControlViewWatchOS: View {
                             .foregroundColor(currentlyTeam2Serving ? .green : .red)
           
                     }
-                    .fixedSize()
+                    .frame(width: rect.size.width)
                     .onTapGesture(count: 2) {
                         nextServer()
                         print("Team 1 serving: \(currentlyTeam1Serving)")
@@ -95,6 +93,7 @@ struct ControlViewWatchOS: View {
                     HStack {
                         Button {
                             undoPoint()
+                            viewModelWatch.session.activate()
                         } label: {
                             Image(systemName: "arrow.uturn.backward")
                         }
@@ -112,13 +111,26 @@ struct ControlViewWatchOS: View {
             }
             .frame(width: rect.size.width, height: rect.size.width + 20)
             .edgesIgnoringSafeArea(.top)
-            .onChange(of: viewModelWatch.session.activationState.rawValue) { activationState in
-                
-                if activationState == 2 {
+            .onAppear {
+                if viewModelWatch.watchIsConnected {
                     watchSessionOn = true
                 } else {
                     watchSessionOn = false
                 }
+            }
+            .onChange(of: viewModelWatch.watchIsConnected) { watchConnection in
+                print("onChange")
+                if watchConnection {
+                    print("watchIsReachable: true")
+                    watchSessionOn = true
+                } else {
+                    print("watchIsReachable: false")
+                    watchSessionOn = false
+                }
+
+            }
+            .onChange(of: viewModelWatch.session.activationState) { sessionActivation in
+                print("onChange sessionActivation: \(sessionActivation.rawValue)")
             }
             
         }
@@ -156,7 +168,6 @@ struct ControlViewWatchOS: View {
         
         if watchIsReachable() {
             print("viewModelWatch sent message")
-            
             viewModelWatch.session.sendMessage(["message" : K.watchOSMessage[0]], replyHandler: nil)
         }
         
@@ -247,8 +258,11 @@ extension ControlViewWatchOS {
     
     
     func connectAppleWatch() {
+        
+        viewModelWatch.session.activate()
+        
         if viewModelWatch.session.isCompanionAppInstalled && viewModelWatch.session.isReachable {
-            watchConnected = true
+            watchSessionOn = true
         } else {
             watchConnected = false
             //            viewModelWatch.session.activate()
@@ -260,12 +274,13 @@ extension ControlViewWatchOS {
             print("watchConnectedBoolwatchConnectedBool true")
             return true
         } else {
+            print("watchConnectedBoolwatchConnectedBool false")
             return false
         }
     }
     
     func watchIsReachable() -> Bool {
-        if viewModelWatch.session.isCompanionAppInstalled && viewModelWatch.session.isReachable {
+        if viewModelWatch.session.isCompanionAppInstalled && viewModelWatch.session.isReachable && viewModelWatch.session.activationState.rawValue == 2 {
             watchConnected = true
             return true
         } else {

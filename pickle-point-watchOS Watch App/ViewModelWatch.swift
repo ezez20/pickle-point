@@ -22,29 +22,38 @@ class ViewModelWatch : NSObject, WCSessionDelegate, ObservableObject {
         self.session = session
         super.init()
         self.session.delegate = self
-        
-        if WCSession.isSupported() {
-            session.activate()
-            print("ViewModelWatch: WCSession activated")
-        }
        
     }
+    
     
     func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
         print("WatchOS activationState: \(session.activationState)")
         print("WatchOS isReachable: \(session.isReachable)")
         print("WatchOS isCompanionAppInstalled: \(session.isCompanionAppInstalled)")
-        watchIsConnected = true
+        
+        if session.isReachable {
+            watchIsConnected = true
+        } else {
+            watchIsConnected = false
+        }
+        
+    }
+    
+    func sessionReachabilityDidChange(_ session: WCSession) {
+        if session.isReachable {
+            watchIsConnected = true
+            print("sessionReachabilityDidChange: is reachable")
+        } else {
+            watchIsConnected = false
+            print("sessionReachabilityDidChange: is not reachable")
+        }
     }
     
     func session(_ session: WCSession, didReceiveMessage message: [String : Any]) {
         print("Watch OS didReceiveMessage")
-        watchIsConnected = true
         DispatchQueue.main.async {
             self.messageText = message["message"] as? String ?? "Unknown"
         }
     }
-    
-    
     
 }
