@@ -17,7 +17,6 @@ struct ControlsView: View {
 
     @State private var team1Score = 0
     @State private var team2Score = 0
-    @State private var serverScore = [1, 2]
     @State private var currentServer = 2
     @State private var currentlyTeam1Serving = true
     @State private var currentlyTeam2Serving = false
@@ -25,7 +24,6 @@ struct ControlsView: View {
     
     @State private var undoTeam1Score = 0
     @State private var undoTeam2Score = 0
-    @State private var undoServerScore = [1, 2]
     @State private var undoCurrentServer = 2
     @State private var undoCurrentlyTeam1Serving = true
     @State private var undoCurrentlyTeam2Serving = false
@@ -253,18 +251,24 @@ struct ControlsView: View {
             }
             
         }
-        .onReceive(viewModelPhone.$messageText) { message in
-            print("Message recieved on iphone ControlsView: \(message)")
-            if message == K.watchOSMessage[0] {
-                
-                addPoint()
+        .onReceive(viewModelPhone.$messageBackToPhone) { message in
+            
+            print("Message recieved on iphone ControlsView")
+            updateMessageBackFromWatch(message: message)
+            
+            if gameStart {
+                print("startStopGame triggered")
+                startStopGame()
             }
+            
         }
         .onChange(of: viewModelPhone.session.activationState.rawValue) { activationState in
             
-//            if activationState == 2 {
-//
-//            }
+            if activationState == 2 {
+                print("activationState == 2 ")
+            } else {
+                print("activationState == 1 ")
+            }
         }
         
         
@@ -443,11 +447,23 @@ extension ControlsView {
         if viewModelPhone.session.activationState.rawValue == 2 {
             reachable = true
             print("Apple watch is connected")
+        
+            
         } else {
             reachable = false
             print("Apple watch is NOT connected")
         }
             
+    }
+    
+    func updateMessageBackFromWatch(message: [String : Any]) {
+        team1Score = message["team1Score"] as? Int ?? 0
+        team2Score = message["team2Score"] as? Int ?? 0
+        currentServer = message["currentServer"] as? Int ?? 0
+        currentlyTeam1Serving = message["currentlyTeam1Serving"] as? Bool ?? false
+        currentlyTeam2Serving = message["currentlyTeam2Serving"] as? Bool ?? false
+        sideout = message["sideout"] as? Bool ?? false
+        gameStart = message["gameStart"] as? Bool ?? false
     }
     
 }

@@ -12,7 +12,7 @@ import SwiftUI
 class ViewModelPhone: NSObject, WCSessionDelegate, ObservableObject {
     
     @Published var session: WCSession
-    @Published var messageText = ""
+    @Published var messageBackToPhone = [String : Any]()
     
     init(session: WCSession = .default) {
         self.session = session
@@ -49,8 +49,10 @@ class ViewModelPhone: NSObject, WCSessionDelegate, ObservableObject {
     func session(_ session: WCSession, didReceiveMessage message: [String : Any]) {
      
         DispatchQueue.main.async {
-            self.messageText = message["message"] as? String ?? "Unknown"
-            print("messageText: \(self.messageText)")
+//            self.messageText = message["message"] as? String ?? "Unknown"
+            let messsageBack = message["message"] as? [String : Any] ?? [ : ]
+            self.messageBackToPhone = messsageBack
+            print("messageText: \(messsageBack)")
         }
     }
     

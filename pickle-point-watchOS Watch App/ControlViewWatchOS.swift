@@ -14,7 +14,6 @@ struct ControlViewWatchOS: View {
     
     @State private var team1Score = 0
     @State private var team2Score = 0
-    @State private var serverScore = [1, 2]
     @State private var currentServer = 2
     @State private var currentlyTeam1Serving = true
     @State private var currentlyTeam2Serving = false
@@ -22,13 +21,14 @@ struct ControlViewWatchOS: View {
     
     @State private var undoTeam1Score = 0
     @State private var undoTeam2Score = 0
-    @State private var undoServerScore = [1, 2]
     @State private var undoCurrentServer = 2
     @State private var undoCurrentlyTeam1Serving = true
     @State private var undoCurrentlyTeam2Serving = false
     @State private var undoSideout = false
     @State private var watchConnected = false
     @State private var watchSessionOn = false
+    @State private var startGameQueue = false
+    @State private var gameStart = false
 
     
     var body: some View {
@@ -41,39 +41,72 @@ struct ControlViewWatchOS: View {
                     
                     HStack {
                         
+                        if watchSessionOn {
+                            Image(systemName: "record.circle")
+                                .foregroundColor(gameStart ? .red : .green)
+                                .padding()
+                                .onTapGesture {
+                                    if gameStart == false {
+                                        startGameQueue = true
+                                    } else {
+                                        gameStart = false
+                                        // Stop recording
+                                        viewModelWatch.session.sendMessage(["startRecording" : true], replyHandler: nil)
+                                    }
+                                }
+                        }
+                        
                         Image(systemName: "iphone.radiowaves.left.and.right")
                             .foregroundColor(watchSessionOn ? .green : .gray)
                             .padding()
+                            .onTapGesture {
+                                connectAppleWatch()
+                            }
+                        
+                        Spacer()
                     }
-                    .onTapGesture {
-                        connectAppleWatch()
-                    }
+                   
                     
                     Spacer()
                 
                     HStack {
                         
-                        Text("\(currentlyTeam1Serving ? team1Score : team2Score)")
-                            .font(.system(size: 50))
-                            .fixedSize()
-                            .foregroundColor(currentlyTeam1Serving ? .green : .red)
-                        
-                        Text("-")
-                            .font(.system(size: 20))
-                            .fixedSize()
-                        
-                        Text("\(sideout ? "S" : String(currentServer))")
-                            .font(.system(size: 20))
-                            .fixedSize()
-                        
-                        Text("-")
-                            .font(.system(size: 20))
-                            .fixedSize()
-                        
-                        Text("\(currentlyTeam1Serving ? team2Score : team1Score)")
-                            .font(.system(size: 30))
-                            .fixedSize()
-                            .foregroundColor(currentlyTeam2Serving ? .green : .red)
+                        if startGameQueue {
+                            
+                            Text("Start Game")
+                                .font(.system(size: 20))
+                                .fixedSize()
+                                .onTapGesture {
+                                    startGameQueue = false
+                                    gameStart = true
+                                    updateScoreToPhone()
+                                }
+                            
+                        } else {
+                            
+                            Text("\(currentlyTeam1Serving ? team1Score : team2Score)")
+                                .font(.system(size: 50))
+                                .fixedSize()
+                                .foregroundColor(currentlyTeam1Serving ? .green : .red)
+                            
+                            Text("-")
+                                .font(.system(size: 20))
+                                .fixedSize()
+                            
+                            Text("\(sideout ? "S" : String(currentServer))")
+                                .font(.system(size: 20))
+                                .fixedSize()
+                            
+                            Text("-")
+                                .font(.system(size: 20))
+                                .fixedSize()
+                            
+                            Text("\(currentlyTeam1Serving ? team2Score : team1Score)")
+                                .font(.system(size: 30))
+                                .fixedSize()
+                                .foregroundColor(currentlyTeam2Serving ? .green : .red)
+                            
+                        }
           
                     }
                     .frame(width: rect.size.width)
@@ -81,19 +114,27 @@ struct ControlViewWatchOS: View {
                         nextServer()
                         print("Team 1 serving: \(currentlyTeam1Serving)")
                         print("Team 2 serving: \(currentlyTeam2Serving)")
+                        
+                        updateScoreToPhone()
                     }
                     .simultaneousGesture(
                         LongPressGesture(minimumDuration: 1.0).onEnded({ _ in
                             resetGame()
-                        })
-                    )
+
+                            updateScoreToPhone()
                             
+                        })
+                        
+                    )
+                    
                     Spacer()
                     
                     HStack {
                         Button {
                             undoPoint()
-                            viewModelWatch.session.activate()
+                            
+                            updateScoreToPhone()
+                            
                         } label: {
                             Image(systemName: "arrow.uturn.backward")
                         }
@@ -101,6 +142,9 @@ struct ControlViewWatchOS: View {
                         Button {
                             saveLastMove()
                             addPoint()
+                            
+                            updateScoreToPhone()
+                            
                         } label: {
                             Image(systemName: "plus")
                         }
@@ -137,6 +181,7 @@ struct ControlViewWatchOS: View {
 
     }
     
+    
     func nextServer() {
     
         currentServer += 1
@@ -164,11 +209,6 @@ struct ControlViewWatchOS: View {
             team1Score += 1
         } else {
             team2Score += 1
-        }
-        
-        if watchIsReachable() {
-            print("viewModelWatch sent message")
-            viewModelWatch.session.sendMessage(["message" : K.watchOSMessage[0]], replyHandler: nil)
         }
         
     }
@@ -263,6 +303,7 @@ extension ControlViewWatchOS {
         
         if viewModelWatch.session.isCompanionAppInstalled && viewModelWatch.session.isReachable {
             watchSessionOn = true
+            
         } else {
             watchConnected = false
             //            viewModelWatch.session.activate()
@@ -287,6 +328,26 @@ extension ControlViewWatchOS {
             watchConnected = false
             return false
         }
+    }
+    
+    func updateScoreToPhone() {
+        
+        if watchIsReachable() {
+            
+            let messageBack: [String: Any] = [
+                "team1Score" : team1Score,
+                "team2Score": team2Score,
+                "currentServer" : currentServer,
+                "currentlyTeam1Serving" : currentlyTeam1Serving,
+                "currentlyTeam2Serving" : currentlyTeam2Serving,
+                "sideout" : sideout,
+                "gameStart" : gameStart
+            ]
+            
+            print("viewModelWatch sent message")
+            viewModelWatch.session.sendMessage(["message" : messageBack], replyHandler: nil)
+        }
+        
     }
     
 }
