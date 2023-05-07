@@ -200,6 +200,7 @@ struct ControlsView: View {
                         // Undo point: Button
                         Button {
                             undoPoint()
+                            
                         } label: {
                             Image(systemName: "arrow.uturn.backward")
                                 .resizable()
@@ -254,12 +255,22 @@ struct ControlsView: View {
         .onReceive(viewModelPhone.$messageBackToPhone) { message in
             
             print("Message recieved on iphone ControlsView")
-            updateMessageBackFromWatch(message: message)
             
-            if gameStart {
-                print("startStopGame triggered")
-                startStopGame()
+            // If message recieved from watch has value "recordStart", start recording.
+            if message["recordStart"] != nil {
+                let message = message["recordStart"] as? Bool ?? false
+               
+                if message == true {
+                    startStopGame()
+                } else {
+                    startStopGame()
+                }
+            
+            // Else, just receive score updates messages from watch.
+            } else {
+                updateMessageBackFromWatch(message: message)
             }
+
             
         }
         .onChange(of: viewModelPhone.session.activationState.rawValue) { activationState in
@@ -287,7 +298,7 @@ extension ControlsView {
             startRecording { error in
                 
                 if error != nil {
-                    print("Error on video recording start \(error?.localizedDescription)")
+                    print("Error on video recording start \(String(describing: error?.localizedDescription))")
                 } else {
                     self.timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
                 }

@@ -169,7 +169,7 @@ import AVFoundation
 //        }
 //
 //        // END Setting configuration properties
-//        session.commitConfiguration()
+//        session.commitConfiguration()/Users/ezrayeoh/Documents_HD/xcode projects - imported/5 - Personal Projects/pickle point
 //
 //        // Start the AVCapture session
 //        session.startRunning()

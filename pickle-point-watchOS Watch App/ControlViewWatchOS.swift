@@ -51,7 +51,8 @@ struct ControlViewWatchOS: View {
                                     } else {
                                         gameStart = false
                                         // Stop recording
-                                        viewModelWatch.session.sendMessage(["startRecording" : true], replyHandler: nil)
+                                        let message = ["recordStart" : false]
+                                        viewModelWatch.session.sendMessage(["startRecording" : message], replyHandler: nil)
                                     }
                                 }
                         }
@@ -77,9 +78,10 @@ struct ControlViewWatchOS: View {
                                 .font(.system(size: 20))
                                 .fixedSize()
                                 .onTapGesture {
+                                    let message = ["recordStart" : true]
+                                    viewModelWatch.session.sendMessage(["startRecording" : message], replyHandler: nil)
                                     startGameQueue = false
                                     gameStart = true
-                                    updateScoreToPhone()
                                 }
                             
                         } else {
@@ -134,6 +136,10 @@ struct ControlViewWatchOS: View {
                             undoPoint()
                             
                             updateScoreToPhone()
+                            
+                            if startGameQueue {
+                                startGameQueue = false
+                            }
                             
                         } label: {
                             Image(systemName: "arrow.uturn.backward")
