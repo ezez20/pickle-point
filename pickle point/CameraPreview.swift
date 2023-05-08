@@ -45,36 +45,46 @@ struct Viewfinder: UIViewRepresentable {
 }
 
 struct CameraPreview: View {
-    var session = AVCaptureSession()
+    
+    var session: AVCaptureSession
+    var image: CGImage?
     
     var body: some View {
         
         // START Setting configuration properties
-        session.beginConfiguration()
-
-        // Get the capture device
-        if let frontCameraDevice = AVCaptureDevice.default(
-            .builtInUltraWideCamera,
-            for: .video,
-            position: .back
-        ) {
-
-            // Set the capture device
-            do {
-                try! session.addInput(AVCaptureDeviceInput(device: frontCameraDevice))
-            }
-            
-        }
-
-        // END Setting configuration properties
-        session.commitConfiguration()
+//        session.beginConfiguration()
+//
+//        // Get the capture device
+//        if let frontCameraDevice = AVCaptureDevice.default(
+//            .builtInUltraWideCamera,
+//            for: .video,
+//            position: .back
+//        ) {
+//
+//            // Set the capture device
+//            do {
+//                try! session.addInput(AVCaptureDeviceInput(device: frontCameraDevice))
+//            }
+//
+//        }
+//
+//        // END Setting configuration properties
+//        session.commitConfiguration()
+//
+//        // Start the AVCapture session
+//        DispatchQueue.global(qos: .background).async {
+//            session.startRunning()
+//        }
+//
+//        return Viewfinder(session: session)
         
-        // Start the AVCapture session
-        DispatchQueue.global(qos: .background).async {
-            session.startRunning()
-        }
-        
+//        if let image = image {
+//                    Image(image, scale: 1.0, orientation: .up, label: Text("frame"))
+//                } else {
+//                    Color.black
+//                }
         return Viewfinder(session: session)
     }
     
 }
+
