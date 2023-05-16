@@ -243,6 +243,8 @@ struct ControlsView: View {
         .shareSheet(show: $shareVideo, items: [url])
         .onAppear {
             
+            resetGame()
+            
             timer.upstream.connect().cancel()
             
             if viewModelPhone.session.isReachable {
@@ -470,7 +472,7 @@ extension ControlsView {
     func updateMessageBackFromWatch(message: [String : Any]) {
         team1Score = message["team1Score"] as? Int ?? 0
         team2Score = message["team2Score"] as? Int ?? 0
-        currentServer = message["currentServer"] as? Int ?? 0
+        currentServer = message["currentServer"] as? Int ?? 2
         currentlyTeam1Serving = message["currentlyTeam1Serving"] as? Bool ?? false
         currentlyTeam2Serving = message["currentlyTeam2Serving"] as? Bool ?? false
         sideout = message["sideout"] as? Bool ?? false
