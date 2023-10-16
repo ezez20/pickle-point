@@ -67,8 +67,7 @@ struct ControlViewWatchOS: View {
                         Spacer()
                     }
                    
-                    
-                    Spacer()
+
                 
                     HStack {
                         
@@ -95,23 +94,23 @@ struct ControlViewWatchOS: View {
                                 .font(.system(size: 20))
                                 .fixedSize()
                             
-                            Text("\(sideout ? "S" : String(currentServer))")
-                                .font(.system(size: 20))
-                                .fixedSize()
-                            
-                            Text("-")
-                                .font(.system(size: 20))
-                                .fixedSize()
-                            
                             Text("\(currentlyTeam1Serving ? team2Score : team1Score)")
                                 .font(.system(size: 30))
                                 .fixedSize()
                                 .foregroundColor(currentlyTeam2Serving ? .green : .red)
                             
+                            Text("-")
+                                .font(.system(size: 20))
+                                .fixedSize()
+                            
+                            Text("\(sideout ? "S" : String(currentServer))")
+                                .font(.system(size: 20))
+                                .fixedSize()
+                            
                         }
           
                     }
-                    .frame(width: rect.size.width)
+                    .position(CGPoint(x: rect.size.width/2, y: rect.size.height/2 - rect.safeAreaInsets.top*2))
                     .onTapGesture(count: 2) {
                         nextServer()
                         print("Team 1 serving: \(currentlyTeam1Serving)")
@@ -129,7 +128,6 @@ struct ControlViewWatchOS: View {
                         
                     )
                     
-                    Spacer()
                     
                     HStack {
                         Button {
@@ -145,6 +143,7 @@ struct ControlViewWatchOS: View {
                             Image(systemName: "arrow.uturn.backward")
                         }
                         
+                        
                         Button {
                             saveLastMove()
                             addPoint()
@@ -155,11 +154,12 @@ struct ControlViewWatchOS: View {
                             Image(systemName: "plus")
                         }
                     }
+                    .position(CGPoint(x: rect.size.width/2, y: rect.size.height/2 - rect.safeAreaInsets.top*2))
                     
                 }
                 
             }
-            .frame(width: rect.size.width, height: rect.size.width + 20)
+            .frame(width: rect.size.width, height: rect.size.height)
             .edgesIgnoringSafeArea(.top)
             .onAppear {
                 if viewModelWatch.watchIsConnected {

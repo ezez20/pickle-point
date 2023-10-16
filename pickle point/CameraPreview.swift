@@ -58,7 +58,7 @@ struct CameraPreview: View {
             for: .video,
             position: .back
         ) {
-
+            
             // Set the capture device
             do {
                 try! session.addInput(AVCaptureDeviceInput(device: frontCameraDevice))

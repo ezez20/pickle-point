@@ -38,7 +38,7 @@ struct ControlsView: View {
     @State private var videoCurrentlySaving = false
 
     
-    @State var reachable = false
+    @State private var watchReachable = false
     @ObservedObject var viewModelPhone = ViewModelPhone()
     
     var body: some View {
@@ -193,7 +193,7 @@ struct ControlsView: View {
                             Image(systemName: "applewatch")
                                 .resizable()
                                 .frame(width: 20, height: 20)
-                                .foregroundColor(reachable ? .green : .red)
+                                .foregroundColor(watchReachable ? .green : .red)
                                 .padding(20)
                         }
                         
@@ -247,11 +247,7 @@ struct ControlsView: View {
             
             timer.upstream.connect().cancel()
             
-            if viewModelPhone.session.isReachable {
-                reachable = true
-            } else {
-                reachable = false
-            }
+            checkWatchActivationStatus()
             
         }
         .onReceive(viewModelPhone.$messageBackToPhone) { message in
@@ -284,7 +280,6 @@ struct ControlsView: View {
             }
         }
         
-        
     }
     
     
@@ -293,9 +288,7 @@ struct ControlsView: View {
 extension ControlsView {
     
     func startStopGame() {
-        
         gameStart.toggle()
-        
         if gameStart {
             startRecording { error in
                 
@@ -306,7 +299,6 @@ extension ControlsView {
                 }
             }
         } else {
-            
             //Stop timer
             timer.upstream.connect().cancel()
             timePassed = 0
@@ -324,9 +316,7 @@ extension ControlsView {
                     videoCurrentlySaving = false
                 }
             }
-            
         }
-        
     }
     
     func nextServer() {
@@ -360,14 +350,12 @@ extension ControlsView {
     }
     
     func saveLastMove() {
-        
         undoTeam1Score = team1Score
         undoTeam2Score = team2Score
         undoCurrentServer = currentServer
         undoCurrentlyTeam1Serving = currentlyTeam1Serving
         undoCurrentlyTeam2Serving = currentlyTeam2Serving
         undoSideout = sideout
-        
     }
     
     func undoPoint() {
@@ -436,37 +424,25 @@ extension ControlsView {
         sideout = false
     }
     
-    
-    
     func convertSecondsToTime(secondsIn: Int) -> String {
-        
         let minutes = secondsIn / 60
         let seconds = secondsIn % 60
-        
         return String(format: "%02i:%02i", minutes, seconds)
-    }
-    
-    func fireTimer() {
-        print("Timer fired!")
     }
     
     func connectAppleWatch() {
         viewModelPhone.session.activate()
-        checkWatchConnection()
+        checkWatchActivationStatus()
     }
     
-    func checkWatchConnection() {
-            
-        if viewModelPhone.session.activationState.rawValue == 2 {
-            reachable = true
+    func checkWatchActivationStatus() {
+        if viewModelPhone.session.activationState.rawValue == 2 && viewModelPhone.session.isReachable {
+            watchReachable = true
             print("Apple watch is connected")
-        
-            
         } else {
-            reachable = false
+            watchReachable = false
             print("Apple watch is NOT connected")
         }
-            
     }
     
     func updateMessageBackFromWatch(message: [String : Any]) {
