@@ -14,6 +14,7 @@ import WatchConnectivity
 struct ControlsView: View {
     
     @Environment(\.managedObjectContext) private var viewContext
+    var cameraModel: CameraModel
 
     @State private var team1Score = 0
     @State private var team2Score = 0
@@ -274,14 +275,31 @@ struct ControlsView: View {
             
         }
         .onChange(of: viewModelPhone.session.activationState.rawValue) { activationState in
-            
             if activationState == 2 {
                 print("activationState == 2 ")
             } else {
                 print("activationState == 1 ")
             }
         }
-        
+        .onChange(of: cameraModel.videoCurrentlySaving) { videoSaving in
+            if videoSaving {
+                videoCurrentlySaving = true
+            } else {
+                videoCurrentlySaving = false
+            }
+        }
+        .onChange(of: cameraModel.videoURL) { videoURL in
+            if videoURL != nil {
+                url = videoURL
+                shareVideo.toggle()
+            }
+        }
+        .onChange(of: shareVideo) { sheetShowing in
+            // Make url = nil, if sheet is dismissed
+            if sheetShowing == false {
+                url = nil
+            }
+        }
         
     }
     
@@ -295,34 +313,18 @@ extension ControlsView {
         gameStart.toggle()
         
         if gameStart {
-            startRecording { error in
-                
-                if error != nil {
-                    print("Error on video recording start \(String(describing: error?.localizedDescription))")
-                } else {
+            cameraModel.capture() { startedRecording in
+                if startedRecording {
                     self.timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
                 }
             }
         } else {
-            
             //Stop timer
             timer.upstream.connect().cancel()
             timePassed = 0
-            videoCurrentlySaving = true
-            
-            // Stop recording
-            Task {
-                do {
-                    self.url = try await stopRecording()
-                    shareVideo.toggle()
-                    videoCurrentlySaving = false
-                    resetGame()
-                } catch {
-                    print("Error stopping video recording: \(error.localizedDescription)")
-                    videoCurrentlySaving = false
-                }
-            }
-            
+            resetGame()
+            cameraModel.end()
+//            videoCurrentlySaving = true
         }
         
     }
@@ -479,10 +481,10 @@ extension ControlsView {
     
 }
 
-struct CameraView_Previews: PreviewProvider {
-    
-    static var previews: some View {
-        ControlsView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
-    }
-    
-}
+//struct CameraView_Previews: PreviewProvider {
+//    
+//    static var previews: some View {
+//        ControlsView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+//    }
+//    
+//}

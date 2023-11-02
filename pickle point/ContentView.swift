@@ -17,17 +17,18 @@ struct ContentView: View {
         animation: .default)
     private var items: FetchedResults<Item>
     
-    var session = AVCaptureSession()
+    @StateObject private var cameraModel = CameraModel()
 
     var body: some View {
         
         ZStack {
-            CameraPreview(session: session)
+            CameraPreview(session: cameraModel.session)
                 .ignoresSafeArea(.all, edges: .all)
-            ControlsView()
+            ControlsView(cameraModel: cameraModel)
                 .ignoresSafeArea(.all, edges: .bottom)
             
         }
+        
        
 //            .onAppear {
 //                camera.start { err in

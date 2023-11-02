@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		512546FE29FAD27F003594C8 /* pickle-point-watchOS Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 51D07FCB29F396860089B505 /* pickle-point-watchOS Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		51363EAC2AF00FCE0060557C /* CameraModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51363EAB2AF00FCE0060557C /* CameraModel.swift */; };
+		515D16C72AF14A4A009494D4 /* ShareSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 515D16C62AF14A4A009494D4 /* ShareSheet.swift */; };
 		51A3C71A2A05A5BE00E01355 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51A3C7192A05A5BE00E01355 /* Constants.swift */; };
 		51A3C71B2A05A71A00E01355 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51A3C7192A05A5BE00E01355 /* Constants.swift */; };
 		51BB2DB229E5C85400E52302 /* pickle_pointApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51BB2DB129E5C85400E52302 /* pickle_pointApp.swift */; };
@@ -17,10 +19,8 @@
 		51BB2DBB29E5C85500E52302 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51BB2DBA29E5C85500E52302 /* Persistence.swift */; };
 		51BB2DBE29E5C85500E52302 /* pickle_point.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 51BB2DBC29E5C85500E52302 /* pickle_point.xcdatamodeld */; };
 		51BB2DC529E5C8B700E52302 /* ControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51BB2DC429E5C8B700E52302 /* ControlsView.swift */; };
-		51BB2DC729E6133900E52302 /* CameraModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51BB2DC629E6133900E52302 /* CameraModel.swift */; };
 		51BB2DC929E620BE00E52302 /* CameraPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51BB2DC829E620BE00E52302 /* CameraPreview.swift */; };
 		51BB2DCB29E8DF2100E52302 /* ScreenRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51BB2DCA29E8DF2100E52302 /* ScreenRecord.swift */; };
-		51BB2DCF29E8EA4500E52302 /* ShareSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51BB2DCE29E8EA4500E52302 /* ShareSheet.swift */; };
 		51C5CADD29F4B3CF005B5AB3 /* ViewModelPhone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51C5CADC29F4B3CF005B5AB3 /* ViewModelPhone.swift */; };
 		51C5CAE129F4B966005B5AB3 /* ViewModelWatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51C5CAE029F4B966005B5AB3 /* ViewModelWatch.swift */; };
 		51D07FCE29F396860089B505 /* pickle_point_watchOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D07FCD29F396860089B505 /* pickle_point_watchOSApp.swift */; };
@@ -55,6 +55,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		51363EAB2AF00FCE0060557C /* CameraModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraModel.swift; sourceTree = "<group>"; };
+		515D16C62AF14A4A009494D4 /* ShareSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShareSheet.swift; sourceTree = "<group>"; };
 		51A3C7192A05A5BE00E01355 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		51BB2DAE29E5C85400E52302 /* pickle point.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "pickle point.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		51BB2DB129E5C85400E52302 /* pickle_pointApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = pickle_pointApp.swift; sourceTree = "<group>"; };
@@ -64,10 +66,8 @@
 		51BB2DBA29E5C85500E52302 /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
 		51BB2DBD29E5C85500E52302 /* pickle_point.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = pickle_point.xcdatamodel; sourceTree = "<group>"; };
 		51BB2DC429E5C8B700E52302 /* ControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlsView.swift; sourceTree = "<group>"; };
-		51BB2DC629E6133900E52302 /* CameraModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraModel.swift; sourceTree = "<group>"; };
 		51BB2DC829E620BE00E52302 /* CameraPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPreview.swift; sourceTree = "<group>"; };
 		51BB2DCA29E8DF2100E52302 /* ScreenRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenRecord.swift; sourceTree = "<group>"; };
-		51BB2DCE29E8EA4500E52302 /* ShareSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareSheet.swift; sourceTree = "<group>"; };
 		51C5CADC29F4B3CF005B5AB3 /* ViewModelPhone.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModelPhone.swift; sourceTree = "<group>"; };
 		51C5CAE029F4B966005B5AB3 /* ViewModelWatch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModelWatch.swift; sourceTree = "<group>"; };
 		51D07FCB29F396860089B505 /* pickle-point-watchOS Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "pickle-point-watchOS Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -129,9 +129,9 @@
 				51BB2DB329E5C85400E52302 /* ContentView.swift */,
 				51BB2DC429E5C8B700E52302 /* ControlsView.swift */,
 				51BB2DC829E620BE00E52302 /* CameraPreview.swift */,
-				51BB2DC629E6133900E52302 /* CameraModel.swift */,
+				51363EAB2AF00FCE0060557C /* CameraModel.swift */,
 				51BB2DCA29E8DF2100E52302 /* ScreenRecord.swift */,
-				51BB2DCE29E8EA4500E52302 /* ShareSheet.swift */,
+				515D16C62AF14A4A009494D4 /* ShareSheet.swift */,
 				51BB2DB529E5C85500E52302 /* Assets.xcassets */,
 				51BB2DBA29E5C85500E52302 /* Persistence.swift */,
 				51BB2DBC29E5C85500E52302 /* pickle_point.xcdatamodeld */,
@@ -276,14 +276,14 @@
 				51BB2DBB29E5C85500E52302 /* Persistence.swift in Sources */,
 				51A3C71A2A05A5BE00E01355 /* Constants.swift in Sources */,
 				51BB2DB429E5C85400E52302 /* ContentView.swift in Sources */,
-				51BB2DC729E6133900E52302 /* CameraModel.swift in Sources */,
 				51BB2DC929E620BE00E52302 /* CameraPreview.swift in Sources */,
+				51363EAC2AF00FCE0060557C /* CameraModel.swift in Sources */,
 				51BB2DCB29E8DF2100E52302 /* ScreenRecord.swift in Sources */,
 				51C5CADD29F4B3CF005B5AB3 /* ViewModelPhone.swift in Sources */,
 				51BB2DBE29E5C85500E52302 /* pickle_point.xcdatamodeld in Sources */,
 				51BB2DC529E5C8B700E52302 /* ControlsView.swift in Sources */,
-				51BB2DCF29E8EA4500E52302 /* ShareSheet.swift in Sources */,
 				51BB2DB229E5C85400E52302 /* pickle_pointApp.swift in Sources */,
+				515D16C72AF14A4A009494D4 /* ShareSheet.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -436,13 +436,12 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_LSApplicationCategoryType = "";
-				INFOPLIST_KEY_NSCameraUsageDescription = "\"Please enable to user camera\"";
-				INFOPLIST_KEY_NSMicrophoneUsageDescription = "";
+				INFOPLIST_KEY_NSCameraUsageDescription = "\"Please enable camera usage for video recording\"";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "\"Please enable mic for audio recording\"";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -470,13 +469,12 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_LSApplicationCategoryType = "";
-				INFOPLIST_KEY_NSCameraUsageDescription = "\"Please enable to user camera\"";
-				INFOPLIST_KEY_NSMicrophoneUsageDescription = "";
+				INFOPLIST_KEY_NSCameraUsageDescription = "\"Please enable camera usage for video recording\"";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "\"Please enable mic for audio recording\"";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (

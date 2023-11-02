@@ -9,34 +9,39 @@ import Foundation
 import SwiftUI
 import AVFoundation
 
-class LegacyViewfinder: UIView
-{
-
+class LegacyViewfinder: UIView {
     // We need to set a type for our layer
     override class var layerClass: AnyClass {
         AVCaptureVideoPreviewLayer.self
     }
+    
 }
 
 struct Viewfinder: UIViewRepresentable {
     
-    var session: AVCaptureSession
+    var session: AVCaptureSession?
+    let legacyView = LegacyViewfinder()
     
     func makeUIView(context: Context) -> UIView {
-        
-        let legacyView = LegacyViewfinder()
-        PREVIEW : if let previewLayer = legacyView.layer as? AVCaptureVideoPreviewLayer {
+        print("makeUIView")
+        if let previewLayer = legacyView.layer as? AVCaptureVideoPreviewLayer {
             previewLayer.session = session
             previewLayer.videoGravity = .resizeAspectFill
             previewLayer.masksToBounds = true
-            previewLayer.connection?.videoOrientation = .landscapeRight
         }
         
-    
         return legacyView
     }
     
     func updateUIView(_ uiView: UIView, context: Context) {
+        print("updateUIView")
+//        guard let previewLayer = legacyView.layer as? AVCaptureVideoPreviewLayer else { return }
+//        let view = UIView(frame: UIScreen.main.bounds)
+////            let statusBarOrientation = UIApplication.shared.windows.first?.windowScene?.interfaceOrientation
+//        let statusBarOrientation = UIApplication.shared.windows.first?.windowScene?.interfaceOrientation
+//            let videoOrientation: AVCaptureVideoOrientation = statusBarOrientation?.videoOrientation ?? .portrait
+//        previewLayer.frame = view.frame
+//        previewLayer.connection?.videoOrientation = .portrait
        
     }
     
@@ -46,45 +51,30 @@ struct Viewfinder: UIViewRepresentable {
 
 struct CameraPreview: View {
     
-    var session: AVCaptureSession
-    var image: CGImage?
-    
+    var session: AVCaptureSession?
     var body: some View {
-        
-        // START Setting configuration properties
-//        session.beginConfiguration()
-//
-//        // Get the capture device
-//        if let frontCameraDevice = AVCaptureDevice.default(
-//            .builtInUltraWideCamera,
-//            for: .video,
-//            position: .back
-//        ) {
-//
-//            // Set the capture device
-//            do {
-//                try! session.addInput(AVCaptureDeviceInput(device: frontCameraDevice))
-//            }
-//
-//        }
-//
-//        // END Setting configuration properties
-//        session.commitConfiguration()
-//
-//        // Start the AVCapture session
-//        DispatchQueue.global(qos: .background).async {
-//            session.startRunning()
-//        }
-//
-//        return Viewfinder(session: session)
-        
-//        if let image = image {
-//                    Image(image, scale: 1.0, orientation: .up, label: Text("frame"))
-//                } else {
-//                    Color.black
-//                }
         return Viewfinder(session: session)
     }
     
 }
 
+
+extension UIInterfaceOrientation {
+    var videoOrientation: AVCaptureVideoOrientation? {
+        switch self {
+        case .portraitUpsideDown:
+            print("portraitUpsideDown")
+            return .portraitUpsideDown
+        case .landscapeRight:
+            print("landscapeRight")
+            return .landscapeRight
+        case .landscapeLeft:
+            print("landscapeLeft")
+            return .landscapeLeft
+        case .portrait:
+            print("portrait")
+            return .portrait
+        default: return nil
+        }
+    }
+}
