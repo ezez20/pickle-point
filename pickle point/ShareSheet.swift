@@ -7,8 +7,28 @@
 
 import SwiftUI
 
-// UIKIT: Share Sheet
+extension View {
+    // SHARE SHEET
+    func shareSheet(show: Binding<Bool>, items: [Any?]) -> some View {
+        return self
+            .sheet(isPresented: show) {
+                //
+            } content: {
+                // wrapping optionals
+                let items = items.compactMap { item -> Any? in
+                    return item
+                }
+                
+                if !items.isEmpty {
+                    ShareSheet(items: items)
+                }
+            }
+    }
+    
+}
 
+
+// UIKIT: Share Sheet
 struct ShareSheet: UIViewControllerRepresentable {
     
     var items: [Any]

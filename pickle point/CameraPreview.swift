@@ -14,7 +14,6 @@ class LegacyViewfinder: UIView {
     override class var layerClass: AnyClass {
         AVCaptureVideoPreviewLayer.self
     }
-    
 }
 
 struct Viewfinder: UIViewRepresentable {

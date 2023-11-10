@@ -34,14 +34,10 @@ class ViewModelPhone: NSObject, WCSessionDelegate, ObservableObject {
     
     func sessionDidBecomeInactive(_ session: WCSession) {
         // You must implement this method to support quick switching between Apple Watch devices in your iOS app. The session calls this method when there is no more pending data to deliver to your app and the previous session can be formally closed.
-        
-        // code
     }
     
     func sessionDidDeactivate(_ session: WCSession) {
         // Tells the delegate that the session will stop communicating with the current Apple Watch.
-        
-        // code
     }
     
     

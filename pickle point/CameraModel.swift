@@ -35,13 +35,13 @@ class CameraModel: NSObject, ObservableObject {
        checkVideoAudioAuthorizationStatus()
     }
     
-    func capture(completion: @escaping (Bool) -> (Void)) {
+    func start_Capture(completion: @escaping (Bool) -> (Void)) {
         _captureState = .start
         print("_captureState: start")
         completion(true)
     }
     
-    func end() {
+    func end_Capture() {
         _captureState = .end
         print("_captureState: end")
     }
@@ -58,7 +58,7 @@ extension CameraModel: AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAu
             AVCaptureDevice.requestAccess(for: .video) { granted in
                 if granted {
                     print("AVCaptureDevice for Video: Request Access granted")
-                    self.setupCaptureSession()
+                    self.setupVideo_CaptureSession()
                 }
             }
         case .restricted:
@@ -69,7 +69,7 @@ extension CameraModel: AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAu
             break
         case .authorized:
             print("authorized")
-            setupCaptureSession()
+            setupVideo_CaptureSession()
         @unknown default:
             print("Fatal Error on checking AVCaptureDevice: Video authorizationStatus")
             fatalError()
@@ -81,7 +81,7 @@ extension CameraModel: AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAu
             AVCaptureDevice.requestAccess(for: .audio) { granted in
                 if granted {
                     print("AVCaptureDevice for Audio: Request Access granted")
-                    self.setupAudioCaptureSession()
+                    self.setupAudio_CaptureSession()
                 }
             }
         case .restricted:
@@ -92,14 +92,14 @@ extension CameraModel: AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAu
             break
         case .authorized:
             print("authorized")
-            setupAudioCaptureSession()
+            setupAudio_CaptureSession()
         @unknown default:
             print("Fatal Error on checking AVCaptureDevice: Audio authorizationStatus")
             fatalError()
         }
     }
     
-    private func setupCaptureSession() {
+    private func setupVideo_CaptureSession() {
         print("Setting up AVCaptureSession")
         session.sessionPreset = .hd1920x1080
         guard let cameraDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back), let cameraInput = try? AVCaptureDeviceInput(device: cameraDevice), session.canAddInput(cameraInput) else { return }
@@ -124,7 +124,7 @@ extension CameraModel: AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAu
         _videoOutput = avVideoDataOutput
     }
     
-    private func setupAudioCaptureSession() {
+    private func setupAudio_CaptureSession() {
         print("Setting up AudioCaptureSession")
         guard let micDevice = AVCaptureDevice.default(.builtInMicrophone, for: .audio, position: .unspecified), let micInput = try? AVCaptureDeviceInput(device: micDevice), session.canAddInput(micInput) else { return }
         
@@ -173,7 +173,6 @@ extension CameraModel: AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAu
                 writer.add(audioInput)
             }
             
-        
             _assetWriter = writer
             _assetWriterVideoInput = videoInput
             _assetWriterAudioInput = audioInput
@@ -181,12 +180,16 @@ extension CameraModel: AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAu
             _time = timestamp
             _captureState = .capturing
             
-            
             writer.startWriting()
             writer.startSession(atSourceTime: CMSampleBufferGetPresentationTimeStamp(sampleBuffer))
+            print("DDD: \(sampleBuffer.formatDescription!.mediaType.description)")
+            guard sampleBuffer.formatDescription!.mediaType.description == "soun" else { break }
+            print("DDD2: \(sampleBuffer.formatDescription!.mediaType.description)")
+          
             
         case .capturing:
             // Set up appending Sample Buffer to Input
+           
             if output == _videoOutput {
                 guard let cmSampleBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { break }
                 if _assetWriterVideoInput?.isReadyForMoreMediaData == true {

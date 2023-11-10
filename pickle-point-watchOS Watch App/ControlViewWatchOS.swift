@@ -182,6 +182,11 @@ struct ControlViewWatchOS: View {
             .onChange(of: viewModelWatch.session.activationState) { sessionActivation in
                 print("onChange sessionActivation: \(sessionActivation.rawValue)")
             }
+            .onChange(of: sideout) { sideOut in
+                if sideOut {
+                    WKInterfaceDevice.current().play(.stop)
+                }
+            }
             
         }
 
@@ -189,11 +194,19 @@ struct ControlViewWatchOS: View {
     
     
     func nextServer() {
+        
+        WKInterfaceDevice.current().play(.retry)
     
         currentServer += 1
 
         if currentServer == 3 {
             sideout = true
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                WKInterfaceDevice.current().play(.retry)
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    nextServer()
+                }
+            }
         } else if sideout == true {
             currentServer = 1
             sideout = false
@@ -208,6 +221,8 @@ struct ControlViewWatchOS: View {
     }
     
     func addPoint() {
+        
+        WKInterfaceDevice.current().play(.directionDown)
         
         guard sideout == false else { return }
         
@@ -312,7 +327,6 @@ extension ControlViewWatchOS {
             
         } else {
             watchConnected = false
-            //            viewModelWatch.session.activate()
         }
     }
     

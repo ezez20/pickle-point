@@ -15,7 +15,7 @@ struct ControlsView: View {
     
     @Environment(\.managedObjectContext) private var viewContext
     var cameraModel: CameraModel
-
+    
     @State private var team1Score = 0
     @State private var team2Score = 0
     @State private var currentServer = 2
@@ -37,304 +37,259 @@ struct ControlsView: View {
     @State private var url: URL?
     @State private var shareVideo = false
     @State private var videoCurrentlySaving = false
-
+    
     
     @State var reachable = false
     @ObservedObject var viewModelPhone = ViewModelPhone()
     
     var body: some View {
         
-        ZStack {
+        GeometryReader { geo in
             
-            HStack(alignment: .top) {
+            ZStack {
                 
-                VStack(alignment: .leading) {
+                Text("\(gameTime(timePassed: timePassed))")
+                    .rotationEffect(.degrees(90))
+                    .font(.largeTitle)
+                    .foregroundColor(.white)
+                    .shadow(color: .yellow, radius: 10)
+                    .position(x: geo.size.width - 20, y: geo.size.height/2)
+                    .onReceive(timer) { _ in
+                        timePassed += 1
+                    }
+                
+                Text(sideout ? "Side Out" : "")
+                    .font(.title)
+                    .foregroundColor(.white)
+                    .shadow(color: .green, radius: 10)
+                    .rotationEffect(.degrees(90))
+                    .position(x: geo.size.width - 50, y: geo.size.height/2)
+                
+                VStack(alignment: .center, spacing: 5) {
                     
-                    Spacer()
-        
-                    // next point: Button
-                    HStack {
-                        Button {
-                            // next point func
-                            saveLastMove()
-                            nextServer()
-                        } label: {
-                            ZStack {
-                                Text("\(sideout ? "S" : "\(currentServer)")")
-                                    .font(.callout)
-                                
-                                Image(systemName: "circle")
-                                    .resizable()
-                                    .frame(width: 50, height: 50)
-                            }
-                            .padding(EdgeInsets(top: 30, leading: 30, bottom: 30, trailing: 30))
+                    Text("\(currentlyTeam1Serving ? team1Score : team2Score)")
+                        .font(.largeTitle)
+                        .foregroundColor(.white)
+                        .shadow(color: currentlyTeam1Serving ? .green : .red, radius: 10)
+                        .rotationEffect(.degrees(90))
+                    
+                    Text("\(currentlyTeam2Serving ? team1Score : team2Score)")
+                        .font(.largeTitle)
+                        .foregroundColor(.white)
+                        .shadow(color: currentlyTeam2Serving ? .green : .red, radius: 10)
+                        .rotationEffect(.degrees(90))
+                    
+                    VStack {
+                        Image(systemName: "soccerball")
+                            .fixedSize()
+                            .frame(width: 10, height: 10)
+                            .foregroundColor(.green)
+                            .rotationEffect(.degrees(90))
+                        
+                        Text("\(sideout ? "" : "\(currentServer)")")
+                            .font(.headline)
                             .foregroundColor(.white)
-                            .shadow(color: .green, radius: 2)
-                        }
-                        
-                        // Record/Stop video: Button
-                        Button {
-                            // User hits record - video
-                            startStopGame()
-                            
-                        } label: {
-                            Image(systemName: "circle")
-                                .resizable()
-                                .frame(width: 50, height: 50)
-                                .foregroundColor(gameStart ? .red : .green)
-                        }
-                        
+                            .rotationEffect(.degrees(90))
                     }
                     
-                }
-                .foregroundColor(.white)
-                
-                Spacer()
-                Spacer()
-                
-                VStack {
-                    
-                    HStack(alignment: .center) {
-                        
-                        // Add point: Button
-                        HStack(spacing: 10) {
-                            
-                            VStack {
-                                Image(systemName: currentlyTeam1Serving ? "soccerball" : "")
-                                    .fixedSize()
-                                .frame(width: 10, height: 10)
-                                .foregroundColor(.green)
-                                
-                                if currentlyTeam1Serving {
-                                    Text("\(sideout ? "" : "\(currentServer)")")
-                                        .font(.callout)
-                                        .foregroundColor(.white)
-                                }
-                                
-                            }
-                            
-                            // Undo point: Button
-                            Text("\(team1Score)")
-                                .font(.largeTitle)
-                                .foregroundColor(.white)
-                                .shadow(color: .green, radius: 2)
-                            
-                        }
-                        .foregroundColor(.white)
-                        
-                        Text("\(convertSecondsToTime(secondsIn: timePassed))")
-                            .font(.largeTitle)
-                            .foregroundColor(.white)
-                            .shadow(color: .white, radius: 2)
-                            .onReceive(timer) { _ in
-                                timePassed += 1
-                            }
-                        
-                        
-                        HStack(spacing: 10) {
-                            
-                            Text("\(team2Score)")
-                                .font(.largeTitle)
-                                .foregroundColor(.white)
-                                .shadow(color: .red, radius: 2)
-                            
-                            VStack {
-                                
-                                Image(systemName: currentlyTeam2Serving ? "soccerball" : "")
-                                    .fixedSize()
-                                    .frame(width: 10, height: 10)
-                                    .foregroundColor(.green)
-                                
-                                if currentlyTeam2Serving {
-                                    Text("\(sideout ? "" : "\(currentServer)")")
-                                        .font(.callout)
-                                        .foregroundColor(.white)
-                                }
-                                
-                            }
-                            
-                        }
-                        .foregroundColor(.white)
-                        
-        
-                    }
-                    .padding(10)
-                    
-                    Text(sideout ? "Side Out" : "")
-                        .font(.title)
-                        .foregroundColor(.white)
-                    
                     Spacer()
-                    
                 }
+                .frame(width: 50, height: 150)
+                .background(.ultraThinMaterial)
+                .cornerRadius(20)
+                .position(x: geo.size.width - 30, y: geo.size.height - 100)
                 .simultaneousGesture(
                     LongPressGesture(minimumDuration: 1.0).onEnded({ _ in
                         resetGame()
                     })
                 )
                 
-                Spacer()
-                Spacer()
-                
-                // BUTTONS: right side
-                VStack(alignment: .trailing) {
-                    
-                    Spacer()
-                    Spacer()
-                    
-                    HStack(alignment: .center) {
-                        
-                        Button {
-                            // Connect to WatchOS
-                            print("Apple Watch button pressed")
-                            connectAppleWatch()
-                        
-                        
-                        } label: {
-                            Image(systemName: "applewatch")
-                                .resizable()
-                                .frame(width: 20, height: 20)
-                                .foregroundColor(reachable ? .green : .red)
-                                .padding(20)
-                        }
-                        
-                        // Undo point: Button
-                        Button {
-                            undoPoint()
-                            
-                        } label: {
-                            Image(systemName: "arrow.uturn.backward")
-                                .resizable()
-                                .frame(width: 30, height: 30)
-                        }
-                        .padding(20)
-                        
-                        // Add point: Button
-                        Button() {
-                            saveLastMove()
-                            addPoint()
-                        } label: {
-                            Image(systemName: "plus")
-                                .resizable()
-                                .frame(width: 30, height: 30)
-                        }
-                        .padding(20)
+                VStack(alignment: .center) {
+                    // Add point: Button
+                    Button() {
+                        saveLastMove()
+                        addPoint()
+                    } label: {
+                        Image(systemName: "plus.circle")
+                            .resizable()
+                            .renderingMode(.template)
+                            .foregroundColor(.green)
+                            .frame(width: 50, height: 50)
                     }
-                    .padding(10)
-                  
+                    .padding(20)
+                    .rotationEffect(.degrees(90))
+                    
+                    // Undo point: Button
+                    Button {
+                        undoPoint()
+                    } label: {
+                        Image(systemName: "arrow.uturn.backward")
+                            .resizable()
+                            .frame(width: 30, height: 30)
+                            .rotationEffect(.degrees(90))
+                            .foregroundColor(.yellow)
+                    }
+                    .padding(20)
+                    
+                    Button {
+                        // Connect to WatchOS
+                        print("Apple Watch button pressed")
+                        connectAppleWatch()
+                    } label: {
+                        Image(systemName: reachable ? "applewatch.watchface" : "applewatch")
+                            .resizable()
+                            .frame(width: 20, height: 25)
+                            .foregroundColor(reachable ? .green : .red)
+                            .padding(20)
+                            .rotationEffect(.degrees(90))
+                    }
                     
                 }
-                .foregroundColor(.white)
+                .frame(width: 80, height: 250)
+                .position(x: 50, y: 140)
                 
-               
-            }
-            
-            if videoCurrentlySaving {
-                HStack {
-                    Text("Video currently saving")
-                    ProgressView().progressViewStyle(CircularProgressViewStyle(tint: Color.white))
-                        .padding(10)
-                        .foregroundColor(.white)
+                VStack(alignment: .center) {
+                    Spacer()
+                    HStack {
+                        // next point: Button
+                        VStack {
+                            // Record/Stop video: Button
+                            Button {
+                                // User hits record - video
+                                startStopGame()
+                            } label: {
+                                Image(systemName: "record.circle")
+                                    .resizable()
+                                    .frame(width: 50, height: 50)
+                                    .foregroundColor(gameStart ? .red : .green)
+                            }
+                            
+                            Button {
+                                // next point func
+                                saveLastMove()
+                                nextServer()
+                            } label: {
+                                ZStack {
+                                    Text("\(sideout ? "S" : "\(currentServer)")")
+                                        .font(.callout)
+                                    
+                                    Image(systemName: "circle")
+                                        .resizable()
+                                        .frame(width: 50, height: 50)
+                                }
+                                .padding(EdgeInsets(top: 30, leading: 30, bottom: 30, trailing: 30))
+                                .foregroundColor(.white)
+                                .shadow(color: .green, radius: 2)
+                                .rotationEffect(.degrees(90))
+                            }
+                        }
+                        .padding(.bottom, 25)
+                        Spacer()
+                    }
+                    .foregroundColor(.white)
                 }
-                .foregroundColor(.white)
+                
+                if videoCurrentlySaving {
+                    VStack {
+                        Text("Video currently saving")
+                        ProgressView().progressViewStyle(CircularProgressViewStyle(tint: Color.white))
+                            .padding(10)
+                            .foregroundColor(.white)
+                            .rotationEffect(.degrees(90))
+                    }
+                    .foregroundColor(.white)
+                }
+            
             }
-
-            
-        }
-        .shareSheet(show: $shareVideo, items: [url])
-        .onAppear {
-            
-            timer.upstream.connect().cancel()
-            
-            if viewModelPhone.session.isReachable {
-                reachable = true
-            } else {
-                reachable = false
-            }
-            
-        }
-        .onReceive(viewModelPhone.$messageBackToPhone) { message in
-            
-            print("Message recieved on iphone ControlsView")
-            
-            // If message recieved from watch has value "recordStart", start recording.
-            if message["recordStart"] != nil {
-                let message = message["recordStart"] as? Bool ?? false
-               
-                if message == true {
-                    startStopGame()
+            .shareSheet(show: $shareVideo, items: [url])
+            .onAppear {
+                timer.upstream.connect().cancel()
+                if viewModelPhone.session.isReachable {
+                    reachable = true
                 } else {
-                    startStopGame()
+                    reachable = false
                 }
+            }
+            .onReceive(viewModelPhone.$messageBackToPhone) { message in
+                print("Message recieved on iphone ControlsView")
+                // If message recieved from watch has value "recordStart", start recording.
+                if message["recordStart"] != nil {
+                    let message = message["recordStart"] as? Bool ?? false
+                    
+                    if message == true {
+                        startStopGame()
+                    } else {
+                        startStopGame()
+                    }
+                    
+                    // Else, just receive score updates messages from watch.
+                } else {
+                    updateMessageBackFromWatch(message: message)
+                }
+            }
+            .onChange(of: viewModelPhone.session.activationState.rawValue) { activationState in
+                print("viewModelPhone activation: \(activationState)")
+//                if activationState == 2 {
+//                    print("activationState == 2 ")
+//                } else {
+//                    print("activationState == 1 ")
+//                }
+            }
+            .onChange(of: cameraModel.videoCurrentlySaving) { videoSaving in
+                if videoSaving {
+                    videoCurrentlySaving = true
+                } else {
+                    videoCurrentlySaving = false
+                }
+            }
+            .onChange(of: cameraModel.videoURL) { videoURL in
+                if videoURL != nil {
+                    url = videoURL
+                    shareVideo.toggle()
+                }
+            }
+            .onChange(of: shareVideo) { sheetShowing in
+                // Make url = nil, if sheet is dismissed
+                if sheetShowing == false {
+                    url = nil
+                }
+            }
             
-            // Else, just receive score updates messages from watch.
-            } else {
-                updateMessageBackFromWatch(message: message)
-            }
-
-            
-        }
-        .onChange(of: viewModelPhone.session.activationState.rawValue) { activationState in
-            if activationState == 2 {
-                print("activationState == 2 ")
-            } else {
-                print("activationState == 1 ")
-            }
-        }
-        .onChange(of: cameraModel.videoCurrentlySaving) { videoSaving in
-            if videoSaving {
-                videoCurrentlySaving = true
-            } else {
-                videoCurrentlySaving = false
-            }
-        }
-        .onChange(of: cameraModel.videoURL) { videoURL in
-            if videoURL != nil {
-                url = videoURL
-                shareVideo.toggle()
-            }
-        }
-        .onChange(of: shareVideo) { sheetShowing in
-            // Make url = nil, if sheet is dismissed
-            if sheetShowing == false {
-                url = nil
-            }
         }
         
     }
-    
     
 }
 
 extension ControlsView {
     
     func startStopGame() {
-        
         gameStart.toggle()
-        
         if gameStart {
-            cameraModel.capture() { startedRecording in
+            
+            cameraModel.start_Capture() { startedRecording in
                 if startedRecording {
                     self.timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
                 }
             }
+            
         } else {
             //Stop timer
             timer.upstream.connect().cancel()
             timePassed = 0
             resetGame()
-            cameraModel.end()
-//            videoCurrentlySaving = true
+            cameraModel.end_Capture()
+            //            videoCurrentlySaving = true
         }
-        
     }
     
     func nextServer() {
-    
         currentServer += 1
-
         if currentServer == 3 {
             sideout = true
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                nextServer()
+            }
         } else if sideout == true {
             currentServer = 1
             sideout = false
@@ -344,36 +299,28 @@ extension ControlsView {
             currentlyTeam1Serving.toggle()
             currentlyTeam2Serving.toggle()
         }
-        
     }
     
     func addPoint() {
-        
         guard sideout == false else { return }
-    
         if currentlyTeam1Serving {
             team1Score += 1
         } else {
             team2Score += 1
         }
-        
     }
     
     func saveLastMove() {
-        
         undoTeam1Score = team1Score
         undoTeam2Score = team2Score
         undoCurrentServer = currentServer
         undoCurrentlyTeam1Serving = currentlyTeam1Serving
         undoCurrentlyTeam2Serving = currentlyTeam2Serving
         undoSideout = sideout
-        
     }
     
     func undoPoint() {
-        
         if sideout == false {
-            
             if currentlyTeam1Serving && currentServer == undoCurrentServer {
                 if team1Score >= undoTeam1Score {
                     team1Score -= 1
@@ -384,7 +331,6 @@ extension ControlsView {
                 }
             }
             
-            
             if currentlyTeam2Serving && currentServer == undoCurrentServer {
                 if team2Score >= undoTeam2Score {
                     team2Score -= 1
@@ -394,7 +340,6 @@ extension ControlsView {
                     team2Score = 0
                 }
             }
-            
         }
         
         if currentServer != undoCurrentServer {
@@ -413,7 +358,6 @@ extension ControlsView {
             sideout = undoSideout
         }
         
-        
         if sideout == true {
             if currentlyTeam1Serving {
                 currentlyTeam2Serving = true
@@ -424,7 +368,6 @@ extension ControlsView {
                 currentlyTeam2Serving = false
             }
         }
-        
     }
     
     func resetGame() {
@@ -436,13 +379,9 @@ extension ControlsView {
         sideout = false
     }
     
-    
-    
-    func convertSecondsToTime(secondsIn: Int) -> String {
-        
-        let minutes = secondsIn / 60
-        let seconds = secondsIn % 60
-        
+    func gameTime(timePassed: Int) -> String {
+        let minutes = timePassed / 60
+        let seconds = timePassed % 60
         return String(format: "%02i:%02i", minutes, seconds)
     }
     
@@ -451,40 +390,48 @@ extension ControlsView {
     }
     
     func connectAppleWatch() {
+        print("Connecting to Apple Watch...")
         viewModelPhone.session.activate()
-        checkWatchConnection()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            checkWatchConnection()
+        }
     }
     
     func checkWatchConnection() {
-            
-        if viewModelPhone.session.activationState.rawValue == 2 {
+        if viewModelPhone.session.activationState.rawValue == 2 && viewModelPhone.session.isReachable {
             reachable = true
             print("Apple watch is connected")
-        
-            
         } else {
             reachable = false
             print("Apple watch is NOT connected")
         }
-            
     }
     
     func updateMessageBackFromWatch(message: [String : Any]) {
-        team1Score = message["team1Score"] as? Int ?? 0
-        team2Score = message["team2Score"] as? Int ?? 0
-        currentServer = message["currentServer"] as? Int ?? 0
-        currentlyTeam1Serving = message["currentlyTeam1Serving"] as? Bool ?? false
-        currentlyTeam2Serving = message["currentlyTeam2Serving"] as? Bool ?? false
-        sideout = message["sideout"] as? Bool ?? false
-        gameStart = message["gameStart"] as? Bool ?? false
+        if viewModelPhone.session.isReachable {
+            print("updateMessageBackFromWatch")
+            // If "side out", this will trigger the "side out" switch.
+            let currentServerBack = message["currentServer"] as? Int ?? 2
+            guard currentServerBack != 3 else {
+                nextServer()
+                return
+            }
+            
+            team1Score = message["team1Score"] as? Int ?? 0
+            team2Score = message["team2Score"] as? Int ?? 0
+
+            currentlyTeam1Serving = message["currentlyTeam1Serving"] as? Bool ?? false
+            currentlyTeam2Serving = message["currentlyTeam2Serving"] as? Bool ?? false
+            gameStart = message["gameStart"] as? Bool ?? false
+        }
     }
     
 }
 
-//struct CameraView_Previews: PreviewProvider {
-//    
-//    static var previews: some View {
-//        ControlsView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
-//    }
-//    
-//}
+struct CameraView_Previews: PreviewProvider {
+    
+    static var previews: some View {
+        ControlsView(cameraModel: CameraModel()).environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+    }
+    
+}
