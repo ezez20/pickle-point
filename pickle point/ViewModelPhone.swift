@@ -19,14 +19,10 @@ class ViewModelPhone: NSObject, WCSessionDelegate, ObservableObject {
         super.init()
         self.session.delegate = self
         
-//        if WCSession.isSupported() {
-//            session.activate()
-//            print("ViewModelPhone: WCSession activated")
-//        }
+
     }
     
     func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
-        // code
         print("iOS with Watch activationState: \(session.activationState)")
         print("iOS with Watch: \(session.isReachable)")
         print("iOS with Watch: isWatchAppInstalled: \(session.isWatchAppInstalled)")
@@ -34,12 +30,13 @@ class ViewModelPhone: NSObject, WCSessionDelegate, ObservableObject {
     
     func sessionDidBecomeInactive(_ session: WCSession) {
         // You must implement this method to support quick switching between Apple Watch devices in your iOS app. The session calls this method when there is no more pending data to deliver to your app and the previous session can be formally closed.
+        print("Apple Watch: sessionDidBecomeInactive")
     }
     
     func sessionDidDeactivate(_ session: WCSession) {
         // Tells the delegate that the session will stop communicating with the current Apple Watch.
+        print("Apple Watch: sessionDidDeactivate")
     }
-    
     
     
     
@@ -52,7 +49,6 @@ class ViewModelPhone: NSObject, WCSessionDelegate, ObservableObject {
     func session(_ session: WCSession, didReceiveMessage message: [String : Any]) {
      
         DispatchQueue.main.async {
-//            self.messageText = message["message"] as? String ?? "Unknown"
             
             if message["message"] != nil {
                 let messsageBack = message["message"] as? [String : Any] ?? [ : ]
@@ -61,9 +57,9 @@ class ViewModelPhone: NSObject, WCSessionDelegate, ObservableObject {
             }
             
             if message["startRecording"] != nil {
-                let messsageBack = message["startRecording"] as? [String : Any] ?? [ : ]
+                let messsageBack = message["startRecording"] as? [String : Bool] ?? [ : ]
                 self.messageBackToPhone = messsageBack
-                print("messageText: \(messsageBack)")
+                print("messageText recording: \(messsageBack)")
             }
             
         }

@@ -10,8 +10,6 @@ import SwiftUI
 struct ControlViewWatchOS: View {
     
     @ObservedObject var viewModelWatch = ViewModelWatch()
-
-    
     @State private var team1Score = 0
     @State private var team2Score = 0
     @State private var currentServer = 2
@@ -30,7 +28,6 @@ struct ControlViewWatchOS: View {
     @State private var startGameQueue = false
     @State private var gameStart = false
 
-    
     var body: some View {
         
         GeometryReader { rect in
@@ -95,7 +92,7 @@ struct ControlViewWatchOS: View {
                                 .font(.system(size: 20))
                                 .fixedSize()
                             
-                            Text("\(sideout ? "S" : String(currentServer))")
+                            Text("\(currentServer == 3 ? "S" : String(currentServer))")
                                 .font(.system(size: 20))
                                 .fixedSize()
                             
@@ -172,6 +169,7 @@ struct ControlViewWatchOS: View {
                 print("onChange")
                 if watchConnection {
                     print("watchIsReachable: true")
+                    print("Watch session isReachable DDD: \(viewModelWatch.session.isReachable)")
                     watchSessionOn = true
                 } else {
                     print("watchIsReachable: false")
@@ -187,6 +185,10 @@ struct ControlViewWatchOS: View {
                     WKInterfaceDevice.current().play(.stop)
                 }
             }
+            .onReceive(viewModelWatch.$messageFromPhone) { message in
+                // Handle message back from PHONE.
+                updateMessageBackFromPhone(message: message)
+            }
             
         }
 
@@ -194,7 +196,6 @@ struct ControlViewWatchOS: View {
     
     
     func nextServer() {
-        
         WKInterfaceDevice.current().play(.retry)
     
         currentServer += 1
@@ -202,9 +203,11 @@ struct ControlViewWatchOS: View {
         if currentServer == 3 {
             sideout = true
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                WKInterfaceDevice.current().play(.retry)
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                    nextServer()
+                if sideout == true {
+                    WKInterfaceDevice.current().play(.retry)
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                        nextServer()
+                    }
                 }
             }
         } else if sideout == true {
@@ -216,14 +219,10 @@ struct ControlViewWatchOS: View {
             currentlyTeam1Serving.toggle()
             currentlyTeam2Serving.toggle()
         }
-        
-        
     }
     
     func addPoint() {
-        
         WKInterfaceDevice.current().play(.directionDown)
-        
         guard sideout == false else { return }
         
         if currentlyTeam1Serving {
@@ -231,19 +230,15 @@ struct ControlViewWatchOS: View {
         } else {
             team2Score += 1
         }
-        
     }
     
     func saveLastMove() {
-        
         undoTeam1Score = team1Score
         undoTeam2Score = team2Score
         undoCurrentServer = currentServer
         undoCurrentlyTeam1Serving = currentlyTeam1Serving
         undoCurrentlyTeam2Serving = currentlyTeam2Serving
         undoSideout = sideout
-        print("undoTeam1Score: \(undoTeam1Score)")
-        
     }
     
     func undoPoint() {
@@ -310,6 +305,19 @@ struct ControlViewWatchOS: View {
         currentlyTeam1Serving = true
         currentlyTeam2Serving = false
         sideout = false
+    }
+    
+    func updateMessageBackFromPhone(message: [String : Any]) {
+        if viewModelWatch.session.isReachable {
+            print("updateMessageBackFromPhone")
+            currentServer = message["currentServer"] as? Int ?? 3
+            team1Score = message["team1Score"] as? Int ?? 0
+            team2Score = message["team2Score"] as? Int ?? 0
+
+            currentlyTeam1Serving = message["currentlyTeam1Serving"] as? Bool ?? false
+            currentlyTeam2Serving = message["currentlyTeam2Serving"] as? Bool ?? false
+            gameStart = message["gameStart"] as? Bool ?? false
+        }
     }
 
                         

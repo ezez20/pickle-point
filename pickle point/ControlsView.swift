@@ -37,9 +37,12 @@ struct ControlsView: View {
     @State private var url: URL?
     @State private var shareVideo = false
     @State private var videoCurrentlySaving = false
+    @State private var watchRecentlyConnected = false
     
+    @State private var serverLabel = "Server ONE"
+    @State private var showServerLabel = false
     
-    @State var reachable = false
+    @State var watchIsReachable = false
     @ObservedObject var viewModelPhone = ViewModelPhone()
     
     var body: some View {
@@ -65,6 +68,13 @@ struct ControlsView: View {
                     .rotationEffect(.degrees(90))
                     .position(x: geo.size.width - 50, y: geo.size.height/2)
                 
+                Text(showServerLabel ? serverLabel : "")
+                    .font(.title)
+                    .foregroundColor(.white)
+                    .shadow(color: currentlyTeam1Serving ? .green : .red, radius: 10)
+                    .rotationEffect(.degrees(90))
+                    .position(x: geo.size.width - 50, y: geo.size.height/2)
+                
                 VStack(alignment: .center, spacing: 5) {
                     
                     Text("\(currentlyTeam1Serving ? team1Score : team2Score)")
@@ -86,108 +96,105 @@ struct ControlsView: View {
                             .foregroundColor(.green)
                             .rotationEffect(.degrees(90))
                         
-                        Text("\(sideout ? "" : "\(currentServer)")")
+                        Text("\(sideout ? "S" : "\(currentServer)")")
                             .font(.headline)
                             .foregroundColor(.white)
                             .rotationEffect(.degrees(90))
                     }
+                    .padding(10)
                     
-                    Spacer()
                 }
-                .frame(width: 50, height: 150)
+                .frame(width: 50, height: 180)
                 .background(.ultraThinMaterial)
                 .cornerRadius(20)
-                .position(x: geo.size.width - 30, y: geo.size.height - 100)
+                .position(x: geo.size.width - 30, y: 100)
                 .simultaneousGesture(
                     LongPressGesture(minimumDuration: 1.0).onEnded({ _ in
                         resetGame()
                     })
                 )
                 
-                VStack(alignment: .center) {
-                    // Add point: Button
-                    Button() {
-                        saveLastMove()
-                        addPoint()
-                    } label: {
-                        Image(systemName: "plus.circle")
-                            .resizable()
-                            .renderingMode(.template)
-                            .foregroundColor(.green)
-                            .frame(width: 50, height: 50)
-                    }
-                    .padding(20)
-                    .rotationEffect(.degrees(90))
-                    
-                    // Undo point: Button
-                    Button {
-                        undoPoint()
-                    } label: {
-                        Image(systemName: "arrow.uturn.backward")
-                            .resizable()
-                            .frame(width: 30, height: 30)
-                            .rotationEffect(.degrees(90))
-                            .foregroundColor(.yellow)
-                    }
-                    .padding(20)
-                    
-                    Button {
-                        // Connect to WatchOS
-                        print("Apple Watch button pressed")
-                        connectAppleWatch()
-                    } label: {
-                        Image(systemName: reachable ? "applewatch.watchface" : "applewatch")
-                            .resizable()
-                            .frame(width: 20, height: 25)
-                            .foregroundColor(reachable ? .green : .red)
-                            .padding(20)
-                            .rotationEffect(.degrees(90))
-                    }
-                    
+                Button {
+                    // Connect to WatchOS
+                    print("Apple Watch button pressed")
+                    connectAppleWatch()
+                } label: {
+                    Image(systemName: watchIsReachable ? "applewatch.watchface" : "applewatch")
+                        .resizable()
+                        .frame(width: 20, height: 25)
+                        .foregroundColor(watchIsReachable ? .green : .red)
+                        .padding(20)
+                        .rotationEffect(.degrees(90))
                 }
                 .frame(width: 80, height: 250)
-                .position(x: 50, y: 140)
+                .position(x: geo.size.width - 30, y: 220)
                 
-                VStack(alignment: .center) {
-                    Spacer()
+          
+                VStack(spacing: 10) {
+                    // Record-Stop video: Button
+                    Button {
+                        // User hits record - video
+                        startStopGame()
+                    } label: {
+                        Image(systemName: "record.circle")
+                            .resizable()
+                            .frame(width: 50, height: 50)
+                            .foregroundColor(gameStart ? .red : .green)
+                    }
+                    
                     HStack {
-                        // next point: Button
-                        VStack {
-                            // Record/Stop video: Button
-                            Button {
-                                // User hits record - video
-                                startStopGame()
-                            } label: {
-                                Image(systemName: "record.circle")
+                        // Undo Point: Button
+                        Button {
+                            undoPoint()
+                        } label: {
+                            Image(systemName: "arrow.uturn.backward.circle")
+                                .resizable()
+                                .frame(width: 50, height: 50)
+                                .rotationEffect(.degrees(90))
+                                .foregroundColor(.yellow)
+                                .padding(15)
+                        }
+                      
+                        // Add point: Button
+                        Button() {
+                            saveLastMove()
+                            addPoint()
+                        } label: {
+                            Image(systemName: "plus.circle")
+                                .resizable()
+                                .renderingMode(.template)
+                                .foregroundColor(Color("neonGreen"))
+                                .frame(width: 80, height: 80)
+                                .padding(10)
+                        }
+                        .rotationEffect(.degrees(90))
+                    
+                        // Next Server: Button
+                        Button {
+                            saveLastMove()
+                            nextServer()
+                        } label: {
+                            ZStack {
+                                Text("\(sideout ? "S" : "\(currentServer)")")
+                                    .font(.body)
+                                    .bold()
+                                
+                                Image(systemName: "circle")
                                     .resizable()
                                     .frame(width: 50, height: 50)
-                                    .foregroundColor(gameStart ? .red : .green)
+                                    .padding(15)
                             }
+                            .foregroundColor(.white)
+                            .shadow(color: currentlyTeam1Serving ? .green : .red, radius: 10)
+                            .rotationEffect(.degrees(90))
                             
-                            Button {
-                                // next point func
-                                saveLastMove()
-                                nextServer()
-                            } label: {
-                                ZStack {
-                                    Text("\(sideout ? "S" : "\(currentServer)")")
-                                        .font(.callout)
-                                    
-                                    Image(systemName: "circle")
-                                        .resizable()
-                                        .frame(width: 50, height: 50)
-                                }
-                                .padding(EdgeInsets(top: 30, leading: 30, bottom: 30, trailing: 30))
-                                .foregroundColor(.white)
-                                .shadow(color: .green, radius: 2)
-                                .rotationEffect(.degrees(90))
-                            }
                         }
-                        .padding(.bottom, 25)
-                        Spacer()
                     }
-                    .foregroundColor(.white)
                 }
+                .frame(width: 150, height: 120)
+                .foregroundColor(.white)
+                .position(x: geo.size.width/2, y: geo.size.height - 120)
+                
                 
                 if videoCurrentlySaving {
                     VStack {
@@ -205,9 +212,9 @@ struct ControlsView: View {
             .onAppear {
                 timer.upstream.connect().cancel()
                 if viewModelPhone.session.isReachable {
-                    reachable = true
+                    watchIsReachable = true
                 } else {
-                    reachable = false
+                    watchIsReachable = false
                 }
             }
             .onReceive(viewModelPhone.$messageBackToPhone) { message in
@@ -215,25 +222,26 @@ struct ControlsView: View {
                 // If message recieved from watch has value "recordStart", start recording.
                 if message["recordStart"] != nil {
                     let message = message["recordStart"] as? Bool ?? false
-                    
+
+                    print("DDDD")
+                    guard watchRecentlyConnected == false else { return }
+                
                     if message == true {
                         startStopGame()
                     } else {
                         startStopGame()
                     }
                     
-                    // Else, just receive score updates messages from watch.
+                // Else, just receive score updates messages from watch.
                 } else {
                     updateMessageBackFromWatch(message: message)
                 }
             }
             .onChange(of: viewModelPhone.session.activationState.rawValue) { activationState in
                 print("viewModelPhone activation: \(activationState)")
-//                if activationState == 2 {
-//                    print("activationState == 2 ")
-//                } else {
-//                    print("activationState == 1 ")
-//                }
+                if activationState == 2 {
+                    sendMessageToPhone()
+                }
             }
             .onChange(of: cameraModel.videoCurrentlySaving) { videoSaving in
                 if videoSaving {
@@ -254,7 +262,12 @@ struct ControlsView: View {
                     url = nil
                 }
             }
-            
+            .onChange(of: [currentlyTeam1Serving, currentlyTeam2Serving, sideout, gameStart]) { _ in
+                sendMessageToPhone()
+            }
+            .onChange(of: [team1Score, team2Score, currentServer]) { _ in
+                sendMessageToPhone()
+            }
         }
         
     }
@@ -276,25 +289,48 @@ extension ControlsView {
         } else {
             //Stop timer
             timer.upstream.connect().cancel()
-            timePassed = 0
+         
             resetGame()
             cameraModel.end_Capture()
-            //            videoCurrentlySaving = true
         }
     }
     
     func nextServer() {
+        // Increment server number.
         currentServer += 1
+        
+        // If "currentServer ONE or TWO", show "serverLabel".
+        if currentServer != 3 {
+            if currentServer == 2 {
+                serverLabel = "Server TWO"
+            } else {
+                serverLabel = "Server ONE"
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now()) {
+                showServerLabel = true
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                showServerLabel = false
+            }
+        }
+        
+        // If "SideOut", present scoreboard changes.
         if currentServer == 3 {
+            showServerLabel = false
             sideout = true
+            // To skip to next server.
             DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                nextServer()
+                // To prevent auto nextServer if user initiated next server themselves.
+                if sideout == true {
+                    nextServer()
+                }
             }
         } else if sideout == true {
             currentServer = 1
             sideout = false
         }
         
+        // During "sideout", switch current team serving.
         if sideout == true {
             currentlyTeam1Serving.toggle()
             currentlyTeam2Serving.toggle()
@@ -371,6 +407,7 @@ extension ControlsView {
     }
     
     func resetGame() {
+        timePassed = 0
         team1Score = 0
         team2Score = 0
         currentServer = 2
@@ -392,6 +429,7 @@ extension ControlsView {
     func connectAppleWatch() {
         print("Connecting to Apple Watch...")
         viewModelPhone.session.activate()
+        watchRecentlyConnected = true
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             checkWatchConnection()
         }
@@ -399,10 +437,14 @@ extension ControlsView {
     
     func checkWatchConnection() {
         if viewModelPhone.session.activationState.rawValue == 2 && viewModelPhone.session.isReachable {
-            reachable = true
+            watchIsReachable = true
+            sendMessageToPhone()
             print("Apple watch is connected")
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                watchRecentlyConnected = false
+            }
         } else {
-            reachable = false
+            watchIsReachable = false
             print("Apple watch is NOT connected")
         }
     }
@@ -416,14 +458,28 @@ extension ControlsView {
                 nextServer()
                 return
             }
+            currentServer = currentServerBack
             
             team1Score = message["team1Score"] as? Int ?? 0
             team2Score = message["team2Score"] as? Int ?? 0
 
-            currentlyTeam1Serving = message["currentlyTeam1Serving"] as? Bool ?? false
+            currentlyTeam1Serving = message["currentlyTeam1Serving"] as? Bool ?? true
             currentlyTeam2Serving = message["currentlyTeam2Serving"] as? Bool ?? false
             gameStart = message["gameStart"] as? Bool ?? false
         }
+    }
+    
+    func sendMessageToPhone() {
+        let messageBack: [String: Any] = [
+            "team1Score" : team1Score,
+            "team2Score": team2Score,
+            "currentServer" : currentServer,
+            "currentlyTeam1Serving" : currentlyTeam1Serving,
+            "currentlyTeam2Serving" : currentlyTeam2Serving,
+            "sideout" : sideout,
+            "gameStart" : gameStart
+        ]
+        viewModelPhone.session.sendMessage(["message" : messageBack], replyHandler: nil)
     }
     
 }

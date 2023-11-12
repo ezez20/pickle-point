@@ -12,7 +12,7 @@ import UIKit
 class ViewModelWatch : NSObject, WCSessionDelegate, ObservableObject {
     
     var session: WCSession
-    @Published var messageText = ""
+    @Published var messageFromPhone = [String : Any]()
     @Published var watchIsConnected = false
     @Published var sessionActivation = WCSession.default.activationState.rawValue
     
@@ -28,7 +28,6 @@ class ViewModelWatch : NSObject, WCSessionDelegate, ObservableObject {
     
     func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
         print("WatchOS activationState: \(session.activationState)")
-        print("WatchOS isReachable: \(session.isReachable)")
         print("WatchOS isCompanionAppInstalled: \(session.isCompanionAppInstalled)")
         
         if session.isReachable {
@@ -52,7 +51,11 @@ class ViewModelWatch : NSObject, WCSessionDelegate, ObservableObject {
     func session(_ session: WCSession, didReceiveMessage message: [String : Any]) {
         print("Watch OS didReceiveMessage")
         DispatchQueue.main.async {
-            self.messageText = message["message"] as? String ?? "Unknown"
+            if message["message"] != nil {
+                let messsageBack = message["message"] as? [String : Any] ?? [ : ]
+                self.messageFromPhone = messsageBack
+                print("messageText: \(messsageBack)")
+            }
         }
     }
     
