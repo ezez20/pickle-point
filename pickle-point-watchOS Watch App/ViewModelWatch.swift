@@ -29,14 +29,14 @@ class ViewModelWatch : NSObject, WCSessionDelegate, ObservableObject {
     func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
         print("WatchOS activationState: \(session.activationState)")
         print("WatchOS isCompanionAppInstalled: \(session.isCompanionAppInstalled)")
-        
         if session.isReachable {
             watchIsConnected = true
         } else {
             watchIsConnected = false
         }
-        
     }
+    
+    
     
     func sessionReachabilityDidChange(_ session: WCSession) {
         if session.isReachable {
@@ -56,6 +56,9 @@ class ViewModelWatch : NSObject, WCSessionDelegate, ObservableObject {
                 self.messageFromPhone = messsageBack
                 print("messageText: \(messsageBack)")
             }
+        }
+        if message["getScore"] != nil {
+            print("Message from phone: retrieveScore")
         }
     }
     

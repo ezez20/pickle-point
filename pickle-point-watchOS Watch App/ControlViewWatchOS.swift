@@ -10,6 +10,7 @@ import SwiftUI
 struct ControlViewWatchOS: View {
     
     @ObservedObject var viewModelWatch = ViewModelWatch()
+    @ObservedObject var watchDelegate = WatchDelegate()
     @State private var team1Score = 0
     @State private var team2Score = 0
     @State private var currentServer = 2
@@ -165,9 +166,9 @@ struct ControlViewWatchOS: View {
                     watchSessionOn = false
                 }
             }
-            .onChange(of: viewModelWatch.watchIsConnected) { watchConnection in
+            .onChange(of: viewModelWatch.session.isReachable) { watchIsReachable in
                 print("onChange")
-                if watchConnection {
+                if watchIsReachable && viewModelWatch.session.activationState.rawValue == 2 {
                     print("watchIsReachable: true")
                     print("Watch session isReachable DDD: \(viewModelWatch.session.isReachable)")
                     watchSessionOn = true
@@ -188,6 +189,15 @@ struct ControlViewWatchOS: View {
             .onReceive(viewModelWatch.$messageFromPhone) { message in
                 // Handle message back from PHONE.
                 updateMessageBackFromPhone(message: message)
+            }
+            .onReceive(NotificationCenter.default.publisher(for: .watchAppActivated)) { _ in
+                print("watchAppActivated")
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                    getScoreFromPhone()
+                }
+            }
+            .onReceive(NotificationCenter.default.publisher(for: .watchAppDeactivated)) { _ in
+                print("watchAppDeactivated")
             }
             
         }
@@ -332,7 +342,6 @@ extension ControlViewWatchOS {
         
         if viewModelWatch.session.isCompanionAppInstalled && viewModelWatch.session.isReachable {
             watchSessionOn = true
-            
         } else {
             watchConnected = false
         }
@@ -359,7 +368,6 @@ extension ControlViewWatchOS {
     }
     
     func updateScoreToPhone() {
-        
         if watchIsReachable() {
             
             let messageBack: [String: Any] = [
@@ -375,7 +383,11 @@ extension ControlViewWatchOS {
             print("viewModelWatch sent message")
             viewModelWatch.session.sendMessage(["message" : messageBack], replyHandler: nil)
         }
-        
+    }
+    
+    func getScoreFromPhone() {
+        print("viewModelWatch: getScoreFromPhone")
+        viewModelWatch.session.sendMessage(["getScore" : "retrieveScore"], replyHandler: nil)
     }
     
 }

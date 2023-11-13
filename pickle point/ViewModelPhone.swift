@@ -18,8 +18,6 @@ class ViewModelPhone: NSObject, WCSessionDelegate, ObservableObject {
         self.session = session
         super.init()
         self.session.delegate = self
-        
-
     }
     
     func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
@@ -62,9 +60,19 @@ class ViewModelPhone: NSObject, WCSessionDelegate, ObservableObject {
                 print("messageText recording: \(messsageBack)")
             }
             
+            if message["getScore"] != nil {
+                print("getScore message received")
+                NotificationCenter.default.post(name: .reloadScoreForWatch, object: nil)
+            }
         }
         
     }
     
     
+}
+
+extension Notification.Name {
+    static let watchAppActivated = Notification.Name("watchApp.activated")
+    static let watchAppDeactivated = Notification.Name("watchApp.deactivated")
+    static let reloadScoreForWatch = Notification.Name("reloadScoreForWatch")
 }

@@ -211,7 +211,7 @@ struct ControlsView: View {
             .shareSheet(show: $shareVideo, items: [url])
             .onAppear {
                 timer.upstream.connect().cancel()
-                if viewModelPhone.session.isReachable {
+                if viewModelPhone.session.isReachable && viewModelPhone.session.activationState.rawValue == 2 {
                     watchIsReachable = true
                 } else {
                     watchIsReachable = false
@@ -240,7 +240,9 @@ struct ControlsView: View {
             .onChange(of: viewModelPhone.session.activationState.rawValue) { activationState in
                 print("viewModelPhone activation: \(activationState)")
                 if activationState == 2 {
-                    sendMessageToPhone()
+                    watchIsReachable = true
+                } else {
+                    watchIsReachable = false
                 }
             }
             .onChange(of: cameraModel.videoCurrentlySaving) { videoSaving in
@@ -263,10 +265,16 @@ struct ControlsView: View {
                 }
             }
             .onChange(of: [currentlyTeam1Serving, currentlyTeam2Serving, sideout, gameStart]) { _ in
-                sendMessageToPhone()
+                // Update current scores to Watch,
+                sendMessageToWatch()
             }
             .onChange(of: [team1Score, team2Score, currentServer]) { _ in
-                sendMessageToPhone()
+                // Update current scores to Watch,
+                sendMessageToWatch()
+            }
+            .onReceive(NotificationCenter.default.publisher(for: .reloadScoreForWatch)) { _ in
+                print("reloadScoreForWatch")
+                sendMessageToWatch()
             }
         }
         
@@ -438,7 +446,7 @@ extension ControlsView {
     func checkWatchConnection() {
         if viewModelPhone.session.activationState.rawValue == 2 && viewModelPhone.session.isReachable {
             watchIsReachable = true
-            sendMessageToPhone()
+            sendMessageToWatch()
             print("Apple watch is connected")
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                 watchRecentlyConnected = false
@@ -469,7 +477,7 @@ extension ControlsView {
         }
     }
     
-    func sendMessageToPhone() {
+    func sendMessageToWatch() {
         let messageBack: [String: Any] = [
             "team1Score" : team1Score,
             "team2Score": team2Score,

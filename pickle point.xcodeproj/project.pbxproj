@@ -9,8 +9,10 @@
 /* Begin PBXBuildFile section */
 		512546FE29FAD27F003594C8 /* pickle-point-watchOS Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 51D07FCB29F396860089B505 /* pickle-point-watchOS Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		51363EAC2AF00FCE0060557C /* CameraModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51363EAB2AF00FCE0060557C /* CameraModel.swift */; };
+		5144F0332B0055E80059DC4C /* RecordingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5144F0322B0055E80059DC4C /* RecordingView.swift */; };
 		514738BE2AFE817E00F3862E /* ScoreBoardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 514738BD2AFE817D00F3862E /* ScoreBoardView.swift */; };
 		515D16C72AF14A4A009494D4 /* ShareSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 515D16C62AF14A4A009494D4 /* ShareSheet.swift */; };
+		5172777F2B019C8900C47A32 /* WatchDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5172777E2B019C8900C47A32 /* WatchDelegate.swift */; };
 		51A3C71A2A05A5BE00E01355 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51A3C7192A05A5BE00E01355 /* Constants.swift */; };
 		51A3C71B2A05A71A00E01355 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51A3C7192A05A5BE00E01355 /* Constants.swift */; };
 		51BB2DB229E5C85400E52302 /* pickle_pointApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51BB2DB129E5C85400E52302 /* pickle_pointApp.swift */; };
@@ -56,8 +58,10 @@
 
 /* Begin PBXFileReference section */
 		51363EAB2AF00FCE0060557C /* CameraModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraModel.swift; sourceTree = "<group>"; };
+		5144F0322B0055E80059DC4C /* RecordingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordingView.swift; sourceTree = "<group>"; };
 		514738BD2AFE817D00F3862E /* ScoreBoardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreBoardView.swift; sourceTree = "<group>"; };
 		515D16C62AF14A4A009494D4 /* ShareSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShareSheet.swift; sourceTree = "<group>"; };
+		5172777E2B019C8900C47A32 /* WatchDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchDelegate.swift; sourceTree = "<group>"; };
 		51A3C7192A05A5BE00E01355 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		51BB2DAE29E5C85400E52302 /* pickle point.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "pickle point.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		51BB2DB129E5C85400E52302 /* pickle_pointApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = pickle_pointApp.swift; sourceTree = "<group>"; };
@@ -129,6 +133,7 @@
 				51BB2DB329E5C85400E52302 /* ContentView.swift */,
 				51BB2DC429E5C8B700E52302 /* ControlsView.swift */,
 				514738BD2AFE817D00F3862E /* ScoreBoardView.swift */,
+				5144F0322B0055E80059DC4C /* RecordingView.swift */,
 				51BB2DC829E620BE00E52302 /* CameraPreview.swift */,
 				51363EAB2AF00FCE0060557C /* CameraModel.swift */,
 				515D16C62AF14A4A009494D4 /* ShareSheet.swift */,
@@ -157,6 +162,7 @@
 				51D07FCF29F396860089B505 /* ContentView.swift */,
 				51D07FD929F396F60089B505 /* ControlViewWatchOS.swift */,
 				51C5CAE029F4B966005B5AB3 /* ViewModelWatch.swift */,
+				5172777E2B019C8900C47A32 /* WatchDelegate.swift */,
 				51D07FD129F396870089B505 /* Assets.xcassets */,
 				51D07FD329F396870089B505 /* Preview Content */,
 			);
@@ -275,6 +281,7 @@
 			files = (
 				51BB2DBB29E5C85500E52302 /* Persistence.swift in Sources */,
 				51A3C71A2A05A5BE00E01355 /* Constants.swift in Sources */,
+				5144F0332B0055E80059DC4C /* RecordingView.swift in Sources */,
 				514738BE2AFE817E00F3862E /* ScoreBoardView.swift in Sources */,
 				51BB2DB429E5C85400E52302 /* ContentView.swift in Sources */,
 				51BB2DC929E620BE00E52302 /* CameraPreview.swift in Sources */,
@@ -295,6 +302,7 @@
 				51D07FDA29F396F60089B505 /* ControlViewWatchOS.swift in Sources */,
 				51D07FD029F396860089B505 /* ContentView.swift in Sources */,
 				51C5CAE129F4B966005B5AB3 /* ViewModelWatch.swift in Sources */,
+				5172777F2B019C8900C47A32 /* WatchDelegate.swift in Sources */,
 				51D07FCE29F396860089B505 /* pickle_point_watchOSApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
