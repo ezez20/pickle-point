@@ -9,10 +9,11 @@ import Foundation
 import WatchConnectivity
 import SwiftUI
 
-class ViewModelPhone: NSObject, WCSessionDelegate, ObservableObject {
+class WatchKitManager_iOS: NSObject, WCSessionDelegate, ObservableObject {
     
     @Published var session: WCSession
-    @Published var messageBackToPhone = [String : Any]()
+    @Published var messageBackToControlView = [String : Any]()
+    @Published var messageBackToScoreBoardView = [String : Any]()
     
     init(session: WCSession = .default) {
         self.session = session
@@ -45,18 +46,18 @@ class ViewModelPhone: NSObject, WCSessionDelegate, ObservableObject {
     }
     
     func session(_ session: WCSession, didReceiveMessage message: [String : Any]) {
-     
+        
         DispatchQueue.main.async {
             
             if message["message"] != nil {
                 let messsageBack = message["message"] as? [String : Any] ?? [ : ]
-                self.messageBackToPhone = messsageBack
+                self.messageBackToScoreBoardView = messsageBack
                 print("messageText: \(messsageBack)")
             }
             
             if message["startRecording"] != nil {
                 let messsageBack = message["startRecording"] as? [String : Bool] ?? [ : ]
-                self.messageBackToPhone = messsageBack
+                self.messageBackToControlView = messsageBack
                 print("messageText recording: \(messsageBack)")
             }
             
@@ -75,4 +76,6 @@ extension Notification.Name {
     static let watchAppActivated = Notification.Name("watchApp.activated")
     static let watchAppDeactivated = Notification.Name("watchApp.deactivated")
     static let reloadScoreForWatch = Notification.Name("reloadScoreForWatch")
+    static let startViewRecorder = Notification.Name("startViewRecorder")
+    static let stopViewRecorder = Notification.Name("stopViewRecorder")
 }

@@ -6,6 +6,7 @@
 //
 
 import AVFoundation
+import UIKit
 
 class CameraModel: NSObject, ObservableObject {
 
@@ -35,15 +36,16 @@ class CameraModel: NSObject, ObservableObject {
        checkVideoAudioAuthorizationStatus()
     }
     
-    func start_Capture(completion: @escaping (Bool) -> (Void)) {
+    func start_Capture(completion: @escaping () -> (Void)) {
         _captureState = .start
-        print("_captureState: start")
-        completion(true)
+        print("CameraModel: _captureState: start")
+        completion()
     }
     
-    func end_Capture() {
+    func end_Capture(completion: @escaping () -> (Void)) {
         _captureState = .end
-        print("_captureState: end")
+        print("CameraModel: _captureState: end")
+        completion()
     }
     
 }
@@ -152,7 +154,7 @@ extension CameraModel: AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAu
         let timestamp = CMSampleBufferGetPresentationTimeStamp(sampleBuffer).seconds
         switch _captureState {
         case .start:
-            // Set up Recording
+            // Set up RecorZding
             _filename = "PickePoint - \(Date.now.formatted(date: .abbreviated, time: .standard))"
             let videoPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("\(_filename).mov")
             guard let writer = try? AVAssetWriter(outputURL: videoPath, fileType: .mov) else { break }

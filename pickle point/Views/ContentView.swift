@@ -7,23 +7,30 @@
 
 import SwiftUI
 import CoreData
-import AVFoundation
 
 struct ContentView: View {
     
-    @Environment(\.managedObjectContext) private var viewContext
-    @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \Item.timestamp, ascending: true)],
-        animation: .default)
-    private var items: FetchedResults<Item>
+//    @Environment(\.managedObjectContext) private var viewContext
+//    @FetchRequest(
+//        sortDescriptors: [NSSortDescriptor(keyPath: \Item.timestamp, ascending: true)],
+//        animation: .default)
+//    private var items: FetchedResults<Item>
     @StateObject private var cameraModel = CameraModel()
+    @StateObject var scoreBoardManager = ScoreBoardManager()
+    @StateObject var watchKitManager = WatchKitManager_iOS()
+    @StateObject var viewRecorder = ViewRecorder()
+    
+    @State private var url: URL?
+    @State private var shareVideo = false
+    @State private var videoCurrentlySaving = false
 
     var body: some View {
 
         ZStack {
-            CameraPreview(session: cameraModel.session)
+            RecordingView(cameraModel: cameraModel, scoreBoardManager: scoreBoardManager, watchKitManager: watchKitManager, videoRecorder: viewRecorder)
                 .ignoresSafeArea(.all, edges: .all)
-            ControlsView(cameraModel: cameraModel)
+            
+            ControlsView(sbm: scoreBoardManager, vmWKM: watchKitManager, cm: cameraModel, viewRecorder: viewRecorder)
                 .ignoresSafeArea(.all, edges: .bottom)
         }
         

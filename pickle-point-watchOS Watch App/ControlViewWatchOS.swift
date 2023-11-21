@@ -9,8 +9,6 @@ import SwiftUI
 
 struct ControlViewWatchOS: View {
     
-    @ObservedObject var viewModelWatch = ViewModelWatch()
-    @ObservedObject var watchDelegate = WatchDelegate()
     @State private var team1Score = 0
     @State private var team2Score = 0
     @State private var currentServer = 2
@@ -28,7 +26,11 @@ struct ControlViewWatchOS: View {
     @State private var watchSessionOn = false
     @State private var startGameQueue = false
     @State private var gameStart = false
-
+    @State private var showProgressView = false
+    
+    @ObservedObject var viewModelWatch: WatchKitManager_WatchOS
+    @ObservedObject var watchDelegate: WatchDelegate
+    
     var body: some View {
         
         GeometryReader { rect in
@@ -84,18 +86,14 @@ struct ControlViewWatchOS: View {
                             
                         } else {
                             
+                            
+                            // MAYBE ADD BACK PROGRESS VIEW
+                            
+                            
                             Text("\(currentlyTeam1Serving ? team1Score : team2Score)")
                                 .font(.system(size: 50))
                                 .fixedSize()
                                 .foregroundColor(currentlyTeam1Serving ? .green : .red)
-                            
-                            Text("-")
-                                .font(.system(size: 20))
-                                .fixedSize()
-                            
-                            Text("\(currentServer == 3 ? "S" : String(currentServer))")
-                                .font(.system(size: 20))
-                                .fixedSize()
                             
                             Text("-")
                                 .font(.system(size: 20))
@@ -106,7 +104,17 @@ struct ControlViewWatchOS: View {
                                 .fixedSize()
                                 .foregroundColor(currentlyTeam2Serving ? .green : .red)
                             
+                            Text("-")
+                                .font(.system(size: 20))
+                                .fixedSize()
+                            
+                            Text("\(currentServer == 3 ? "S" : String(currentServer))")
+                                .font(.system(size: 20))
+                                .fixedSize()
+                            
+                            
                         }
+                        
           
                     }
                     .frame(width: rect.size.width)
@@ -188,15 +196,25 @@ struct ControlViewWatchOS: View {
             }
             .onReceive(viewModelWatch.$messageFromPhone) { message in
                 // Handle message back from PHONE.
-                updateMessageBackFromPhone(message: message)
+                updateMessageBackFromPhone(message: message) {
+                    showProgressView = false
+                }
             }
             .onReceive(NotificationCenter.default.publisher(for: .watchAppActivated)) { _ in
                 print("watchAppActivated")
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-                    getScoreFromPhone()
+              
+                if viewModelWatch.session.hasContentPending {
+                    print("viewModelWatch has content pending: \(viewModelWatch.messageFromPhone)")
+                    showProgressView = true
+                }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    if viewModelWatch.session.isReachable {
+                        getScoreFromPhone()
+                    }
                 }
             }
             .onReceive(NotificationCenter.default.publisher(for: .watchAppDeactivated)) { _ in
+                showProgressView = false
                 print("watchAppDeactivated")
             }
             
@@ -317,7 +335,7 @@ struct ControlViewWatchOS: View {
         sideout = false
     }
     
-    func updateMessageBackFromPhone(message: [String : Any]) {
+    func updateMessageBackFromPhone(message: [String : Any], completion: @escaping () -> Void) {
         if viewModelWatch.session.isReachable {
             print("updateMessageBackFromPhone")
             currentServer = message["currentServer"] as? Int ?? 3
@@ -327,6 +345,7 @@ struct ControlViewWatchOS: View {
             currentlyTeam1Serving = message["currentlyTeam1Serving"] as? Bool ?? false
             currentlyTeam2Serving = message["currentlyTeam2Serving"] as? Bool ?? false
             gameStart = message["gameStart"] as? Bool ?? false
+            completion()
         }
     }
 
@@ -335,7 +354,6 @@ struct ControlViewWatchOS: View {
 
 extension ControlViewWatchOS {
     
-    
     func connectAppleWatch() {
         
         viewModelWatch.session.activate()
@@ -343,7 +361,7 @@ extension ControlViewWatchOS {
         if viewModelWatch.session.isCompanionAppInstalled && viewModelWatch.session.isReachable {
             watchSessionOn = true
         } else {
-            watchConnected = false
+            watchSessionOn = false
         }
     }
     
@@ -356,19 +374,8 @@ extension ControlViewWatchOS {
             return false
         }
     }
-    
-    func watchIsReachable() -> Bool {
-        if viewModelWatch.session.isCompanionAppInstalled && viewModelWatch.session.isReachable && viewModelWatch.session.activationState.rawValue == 2 {
-            watchConnected = true
-            return true
-        } else {
-            watchConnected = false
-            return false
-        }
-    }
-    
     func updateScoreToPhone() {
-        if watchIsReachable() {
+        if watchSessionOn {
             
             let messageBack: [String: Any] = [
                 "team1Score" : team1Score,
@@ -393,9 +400,11 @@ extension ControlViewWatchOS {
 }
     
 
-
 struct ControlViewWatchOS_Previews: PreviewProvider {
     static var previews: some View {
-        ControlViewWatchOS()
+        ControlViewWatchOS(
+            viewModelWatch: WatchKitManager_WatchOS(),
+            watchDelegate: WatchDelegate()
+        )
     }
 }

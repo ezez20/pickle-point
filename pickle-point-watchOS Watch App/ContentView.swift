@@ -9,8 +9,11 @@ import SwiftUI
 
 struct ContentView: View {
     
+    @StateObject var viewModelWatch = WatchKitManager_WatchOS()
+    @StateObject var watchDelegate = WatchDelegate()
+    
     var body: some View {
-        ControlViewWatchOS()
+        ControlViewWatchOS(viewModelWatch: viewModelWatch, watchDelegate: watchDelegate)
     }
     
 }

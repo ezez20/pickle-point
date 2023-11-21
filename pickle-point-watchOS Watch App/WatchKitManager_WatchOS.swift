@@ -9,7 +9,7 @@ import Foundation
 import WatchConnectivity
 import UIKit
 
-class ViewModelWatch : NSObject, WCSessionDelegate, ObservableObject {
+class WatchKitManager_WatchOS : NSObject, WCSessionDelegate, ObservableObject {
     
     var session: WCSession
     @Published var messageFromPhone = [String : Any]()
@@ -24,8 +24,7 @@ class ViewModelWatch : NSObject, WCSessionDelegate, ObservableObject {
         self.session.delegate = self
        
     }
-    
-    
+
     func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
         print("WatchOS activationState: \(session.activationState)")
         print("WatchOS isCompanionAppInstalled: \(session.isCompanionAppInstalled)")
@@ -35,9 +34,7 @@ class ViewModelWatch : NSObject, WCSessionDelegate, ObservableObject {
             watchIsConnected = false
         }
     }
-    
-    
-    
+
     func sessionReachabilityDidChange(_ session: WCSession) {
         if session.isReachable {
             watchIsConnected = true

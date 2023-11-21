@@ -30,10 +30,12 @@ class WatchDelegate: NSObject, WKApplicationDelegate, ObservableObject {
         NotificationCenter.default.post(name: .watchAppDeactivated, object: nil)
     }
     
+    
 }
 
 extension Notification.Name {
     static let watchAppActivated = Notification.Name("watchApp.activated")
     static let watchAppDeactivated = Notification.Name("watchApp.deactivated")
     static let reloadScoreForWatch = Notification.Name("reloadScoreForWatch")
+    static let startStopGameFromWatch = Notification.Name("startStopGameFromWatch")
 }
