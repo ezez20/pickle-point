@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		512546FE29FAD27F003594C8 /* Pickle Point.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 51D07FCB29F396860089B505 /* Pickle Point.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		513459F32B2264890055AD32 /* TestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 513459F22B2264890055AD32 /* TestViewController.swift */; };
+		513459F52B2265B30055AD32 /* MyView2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 513459F42B2265B30055AD32 /* MyView2.swift */; };
 		51363EAC2AF00FCE0060557C /* CameraModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51363EAB2AF00FCE0060557C /* CameraModel.swift */; };
 		5144F0332B0055E80059DC4C /* RecordingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5144F0322B0055E80059DC4C /* RecordingView.swift */; };
 		514738BE2AFE817E00F3862E /* ScoreBoardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 514738BD2AFE817D00F3862E /* ScoreBoardView.swift */; };
@@ -31,6 +33,8 @@
 		51D07FD529F396870089B505 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 51D07FD429F396870089B505 /* Preview Assets.xcassets */; };
 		51D07FDA29F396F60089B505 /* ControlViewWatchOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D07FD929F396F60089B505 /* ControlViewWatchOS.swift */; };
 		51D87F5A2B0BC7010071276A /* ViewRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D87F592B0BC7010071276A /* ViewRecorder.swift */; };
+		51DC5E012B14EA7D00843FAD /* ScoreBoardVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51DC5E002B14EA7D00843FAD /* ScoreBoardVC.swift */; };
+		51DC5E032B14FE1000843FAD /* MyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51DC5E022B14FE1000843FAD /* MyView.swift */; };
 		51DE28B52B02BE9E00AC607C /* ScoreBoardManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51DE28B42B02BE9E00AC607C /* ScoreBoardManager.swift */; };
 		51DE43022B04120800A4EDE9 /* ControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51DE43012B04120800A4EDE9 /* ControlsView.swift */; };
 /* End PBXBuildFile section */
@@ -60,6 +64,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		513459F22B2264890055AD32 /* TestViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestViewController.swift; sourceTree = "<group>"; };
+		513459F42B2265B30055AD32 /* MyView2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyView2.swift; sourceTree = "<group>"; };
 		51363EAB2AF00FCE0060557C /* CameraModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraModel.swift; sourceTree = "<group>"; };
 		5144F0322B0055E80059DC4C /* RecordingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordingView.swift; sourceTree = "<group>"; };
 		514738BD2AFE817D00F3862E /* ScoreBoardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreBoardView.swift; sourceTree = "<group>"; };
@@ -84,6 +90,8 @@
 		51D07FD429F396870089B505 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		51D07FD929F396F60089B505 /* ControlViewWatchOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlViewWatchOS.swift; sourceTree = "<group>"; };
 		51D87F592B0BC7010071276A /* ViewRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewRecorder.swift; sourceTree = "<group>"; };
+		51DC5E002B14EA7D00843FAD /* ScoreBoardVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreBoardVC.swift; sourceTree = "<group>"; };
+		51DC5E022B14FE1000843FAD /* MyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyView.swift; sourceTree = "<group>"; };
 		51DE28B42B02BE9E00AC607C /* ScoreBoardManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreBoardManager.swift; sourceTree = "<group>"; };
 		51DE43012B04120800A4EDE9 /* ControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -186,6 +194,9 @@
 				514738BD2AFE817D00F3862E /* ScoreBoardView.swift */,
 				51DE43012B04120800A4EDE9 /* ControlsView.swift */,
 				515D16C62AF14A4A009494D4 /* ShareSheet.swift */,
+				51DC5E002B14EA7D00843FAD /* ScoreBoardVC.swift */,
+				51DC5E022B14FE1000843FAD /* MyView.swift */,
+				513459F42B2265B30055AD32 /* MyView2.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -198,6 +209,7 @@
 				51C5CADC29F4B3CF005B5AB3 /* WatchKitManager_iOS.swift */,
 				51A0572F2B0A7CF200F32351 /* MyHostingController.swift */,
 				51D87F592B0BC7010071276A /* ViewRecorder.swift */,
+				513459F22B2264890055AD32 /* TestViewController.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -310,14 +322,18 @@
 				5144F0332B0055E80059DC4C /* RecordingView.swift in Sources */,
 				514738BE2AFE817E00F3862E /* ScoreBoardView.swift in Sources */,
 				51DE28B52B02BE9E00AC607C /* ScoreBoardManager.swift in Sources */,
+				51DC5E032B14FE1000843FAD /* MyView.swift in Sources */,
 				51BB2DB429E5C85400E52302 /* ContentView.swift in Sources */,
 				51BB2DC929E620BE00E52302 /* CameraPreview.swift in Sources */,
 				51363EAC2AF00FCE0060557C /* CameraModel.swift in Sources */,
 				51C5CADD29F4B3CF005B5AB3 /* WatchKitManager_iOS.swift in Sources */,
 				51BB2DBE29E5C85500E52302 /* pickle_point.xcdatamodeld in Sources */,
 				51D87F5A2B0BC7010071276A /* ViewRecorder.swift in Sources */,
+				513459F52B2265B30055AD32 /* MyView2.swift in Sources */,
 				51DE43022B04120800A4EDE9 /* ControlsView.swift in Sources */,
 				51BB2DB229E5C85400E52302 /* pickle_pointApp.swift in Sources */,
+				51DC5E012B14EA7D00843FAD /* ScoreBoardVC.swift in Sources */,
+				513459F32B2264890055AD32 /* TestViewController.swift in Sources */,
 				515D16C72AF14A4A009494D4 /* ShareSheet.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

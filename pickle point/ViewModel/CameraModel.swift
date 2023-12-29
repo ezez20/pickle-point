@@ -16,7 +16,7 @@ class CameraModel: NSObject, ObservableObject {
     private var _assetWriterVideoInput: AVAssetWriterInput?
     private var _assetWriterAudioInput: AVAssetWriterInput?
     private var _adpater: AVAssetWriterInputPixelBufferAdaptor?
-    private var _filename = ""
+    var _filename = ""
     private var _time: Double = 0
     
     private var _audioOutput: AVCaptureAudioDataOutput?
@@ -154,9 +154,10 @@ extension CameraModel: AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAu
         let timestamp = CMSampleBufferGetPresentationTimeStamp(sampleBuffer).seconds
         switch _captureState {
         case .start:
-            // Set up RecorZding
+            // Set up Recording
+//            _filename = "PickePoint - \(Date.now.formatted(date: .abbreviated, time: .standard))"
             _filename = "PickePoint - \(Date.now.formatted(date: .abbreviated, time: .standard))"
-            let videoPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("\(_filename).mov")
+            guard let videoPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("\(_filename).mov") else { break }
             guard let writer = try? AVAssetWriter(outputURL: videoPath, fileType: .mov) else { break }
             let settings = _videoOutput?.recommendedVideoSettingsForAssetWriter(writingTo: .mov)
             let videoInput = AVAssetWriterInput(mediaType: .video, outputSettings: settings) // [AVVideoCodecKey: AVVideoCodecType.h264, AVVideoWidthKey: 1920, AVVideoHeightKey: 1080])
@@ -213,7 +214,7 @@ extension CameraModel: AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAu
                 self.videoCurrentlySaving = true
             }
             guard _assetWriterVideoInput?.isReadyForMoreMediaData == true, _assetWriter?.status != .failed else { break }
-            let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("\(_filename).mov")
+            guard let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("\(_filename).mov") else { break }
             _assetWriterVideoInput?.markAsFinished()
             _assetWriterAudioInput?.markAsFinished()
 
@@ -226,7 +227,8 @@ extension CameraModel: AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAu
                 DispatchQueue.main.async {
                     self?.videoCurrentlySaving = false
                     self?.videoURL = url
-                    print("Video URL: \(String(describing: url))")
+//                    print("Video URL: \(String(describing: url))")
+//                    print("URLS existing: \(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))")
                 }
             }
             

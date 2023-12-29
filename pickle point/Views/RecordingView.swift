@@ -16,24 +16,28 @@ struct RecordingView: View {
     
     var body: some View {
         
-        ZStack {
-            CameraPreview(session: cameraModel.session)
-                .ignoresSafeArea(.all, edges: .all)
-            
-            ScoreBoardView(sbm: scoreBoardManager, viewModelPhone: watchKitManager)
-                .ignoresSafeArea(.all, edges: .all)
+        GeometryReader { geo in
+            ZStack {
+                
+                MyView(viewRecoder: videoRecorder, cameraModel: cameraModel, scoreBoardManager: scoreBoardManager)
+                    .frame(width: geo.size.width, height: geo.size.height)
+                    .ignoresSafeArea(.all, edges: .all)
+                
+                CameraPreview(session: cameraModel.session)
+                    .ignoresSafeArea(.all, edges: .all)
+                
+//                MyView(viewRecoder: videoRecorder, cameraModel: cameraModel, scoreBoardManager: scoreBoardManager)
+//                    .frame(width: 80, height: 180)
+//                    .position(x: geo.size.width/2, y: geo.size.height/2)
+//                    .position(x: geo.size.width - 40, y: 80)
+                
+                ScoreBoardView(sbm: scoreBoardManager, viewModelPhone: watchKitManager)
+                    .ignoresSafeArea(.all, edges: .all)
+                
+//                MyView2()
+//                    .ignoresSafeArea(.all, edges: .all)
+            }
         }
-//        .onReceive(NotificationCenter.default.publisher(for: .startViewRecorder)) { _ in
-//            videoRecorder.startRecording(self) { _ in
-//                print("videoRecorder: Recording started")
-//            }
-//        }
-        .onReceive(NotificationCenter.default.publisher(for: .stopViewRecorder)) { _ in
-            videoRecorder.stop()
-                print("videoRecorder: Recording started")
-            
-        }
-        
        
     }
 }

@@ -9,11 +9,11 @@ import SwiftUI
 
 class MyHostingController: UIHostingController<RecordingView> {
     
-    var videoRecorder = ViewRecorder()
+//    var videoRecorder = ViewRecorder(camerModel: <#T##CameraModel#>)
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder, rootView: RecordingView(cameraModel: CameraModel(), scoreBoardManager: ScoreBoardManager(), watchKitManager: WatchKitManager_iOS(), videoRecorder: ViewRecorder()))
-        
+        print("DDD: MyHostingController initialized")
     }
     
     

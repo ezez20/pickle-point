@@ -12,54 +12,87 @@ import CoreMedia
 import SwiftUI
 
 final class ViewRecorder: NSObject, ObservableObject {
+    
     var images = [UIImage]()
     var displayLink: CADisplayLink?
-//    var completion: ((URL?) -> Void)?
     var sourceView: UIView?
+    var caDisplayLinkVideoURL: URL?
     
-    @Published var videoURL: URL?
+    @Published var finalVideoURL: URL?
     @Published var videoCurrentlySaving = false
     
 
-//    func startRecording(_ view: UIView, completion: @escaping (URL?) -> Void) {
-//        self.completion = completion
-//        self.sourceView = view
-//        displayLink = CADisplayLink(target: self, selector: #selector(tick))
-//        displayLink?.add(to: RunLoop.main, forMode: .common)
-//    }
-    
-    func startRecording(_ view: RecordingView, completion: @escaping () -> Void) {
-//        self.completion = completion
-        let uiVIew = view.snapshot()
-        self.sourceView = uiVIew
+    func startRecording(controller: ScoreBoardVC, completion: @escaping () -> Void) {
+        self.sourceView = controller.view
+//        self.sourceView = controller.scoreBoardViewFrame
         displayLink = CADisplayLink(target: self, selector: #selector(tick))
-        displayLink?.add(to: RunLoop.main, forMode: .common)
+//        displayLink?.preferredFrameRateRange = CAFrameRateRange(minimum: 60, maximum: 60, __preferred: 60)
+        displayLink?.preferredFrameRateRange = CAFrameRateRange(minimum: 30, maximum: 30, __preferred: 30)
+        
+        // The following fixed the frame sync issue of the scoreboard.
+//        displayLink?.preferredFrameRateRange = CAFrameRateRange(minimum: 30, maximum: Float(UIScreen.main.maximumFramesPerSecond), __preferred: Float(UIScreen.main.maximumFramesPerSecond))
+        print("Max frame: \(Float(UIScreen.main.maximumFramesPerSecond))")
+//        displayLink?.preferredFrameRateRange = CAFrameRateRange(minimum: 30, maximum: 120, __preferred: 120)
+//        displayLink?.preferredFrameRateRange = CAFrameRateRange(minimum: 30, maximum: 60, __preferred: 60)
+        DispatchQueue.main.async {
+            self.displayLink?.add(to: RunLoop.main, forMode: .default)
+        }
+
+//        displayLink?.add(to: RunLoop.main, forMode: .default)
+//        displayLink?.add(to: .current, forMode: .common)
+        
         completion()
     }
-
-    func stop() {
+    
+    func stop(_ cameraVideoURL: URL?) {
+        print("videoRecorder: Stopped Recording")
+        DispatchQueue.main.async {
+            self.displayLink?.remove(from: .main, forMode: .default)
+//            self.displayLink?.remove(from: .current, forMode: .common)
+        }
+//        self.displayLink?.remove(from: .main, forMode: .default)
+        
         displayLink?.invalidate()
         displayLink = nil
-        writeToVideo()
-        print("videoRecorder: Stopped Recording")
+        
+        guard let cameraVideoURL = cameraVideoURL else {
+            print("Deez")
+            return
+        }
+        
+        writeToVideo() { url in
+            Task {
+                do {
+//                    guard let caDisplayLinkVideoURLUnwrapped = self.caDisplayLinkVideoURL else { return }
+//                    try await self.overlayVideos(videoURL1: caDisplayLinkVideoURLUnwrapped, videoURL2: cameraVideoURL)
+                    guard let url = url else { return }
+                    try await self.overlayVideos(videoURL1: url, videoURL2: cameraVideoURL)
+                } catch {
+                  print("Error trying: overlayVideos")
+                }
+            }
+        }
     }
 
     @objc private func tick(_ displayLink: CADisplayLink) {
-        let render = UIGraphicsImageRenderer(size: sourceView?.bounds.size ?? .zero)
-        let image = render.image { (ctx) in
-            sourceView?.layer.presentation()?.render(in: ctx.cgContext)
+//        let actualFramesPerSecond = 1 / (displayLink.targetTimestamp - displayLink.timestamp)
+//        print("Frame: \(actualFramesPerSecond)")
+        if let sourceView = sourceView {
+            let render = UIGraphicsImageRenderer(size: sourceView.frame.size)
+//            let render = UIGraphicsImageRenderer(size: CGSize(width: 80, height: 180))
+            let image = render.image { (ctx) in
+                sourceView.layer.render(in: ctx.cgContext)
+            }
+            images.append(image)
         }
-        images.append(image)
     }
 
-    private func writeToVideo() {
+    private func writeToVideo(completion: @escaping (URL?) -> Void) {
         guard !images.isEmpty else {
-//            completion?(nil)
             return
         }
-//        _filename = "PickePoint - \(Date.now.formatted(date: .abbreviated, time: .standard))"
-//        let videoPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("\(_filename).mov")
-        let outputURL = FileManager.default.temporaryDirectory.appendingPathComponent("output.mov")
+        let outputURL = FileManager.default.temporaryDirectory.appendingPathComponent("output.mp4")
+        print("DEBUG 1: \(outputURL)")
         let settings = [AVVideoCodecKey: AVVideoCodecType.h264,
                         AVVideoWidthKey: images[0].size.width,
                         AVVideoHeightKey: images[0].size.height] as [String : Any]
@@ -67,7 +100,7 @@ final class ViewRecorder: NSObject, ObservableObject {
         print("DDD images count: \(images.count)")
         print("DDD Width: \(images[0].size.width)")
 
-        if let videoWriter = try? AVAssetWriter(outputURL: outputURL, fileType: .mov) {
+        if let videoWriter = try? AVAssetWriter(outputURL: outputURL, fileType: .mp4) {
             let input = AVAssetWriterInput(mediaType: .video, outputSettings: settings)
             let adaptor = AVAssetWriterInputPixelBufferAdaptor(assetWriterInput: input, sourcePixelBufferAttributes: nil)
             
@@ -75,10 +108,13 @@ final class ViewRecorder: NSObject, ObservableObject {
                 videoWriter.add(input)
             }
 
-            if videoWriter.startWriting() {
-                videoWriter.startSession(atSourceTime: CMTime.zero)
-
+            videoWriter.startWriting()
+                print("DDD deez")
+            videoWriter.startSession(atSourceTime: CMTime.zero)
+  
                 let fps: Int32 = 30
+//            let fps: Int32 = 60
+//            let fps: Int32 = 120
                 let frameDuration = CMTime(value: 1, timescale: fps)
 
                 for (index, image) in images.enumerated() {
@@ -89,20 +125,117 @@ final class ViewRecorder: NSObject, ObservableObject {
                         }
                     }
                 }
-
+            
+            print("DDD deez 2")
                 input.markAsFinished()
+            print("DDD deez 3")
                 videoWriter.finishWriting {
-                    DispatchQueue.main.async {
-//                        self.completion?(outputURL)
-                        self.videoURL = outputURL
-                    }
+                    print("DDD deez 4")
+//                    DispatchQueue.main.async {
+//                        self.caDisplayLinkVideoURL = outputURL
+//                        completion()
+//                    }
+                  
+//                        self.caDisplayLinkVideoURL = outputURL
+                        completion(outputURL)
+                    
                 }
-            }
         }
     }
+    
+    func overlayVideos(videoURL1: URL, videoURL2: URL) async throws -> Void {
+        print("Overlaying Videos")
+        let composition = AVMutableComposition()
+        
+        let videoAsset1 = AVAsset(url: videoURL1)
+        let videoAsset2 = AVAsset(url: videoURL2)
+        
+        let videoAsset1Tracks = try? await videoAsset1.loadTracks(withMediaType: .video)
+        let videoAsset2Tracks = try? await videoAsset2.loadTracks(withMediaType: .video)
+        
+        guard let track1 = videoAsset1Tracks?.first else {
+            fatalError("Error getting track1 from videoAsset1Tracks")
+        }
+        guard let track2 = videoAsset2Tracks?.first else {
+            fatalError("Error getting track2 from videoAsset1Tracks")
+        }
+        
+        let compositionTrack1 = composition.addMutableTrack(withMediaType: .video, preferredTrackID: kCMPersistentTrackID_Invalid)
+        let compositionTrack2 = composition.addMutableTrack(withMediaType: .video, preferredTrackID: kCMPersistentTrackID_Invalid)
+        
+        
+        try? await compositionTrack1?.insertTimeRange(CMTimeRangeMake(start: .zero, duration: videoAsset1.load(.duration)),
+                                                      of: track1,
+                                                      at: .zero)
+        try? await compositionTrack2?.insertTimeRange(CMTimeRangeMake(start: .zero, duration: videoAsset2.load(.duration)),
+                                                      of: track2,
+                                                      at: .zero)
+        
+        
+        let videoComposition = AVMutableVideoComposition()
+        // Assuming 30 frames per second
+        videoComposition.frameDuration = CMTimeMake(value: 1, timescale: 30)
+//        videoComposition.frameDuration = CMTimeMake(value: 1, timescale: 60)
+//        videoComposition.frameDuration = CMTimeMake(value: 1, timescale: 30)
+        try? await videoComposition.renderSize = CGSize(
+            width: max(track1.load(.naturalSize).width, track2.load(.naturalSize).width),
+            height: max(track1.load(.naturalSize).height, track2.load(.naturalSize).height)
+        )
+        
+        
+        let instruction = AVMutableVideoCompositionInstruction()
+        instruction.timeRange = CMTimeRangeMake(start: .zero, duration: composition.duration)
+        
+        let layerInstruction1 = AVMutableVideoCompositionLayerInstruction(assetTrack: compositionTrack1!)
+        let layerInstruction2 = AVMutableVideoCompositionLayerInstruction(assetTrack: compositionTrack2!)
+        
+        let naturalSize = compositionTrack1?.naturalSize
+        let halfWidth = (naturalSize?.width ?? 0) / 2
+////        let halfHeight = (naturalSize?.height ?? 0) / 2
+////        let topLeftTransform: CGAffineTransform = .identity.translatedBy(x: 0, y: 0).scaledBy(x: 0.5, y: 0.5)
+//        let topRightTransform: CGAffineTransform = .identity.translatedBy(x: halfWidth + 100, y: 200).scaledBy(x: 2, y: 2).rotated(by: -.pi/2)
+        print("DDD HALF: \(halfWidth)")
+        let topRightTransform: CGAffineTransform = .identity.translatedBy(x: -100, y: 800).scaledBy(x: 2, y: 2).rotated(by: -.pi/2)
+//        print("DDD halfWidth: \(halfWidth), transform: \(topRightTransform)")
+////        let bottomLeftTransform: CGAffineTransform = .identity.translatedBy(x: 0, y: halfHeight).scaledBy(x: 0.5, y: 0.5)
+////        let bottomRightTransform: CGAffineTransform = .identity.translatedBy(x: halfWidth, y: halfHeight).scaledBy(x: 0.5, y: 0.5)
+//        layerInstruction1.setTransform(topRightTransform, at: .zero)
+        
+        // Adjust the transform if needed (Adjust rotation)
+        let desiredRotation = CGAffineTransform(rotationAngle: -.pi/2)
+//        layerInstruction2.setTransform(desiredRotation, at: .zero)
+//        layerInstruction2.setTransform(transform, at: .zero)
+//
+        try? await layerInstruction1.setTransform(track1.load(.preferredTransform).concatenating(topRightTransform), at: .zero)
+//        layerInstruction1.setCropRectangle(CGRect(x: 300, y: -300, width: 180, height: 100), at: .zero)
+        layerInstruction1.setCropRectangle(CGRect(x: 300, y: -120, width: 80, height: 350), at: .zero)
+//        try? await layerInstruction2.setTransform(track2.load(.preferredTransform), at: .zero)
+
+        instruction.layerInstructions = [layerInstruction1, layerInstruction2]
+        videoComposition.instructions = [instruction]
+        
+        guard let exporter = AVAssetExportSession(asset: composition, presetName: AVAssetExportPresetHighestQuality) else {
+            fatalError("Error unwrapping AVAssetExportSession")
+        }
+        
+        exporter.outputFileType = .mp4
+        let outputURL = FileManager.default.temporaryDirectory.appendingPathComponent("outputURL.mp4")
+        exporter.outputURL = outputURL
+        exporter.videoComposition = videoComposition
+        
+        await exporter.export()
+        print("DDD AWAIT")
+        
+        DispatchQueue.main.async {
+            print("DDD DONE")
+            self.finalVideoURL = outputURL
+        }
+    }
+    
 }
 
 extension UIImage {
+    
     func pixelBuffer(width: Int, height: Int) -> CVPixelBuffer? {
         var pixelBuffer: CVPixelBuffer?
         let options: [String: Any] = [
@@ -132,47 +265,24 @@ extension UIImage {
         CVPixelBufferUnlockBaseAddress(buffer, [])
         return buffer
     }
-    
   
 }
 
-extension View {
-    func snapshot() -> UIView? {
-          let controller = UIHostingController(rootView: self)
-        guard let view = controller.view else {
-            fatalError("UIView: Error for snapshot")
-        }
-
-          let renderer = UIGraphicsImageRenderer(size: view.bounds.size)
-          let image = renderer.image { _ in
-              view.drawHierarchy(in: view.bounds, afterScreenUpdates: true)
-          }
-        
-        print("DDD imageview: \(image.size.width)")
-
-          return UIImageView(image: image)
-      }
-}
-
-//class CameraModel: NSObject, ObservableObject {
-//    // Other properties...
+//extension View {
+//    func snapshot(_ size: CGSize) -> UIView? {
+//        let controller = UIHostingController(rootView: self)
+//        controller.view.backgroundColor = .clear
+//        guard let view = controller.view else {
+//            fatalError("UIView: Error for snapshot")
+//        }
+//        let renderer = UIGraphicsImageRenderer(size: view.bounds.size)
+//        let image = renderer.image { _ in
+//            view.drawHierarchy(in: view.bounds, afterScreenUpdates: true)
+//            print("View rect: \(view.bounds)")
+//        }
 //
-//    var viewRecorder: ViewRecorder?
-//
-//    override init() {
-//        super.init()
-//        viewRecorder = ViewRecorder()
+//        return UIImageView(image: image)
 //    }
-//
-//    // Other methods...
-//
-//    func startRecording(viewHierarchy: RecordingView, completion: @escaping () -> Void) {
-//        viewRecorder?.startRecording(viewHierarchy, completion: completion)
-//    }
-//
-//    func endRecording() {
-//        viewRecorder?.stop()
-//    }
-//
-//    // Other methods...
 //}
+
+

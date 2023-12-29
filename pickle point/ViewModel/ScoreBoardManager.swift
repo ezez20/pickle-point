@@ -30,7 +30,7 @@ class ScoreBoardManager: ObservableObject {
     @Published var gameStart = false
     @Published var timePassed = 0
     @Published var timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
-    
+//    var timer = Timer()
 }
 
 extension ScoreBoardManager {
@@ -38,21 +38,38 @@ extension ScoreBoardManager {
     func startStopGame(completion: @escaping (Bool) -> Void) {
         gameStart.toggle()
         if gameStart {
+            //Start timer - Using SwiftUI/Publisher
             self.timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
-            NotificationCenter.default.post(name: .startViewRecorder, object: nil)
-           completion(true)
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "startViewRecorder"), object: nil)
+            
+            // Start timer - Using UIKit
+//            timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(timeAppend), userInfo: nil, repeats: true)
+            completion(true)
         } else {
-            //Stop timer
+            //Stop timer - Using SwiftUI/Publisher
             timer.upstream.connect().cancel()
-            NotificationCenter.default.post(name: .stopViewRecorder, object: nil)
+//            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "stopViewRecorder"), object: nil)
+            
+            // Stop timer - Using UIKit
+//            timer.invalidate()
             completion(false)
         }
     }
     
+    // AppendTimer - Using UIKit
+    @objc func timeAppend() {
+        print("DDD: timeAppend")
+        timePassed += 1
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateTimer"), object: nil)
+    }
+    
     func gameTime(timePassed: Int) -> String {
-        let minutes = timePassed / 60
-        let seconds = timePassed % 60
-        return String(format: "%02i:%02i", minutes, seconds)
+        let duration = Duration.seconds(timePassed)
+        return duration.formatted(.time(pattern: .minuteSecond))
+//        let minutes = timePassed / 60
+//        let seconds = timePassed % 60
+//        let minutesFormatted = minutes > 1 ? minutes : 0
+//        return String(format: "%02i:%02i", minutesFormatted, seconds)
     }
     
     func nextServer() {
@@ -96,6 +113,7 @@ extension ScoreBoardManager {
             currentlyTeam1Serving.toggle()
             currentlyTeam2Serving.toggle()
         }
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateVC"), object: nil)
     }
     
     func addPoint() {
@@ -106,6 +124,9 @@ extension ScoreBoardManager {
             team2Score += 1
         }
         print("Scoreboard Manager team 1 score: \(team1Score)")
+        
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "switchImage"), object: nil)
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateVC"), object: nil)
     }
     
     func saveLastMove() {
@@ -167,6 +188,7 @@ extension ScoreBoardManager {
                 currentlyTeam2Serving = false
             }
         }
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateVC"), object: nil)
     }
     
     func resetGame(completion: @escaping () -> Void) {
@@ -179,6 +201,7 @@ extension ScoreBoardManager {
         timePassed = 0
         
         gameResetted = true
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "resetTimer"), object: nil)
         completion()
         
         // Toggle "Game Reset" banner in ScoreBoardView

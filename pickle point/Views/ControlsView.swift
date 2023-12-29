@@ -23,7 +23,7 @@ struct ControlsView: View {
     @ObservedObject var vmWKM: WatchKitManager_iOS
     @ObservedObject var cm: CameraModel
     
-    var viewRecorder: ViewRecorder
+    @ObservedObject var viewRecorder: ViewRecorder
     
     var body: some View {
         
@@ -50,15 +50,15 @@ struct ControlsView: View {
                     // User hits record - video
                     sbm.startStopGame { gameStarted in
                         if gameStarted {
-//                            cm.start_Capture {
-//                                print("Camera capture started")
-//                            }
+                            cm.start_Capture {
+                                print("Camera capture started")
+//                                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "startViewRecorder"), object: nil)
+                            }
                         } else {
                             print("sbm.startStopGame: \(gameStarted)")
-                            
-//                            cm.end_Capture {
-//                                print("Camera capture ended")
-//                            }
+                            cm.end_Capture {
+                                print("Camera capture ended")
+                            }
                         }
                     }
                     
@@ -137,6 +137,7 @@ struct ControlsView: View {
         }
         .shareSheet(show: $shareVideo, items: [url])
         .onAppear {
+//            sbm.timer.invalidate()
             sbm.timer.upstream.connect().cancel()
             if vmWKM.session.isReachable && vmWKM.session.activationState.rawValue == 2 {
                 watchIsReachable = true
@@ -174,17 +175,14 @@ struct ControlsView: View {
                 videoCurrentlySaving = false
             }
         }
-//        .onChange(of: cm.videoURL) { videoURL in
-//            print("DDD")
-//            if videoURL != nil {
-//                print("DDD2")
-//                url = videoURL
-//                shareVideo.toggle()
-//            }
-//        }
-        .onChange(of: viewRecorder.videoURL, perform: { videoURL in
+        .onChange(of: cm.videoURL, perform: { videoURL in
             if videoURL != nil {
-                print("DDD2")
+                print("CM Video URL: \(String(describing: videoURL))")
+                viewRecorder.stop(cm.videoURL)
+            }
+        })
+        .onChange(of: viewRecorder.finalVideoURL, perform: { videoURL in
+            if videoURL != nil {
                 url = videoURL
                 shareVideo.toggle()
             }
@@ -192,12 +190,47 @@ struct ControlsView: View {
         .onChange(of: shareVideo) { sheetShowing in
             // Make url = nil, if sheet is dismissed
             if sheetShowing == false {
-                url = nil
+                do {
+                    let fileName1ToDelete = "output.mp4"
+                    let fileName1URLToDelete = FileManager.default.temporaryDirectory.appendingPathComponent(fileName1ToDelete)
+                    print("DEBUG 2 trying to delete: \(fileName1URLToDelete)")
+                    try FileManager.default.removeItem(at: fileName1URLToDelete)
+                    print("File: output.mp4 - deleted successfully.")
+                    
+                    let outputURL = FileManager.default.temporaryDirectory.appendingPathComponent("output.mp4")
+                    print("DEBUG 3 After deleting: \(outputURL)")
+                    
+                    let fileName2ToDelete = "outputURL.mp4"
+                    let file2URLToDelete = FileManager.default.temporaryDirectory.appendingPathComponent(fileName2ToDelete)
+                    try FileManager.default.removeItem(at: file2URLToDelete)
+                    print("File: outputURL.mp4 - deleted successfully.")
+                    
+                    guard cm.videoURL != nil else { return }
+                    if let file3NameToDelete = cm.videoURL {
+                        
+                        try FileManager.default.removeItem(at: file3NameToDelete)
+                        print("File: \(String(describing: cm.videoURL)) - deleted successfully.")
+                        
+                        
+                        cm.videoURL = nil
+                        print("DEEEZ")
+                        viewRecorder.finalVideoURL = nil
+                        url = nil
+                    }
+                    
+                    
+                } catch {
+                    print("Error deleting from FileManager: \(error.localizedDescription)")
+                    cm.videoURL = nil
+                    viewRecorder.finalVideoURL = nil
+                    url = nil
+                }
+                
                 sbm.resetGame {
                     print("Game reset")
                 }
             }
-        }
+        }   
         .onChange(of: vmWKM.session.activationState.rawValue) { activationState in
             print("viewModelPhone activation: \(activationState)")
             if activationState == 2 {
@@ -206,7 +239,7 @@ struct ControlsView: View {
                 watchIsReachable = false
             }
         }
-        
+
     }
     
 }

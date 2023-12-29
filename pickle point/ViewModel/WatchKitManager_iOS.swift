@@ -77,5 +77,9 @@ extension Notification.Name {
     static let watchAppDeactivated = Notification.Name("watchApp.deactivated")
     static let reloadScoreForWatch = Notification.Name("reloadScoreForWatch")
     static let startViewRecorder = Notification.Name("startViewRecorder")
+    static let updateTimer = Notification.Name("updateTimer")
     static let stopViewRecorder = Notification.Name("stopViewRecorder")
+    static let resetTimer = Notification.Name("resetTimer")
+    static let updateVC = Notification.Name("updateVC")
+    static let testSelector = Notification.Name("testSelector")
 }

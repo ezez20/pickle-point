@@ -27,6 +27,7 @@ struct Viewfinder: UIViewRepresentable {
             previewLayer.session = session
             previewLayer.videoGravity = .resizeAspectFill
             previewLayer.masksToBounds = true
+            
         }
         
         return legacyView
@@ -36,10 +37,10 @@ struct Viewfinder: UIViewRepresentable {
         print("updateUIView")
 //        guard let previewLayer = legacyView.layer as? AVCaptureVideoPreviewLayer else { return }
 //        let view = UIView(frame: UIScreen.main.bounds)
-////            let statusBarOrientation = UIApplication.shared.windows.first?.windowScene?.interfaceOrientation
+//            let statusBarOrientation = UIApplication.shared.windows.first?.windowScene?.interfaceOrientation
 //        let statusBarOrientation = UIApplication.shared.windows.first?.windowScene?.interfaceOrientation
 //            let videoOrientation: AVCaptureVideoOrientation = statusBarOrientation?.videoOrientation ?? .portrait
-//        previewLayer.frame = view.frame
+//        previewLayer.frame = uiView.bounds
 //        previewLayer.connection?.videoOrientation = .portrait
        
     }
