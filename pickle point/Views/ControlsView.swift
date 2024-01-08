@@ -137,13 +137,24 @@ struct ControlsView: View {
         }
         .shareSheet(show: $shareVideo, items: [url])
         .onAppear {
-//            sbm.timer.invalidate()
-            sbm.timer.upstream.connect().cancel()
+            sbm.timer.invalidate()
+//            sbm.timer.upstream.connect().cancel()
             if vmWKM.session.isReachable && vmWKM.session.activationState.rawValue == 2 {
                 watchIsReachable = true
             } else {
                 watchIsReachable = false
             }
+            
+//            let fileName1URLToDelete = FileManager.default.temporaryDirectory.appendingPathComponent("output.mp4")
+//            print("FIlemanager debug: \(fileName1URLToDelete)")
+//            DispatchQueue.global(qos: .utility).async {
+//                do {
+//                    try FileManager.default.removeItem(at: fileName1URLToDelete)
+//                } catch {
+//                    print("ERROR")
+//                }
+//            }
+//            print("FIlemanager delete debug: \(fileName1URLToDelete)")
         }
         .onReceive(vmWKM.$messageBackToControlView) { message in
             print("Message recieved on iPhone ControlsView: \(message)")
@@ -190,41 +201,50 @@ struct ControlsView: View {
         .onChange(of: shareVideo) { sheetShowing in
             // Make url = nil, if sheet is dismissed
             if sheetShowing == false {
-                do {
-                    let fileName1ToDelete = "output.mp4"
-                    let fileName1URLToDelete = FileManager.default.temporaryDirectory.appendingPathComponent(fileName1ToDelete)
-                    print("DEBUG 2 trying to delete: \(fileName1URLToDelete)")
-                    try FileManager.default.removeItem(at: fileName1URLToDelete)
-                    print("File: output.mp4 - deleted successfully.")
-                    
-                    let outputURL = FileManager.default.temporaryDirectory.appendingPathComponent("output.mp4")
-                    print("DEBUG 3 After deleting: \(outputURL)")
-                    
-                    let fileName2ToDelete = "outputURL.mp4"
-                    let file2URLToDelete = FileManager.default.temporaryDirectory.appendingPathComponent(fileName2ToDelete)
-                    try FileManager.default.removeItem(at: file2URLToDelete)
-                    print("File: outputURL.mp4 - deleted successfully.")
-                    
-                    guard cm.videoURL != nil else { return }
-                    if let file3NameToDelete = cm.videoURL {
+                DispatchQueue.global(qos: .utility).async {
+                    do {
+                        let fileName1ToDelete = "output.mp4"
+                        let fileName1URLToDelete = FileManager.default.temporaryDirectory.appendingPathComponent(fileName1ToDelete)
+                        print("DEBUG 2 trying to delete: \(fileName1URLToDelete)")
+                        try FileManager.default.removeItem(at: fileName1URLToDelete)
+                        print("File: output.mp4 - deleted successfully.")
                         
-                        try FileManager.default.removeItem(at: file3NameToDelete)
-                        print("File: \(String(describing: cm.videoURL)) - deleted successfully.")
+                        let fileName2ToDelete = "outputURL.mp4"
+                        let file2URLToDelete = FileManager.default.temporaryDirectory.appendingPathComponent(fileName2ToDelete)
+                        try FileManager.default.removeItem(at: file2URLToDelete)
+                        print("File: outputURL.mp4 - deleted successfully.")
+                        
+                        guard cm.videoURL != nil else { return }
+                        if let file3NameToDelete = cm.videoURL {
+                            
+                            //                        try FileManager.default.removeItem(at: file3NameToDelete)
+                            //                        print("File: \(String(describing: cm.videoURL)) - deleted successfully.")
+                            
+                            do {
+                                try FileManager.default.removeItem(at: file3NameToDelete)
+                            } catch {
+                                print("ERROR")
+                            }
+                            
+                            
+//                            cm.videoURL = nil
+//                            viewRecorder.finalVideoURL = nil
+//                            url = nil
+                            print("file3NameToDelete deleted")
+                        }
                         
                         
-                        cm.videoURL = nil
-                        print("DEEEZ")
-                        viewRecorder.finalVideoURL = nil
-                        url = nil
+                    } catch {
+                        print("Error deleting from FileManager: \(error.localizedDescription)")
+//                        cm.videoURL = nil
+//                        viewRecorder.finalVideoURL = nil
+//                        url = nil
                     }
-                    
-                    
-                } catch {
-                    print("Error deleting from FileManager: \(error.localizedDescription)")
-                    cm.videoURL = nil
-                    viewRecorder.finalVideoURL = nil
-                    url = nil
                 }
+                
+                cm.videoURL = nil
+                viewRecorder.finalVideoURL = nil
+                url = nil
                 
                 sbm.resetGame {
                     print("Game reset")

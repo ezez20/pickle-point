@@ -40,9 +40,9 @@ struct ScoreBoardView: View {
                 .foregroundColor(.white)
                 .shadow(color: .yellow, radius: 10)
                 .position(x: geo.size.width - 20, y: geo.size.height/2)
-                .onReceive(sbm.timer) { _ in
-                    sbm.timePassed += 1
-                }
+//                .onReceive(sbm.timer) { _ in
+//                    sbm.timePassed += 1
+//                }
             
             if sbm.gameResetted != true {
                 Text(sbm.sideout ? "Side Out" : "")

@@ -156,7 +156,7 @@ extension CameraModel: AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAu
         case .start:
             // Set up Recording
 //            _filename = "PickePoint - \(Date.now.formatted(date: .abbreviated, time: .standard))"
-            _filename = "PickePoint - \(Date.now.formatted(date: .abbreviated, time: .standard))"
+            _filename = "PickePoint - \(UUID().uuidString)"
             guard let videoPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("\(_filename).mov") else { break }
             guard let writer = try? AVAssetWriter(outputURL: videoPath, fileType: .mov) else { break }
             let settings = _videoOutput?.recommendedVideoSettingsForAssetWriter(writingTo: .mov)

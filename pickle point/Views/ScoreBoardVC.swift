@@ -86,9 +86,9 @@ class ScoreBoardVC: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         print("ViewController DID LOAD")
-//        view.backgroundColor = .systemCyan.
+        view.backgroundColor = .systemCyan
 //        view.backgroundColor = .blue
-        view.backgroundColor = .clear
+//        view.backgroundColor = .clear
         NotificationCenter.default.addObserver(self, selector: #selector(startVideoRecorder), name: NSNotification.Name("startViewRecorder"), object: nil)
         
         NotificationCenter.default.addObserver(self, selector: #selector(updateTimer), name: NSNotification.Name("updateTimer"), object: nil)
@@ -167,10 +167,15 @@ extension ScoreBoardVC {
     }
     @objc func resetTimer() {
         timerLabel.text = "0:00"
+        team1ScoreLabel.text = String(sbm.team1Score)
+        team2ScoreLabel.text = String(sbm.team2Score)
+        currentlyScoringLabel.text = String(sbm.currentServer)
+        print("Scoreboard VC: resetTimer")
     }
     @objc func updateVC() {
         team1ScoreLabel.text = String(sbm.team1Score)
         team2ScoreLabel.text = String(sbm.team2Score)
+        print("updateVC: \(team2ScoreLabel)")
     }
     
 }

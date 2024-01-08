@@ -14,9 +14,13 @@ import SwiftUI
 final class ViewRecorder: NSObject, ObservableObject {
     
     var images = [UIImage]()
+    var imageFileURLs: [URL] = []
+    var imageFileUrlIDs: [String] = []
     var displayLink: CADisplayLink?
     var sourceView: UIView?
     var caDisplayLinkVideoURL: URL?
+    let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+    
     
     @Published var finalVideoURL: URL?
     @Published var videoCurrentlySaving = false
@@ -25,9 +29,10 @@ final class ViewRecorder: NSObject, ObservableObject {
     func startRecording(controller: ScoreBoardVC, completion: @escaping () -> Void) {
         self.sourceView = controller.view
 //        self.sourceView = controller.scoreBoardViewFrame
+        let fileURL = documentsDirectory.appendingPathComponent("screenshotmages")
         displayLink = CADisplayLink(target: self, selector: #selector(tick))
-//        displayLink?.preferredFrameRateRange = CAFrameRateRange(minimum: 60, maximum: 60, __preferred: 60)
-        displayLink?.preferredFrameRateRange = CAFrameRateRange(minimum: 30, maximum: 30, __preferred: 30)
+        displayLink?.preferredFrameRateRange = CAFrameRateRange(minimum: 60, maximum: 60, __preferred: 60)
+//        displayLink?.preferredFrameRateRange = CAFrameRateRange(minimum: 30, maximum: 30, __preferred: 30)
         
         // The following fixed the frame sync issue of the scoreboard.
 //        displayLink?.preferredFrameRateRange = CAFrameRateRange(minimum: 30, maximum: Float(UIScreen.main.maximumFramesPerSecond), __preferred: Float(UIScreen.main.maximumFramesPerSecond))
@@ -74,72 +79,113 @@ final class ViewRecorder: NSObject, ObservableObject {
         }
     }
 
-    @objc private func tick(_ displayLink: CADisplayLink) {
+    @objc private func tick(_ displayLink: CADisplayLink, fileURL: URL) {
+        imageFileURLs.removeAll()
+        imageFileUrlIDs.removeAll()
 //        let actualFramesPerSecond = 1 / (displayLink.targetTimestamp - displayLink.timestamp)
 //        print("Frame: \(actualFramesPerSecond)")
         if let sourceView = sourceView {
             let render = UIGraphicsImageRenderer(size: sourceView.frame.size)
 //            let render = UIGraphicsImageRenderer(size: CGSize(width: 80, height: 180))
+         
+            do {
+                try FileManager.default.createDirectory(at: fileURL, withIntermediateDirectories: true, attributes: nil)
+            } catch {
+                print("Error creating directory: \(error)")
+            }
             let image = render.image { (ctx) in
                 sourceView.layer.render(in: ctx.cgContext)
             }
-            images.append(image)
+            if let imageData = image.pngData() {
+                let imageUrlID = "imageID\(UUID().uuidString)"
+                let imageURLPATH = fileURL.appendingPathComponent(imageUrlID).appendingPathExtension("png")
+                do {
+                    try imageData.write(to: imageURLPATH)
+//                    imageFileUrlIDs.append(imageUrlID)
+                    imageFileURLs.append(imageURLPATH)
+                    print("Writing image")
+                } catch {
+                    print("Error imageData.write(to: fileURL)")
+                }
+//                images.append(image)
+            }
         }
     }
 
     private func writeToVideo(completion: @escaping (URL?) -> Void) {
-        guard !images.isEmpty else {
-            return
-        }
-        let outputURL = FileManager.default.temporaryDirectory.appendingPathComponent("output.mp4")
-        print("DEBUG 1: \(outputURL)")
-        let settings = [AVVideoCodecKey: AVVideoCodecType.h264,
-                        AVVideoWidthKey: images[0].size.width,
-                        AVVideoHeightKey: images[0].size.height] as [String : Any]
+        //        guard !images.isEmpty else {
+        //            return
+        //        }
         
-        print("DDD images count: \(images.count)")
-        print("DDD Width: \(images[0].size.width)")
-
-        if let videoWriter = try? AVAssetWriter(outputURL: outputURL, fileType: .mp4) {
-            let input = AVAssetWriterInput(mediaType: .video, outputSettings: settings)
-            let adaptor = AVAssetWriterInputPixelBufferAdaptor(assetWriterInput: input, sourcePixelBufferAttributes: nil)
+        guard !imageFileURLs.isEmpty else { return }
+        
+        do {
+            try autoreleasepool {
+                let outputURL = FileManager.default.temporaryDirectory.appendingPathComponent("output.mp4")
+                
+                let settings = [AVVideoCodecKey: AVVideoCodecType.h264,
+                                AVVideoWidthKey: 500,
+                               AVVideoHeightKey: 400] as [String : Any]
+                
+                //                            print("DDD images count: \(images.count)"))
+                
+                if let videoWriter = try? AVAssetWriter(outputURL: outputURL, fileType: .mp4) {
+                    let input = AVAssetWriterInput(mediaType: .video, outputSettings: settings)
+                    let adaptor = AVAssetWriterInputPixelBufferAdaptor(assetWriterInput: input, sourcePixelBufferAttributes: nil)
+                    
+                    if videoWriter.canAdd(input) {
+                        videoWriter.add(input)
+                    }
+                    
+                    videoWriter.startWriting()
+                    print("DDD deez")
+                    videoWriter.startSession(atSourceTime: CMTime.zero)
+                    //                let fps: Int32 = 30
+                    let fps: Int32 = 60
+                    //            let fps: Int32 = 120
+                    let frameDuration = CMTime(value: 1, timescale: fps)
+                    
+                    for (index, url) in imageFileURLs.enumerated() {
             
-            if videoWriter.canAdd(input) {
-                videoWriter.add(input)
-            }
-
-            videoWriter.startWriting()
-                print("DDD deez")
-            videoWriter.startSession(atSourceTime: CMTime.zero)
-  
-                let fps: Int32 = 30
-//            let fps: Int32 = 60
-//            let fps: Int32 = 120
-                let frameDuration = CMTime(value: 1, timescale: fps)
-
-                for (index, image) in images.enumerated() {
-                    if input.isReadyForMoreMediaData {
-                        let presentationTime = CMTimeMultiply(frameDuration, multiplier: Int32(index))
-                        if let pixelBuffer = image.pixelBuffer(width: Int(image.size.width), height: Int(image.size.height)) {
-                            adaptor.append(pixelBuffer, withPresentationTime: presentationTime)
+                        let imageData = try Data(contentsOf: url)
+                        if let image = UIImage(data: imageData) {
+                            if input.isReadyForMoreMediaData {
+                                let presentationTime = CMTimeMultiply(frameDuration, multiplier: Int32(index))
+                                print("Index time :\(Int32(index))")
+                                
+                                if let pixelBuffer = image.pixelBuffer(width: Int(image.size.width), height: Int(image.size.height)) {
+                                    adaptor.append(pixelBuffer, withPresentationTime: presentationTime)
+                                }
+                            }
+                            //                            if let pixelBuffer = image.pixelBuffer(width: Int(image.size.width), height: Int(image.size.height)) {
+                            //                                adaptor.append(pixelBuffer, withPresentationTime: presentationTime)
+                            //                            }
+                            
+                            //                        if let pixelBuffer = image.pixelBuffer(width: Int(image.size.width), height: Int(image.size.height)) {
+                            //                            adaptor.append(pixelBuffer, withPresentationTime: presentationTime)
+                            //                        }
+                            
                         }
+                        print("DDD deez 2")
+                        input.markAsFinished()
+                        print("DDD deez 3")
+                        videoWriter.finishWriting {
+                            print("DDD deez 4")
+                            //                    DispatchQueue.main.async {
+                            //                        self.caDisplayLinkVideoURL = outputURL
+                            //                        completion()
+                            //                    }
+                            
+                            //                        self.caDisplayLinkVideoURL = outputURL
+                            completion(outputURL)
+                            
+                        }
+                        
                     }
                 }
+            }
+        } catch {
             
-            print("DDD deez 2")
-                input.markAsFinished()
-            print("DDD deez 3")
-                videoWriter.finishWriting {
-                    print("DDD deez 4")
-//                    DispatchQueue.main.async {
-//                        self.caDisplayLinkVideoURL = outputURL
-//                        completion()
-//                    }
-                  
-//                        self.caDisplayLinkVideoURL = outputURL
-                        completion(outputURL)
-                    
-                }
         }
     }
     
@@ -174,8 +220,8 @@ final class ViewRecorder: NSObject, ObservableObject {
         
         let videoComposition = AVMutableVideoComposition()
         // Assuming 30 frames per second
-        videoComposition.frameDuration = CMTimeMake(value: 1, timescale: 30)
-//        videoComposition.frameDuration = CMTimeMake(value: 1, timescale: 60)
+//        videoComposition.frameDuration = CMTimeMake(value: 1, timescale: 30)
+        videoComposition.frameDuration = CMTimeMake(value: 1, timescale: 60)
 //        videoComposition.frameDuration = CMTimeMake(value: 1, timescale: 30)
         try? await videoComposition.renderSize = CGSize(
             width: max(track1.load(.naturalSize).width, track2.load(.naturalSize).width),
@@ -195,20 +241,20 @@ final class ViewRecorder: NSObject, ObservableObject {
 ////        let topLeftTransform: CGAffineTransform = .identity.translatedBy(x: 0, y: 0).scaledBy(x: 0.5, y: 0.5)
 //        let topRightTransform: CGAffineTransform = .identity.translatedBy(x: halfWidth + 100, y: 200).scaledBy(x: 2, y: 2).rotated(by: -.pi/2)
         print("DDD HALF: \(halfWidth)")
-        let topRightTransform: CGAffineTransform = .identity.translatedBy(x: -100, y: 800).scaledBy(x: 2, y: 2).rotated(by: -.pi/2)
+        let topRightTransform: CGAffineTransform = .identity.translatedBy(x: -80, y: 1000).scaledBy(x: 2, y: 2).rotated(by: -.pi/2)
 //        print("DDD halfWidth: \(halfWidth), transform: \(topRightTransform)")
 ////        let bottomLeftTransform: CGAffineTransform = .identity.translatedBy(x: 0, y: halfHeight).scaledBy(x: 0.5, y: 0.5)
 ////        let bottomRightTransform: CGAffineTransform = .identity.translatedBy(x: halfWidth, y: halfHeight).scaledBy(x: 0.5, y: 0.5)
 //        layerInstruction1.setTransform(topRightTransform, at: .zero)
         
         // Adjust the transform if needed (Adjust rotation)
-        let desiredRotation = CGAffineTransform(rotationAngle: -.pi/2)
+//        let desiredRotation = CGAffineTransform(rotationAngle: -.pi/2)
 //        layerInstruction2.setTransform(desiredRotation, at: .zero)
 //        layerInstruction2.setTransform(transform, at: .zero)
 //
-        try? await layerInstruction1.setTransform(track1.load(.preferredTransform).concatenating(topRightTransform), at: .zero)
+//        try? await layerInstruction1.setTransform(track1.load(.preferredTransform).concatenating(topRightTransform), at: .zero)
 //        layerInstruction1.setCropRectangle(CGRect(x: 300, y: -300, width: 180, height: 100), at: .zero)
-        layerInstruction1.setCropRectangle(CGRect(x: 300, y: -120, width: 80, height: 350), at: .zero)
+//        layerInstruction1.setCropRectangle(CGRect(x: 300, y: -120, width: 80, height: 350), at: .zero)
 //        try? await layerInstruction2.setTransform(track2.load(.preferredTransform), at: .zero)
 
         instruction.layerInstructions = [layerInstruction1, layerInstruction2]

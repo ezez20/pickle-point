@@ -29,8 +29,8 @@ class ScoreBoardManager: ObservableObject {
     
     @Published var gameStart = false
     @Published var timePassed = 0
-    @Published var timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
-//    var timer = Timer()
+//    @Published var timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+    var timer = Timer()
 }
 
 extension ScoreBoardManager {
@@ -39,19 +39,19 @@ extension ScoreBoardManager {
         gameStart.toggle()
         if gameStart {
             //Start timer - Using SwiftUI/Publisher
-            self.timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+//            self.timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
             NotificationCenter.default.post(name: NSNotification.Name(rawValue: "startViewRecorder"), object: nil)
             
             // Start timer - Using UIKit
-//            timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(timeAppend), userInfo: nil, repeats: true)
+            timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(timeAppend), userInfo: nil, repeats: true)
             completion(true)
         } else {
             //Stop timer - Using SwiftUI/Publisher
-            timer.upstream.connect().cancel()
+//            timer.upstream.connect().cancel()
 //            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "stopViewRecorder"), object: nil)
             
             // Stop timer - Using UIKit
-//            timer.invalidate()
+            timer.invalidate()
             completion(false)
         }
     }
