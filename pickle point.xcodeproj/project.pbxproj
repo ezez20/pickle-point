@@ -503,7 +503,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.wyyeoh.pickle-point";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.wyyeoh.pickle-point2";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -538,7 +538,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.wyyeoh.pickle-point";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.wyyeoh.pickle-point2";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -558,14 +558,14 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = "com.wyyeoh.pickle-point";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = "com.wyyeoh.pickle-point2";
 				INFOPLIST_KEY_WKRunsIndependentlyOfCompanionApp = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.wyyeoh.pickle-point.watchkitapp";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.wyyeoh.pickle-point2.watchkitapp";
 				PRODUCT_NAME = "Pickle Point Watch";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
@@ -588,14 +588,14 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = "com.wyyeoh.pickle-point";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = "com.wyyeoh.pickle-point2";
 				INFOPLIST_KEY_WKRunsIndependentlyOfCompanionApp = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.wyyeoh.pickle-point.watchkitapp";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.wyyeoh.pickle-point2.watchkitapp";
 				PRODUCT_NAME = "Pickle Point Watch";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
