@@ -14,12 +14,13 @@ import SwiftUI
 final class ViewRecorder: NSObject, ObservableObject {
     
     var images = [UIImage]()
-    var imageFileURLs: [URL] = []
-    var imageFileUrlIDs: [String] = []
+    var imageFileURLs = [URL]()
+//    var imageFileUrlIDs = [String]()
     var displayLink: CADisplayLink?
     var sourceView: UIView?
     var caDisplayLinkVideoURL: URL?
-    let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+    var documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+    var fileURLDirectory: URL?
     
     
     @Published var finalVideoURL: URL?
@@ -29,10 +30,17 @@ final class ViewRecorder: NSObject, ObservableObject {
     func startRecording(controller: ScoreBoardVC, completion: @escaping () -> Void) {
         self.sourceView = controller.view
 //        self.sourceView = controller.scoreBoardViewFrame
-        let fileURL = documentsDirectory.appendingPathComponent("screenshotmages")
+        self.fileURLDirectory = documentsDirectory.appendingPathComponent("screenshotmages")
+        if let url = fileURLDirectory {
+            do {
+                try FileManager.default.createDirectory(at: url, withIntermediateDirectories: true, attributes: nil)
+            } catch {
+                print("Error creating directory: \(error)")
+            }
+        }
         displayLink = CADisplayLink(target: self, selector: #selector(tick))
-        displayLink?.preferredFrameRateRange = CAFrameRateRange(minimum: 60, maximum: 60, __preferred: 60)
-//        displayLink?.preferredFrameRateRange = CAFrameRateRange(minimum: 30, maximum: 30, __preferred: 30)
+//        displayLink?.preferredFrameRateRange = CAFrameRateRange(minimum: 60, maximum: 60, __preferred: 60)
+        displayLink?.preferredFrameRateRange = CAFrameRateRange(minimum: 30, maximum: 30, __preferred: 30)
         
         // The following fixed the frame sync issue of the scoreboard.
 //        displayLink?.preferredFrameRateRange = CAFrameRateRange(minimum: 30, maximum: Float(UIScreen.main.maximumFramesPerSecond), __preferred: Float(UIScreen.main.maximumFramesPerSecond))
@@ -61,7 +69,7 @@ final class ViewRecorder: NSObject, ObservableObject {
         displayLink = nil
         
         guard let cameraVideoURL = cameraVideoURL else {
-            print("Deez")
+            print("cameraVideoURL nil")
             return
         }
         
@@ -70,44 +78,46 @@ final class ViewRecorder: NSObject, ObservableObject {
                 do {
 //                    guard let caDisplayLinkVideoURLUnwrapped = self.caDisplayLinkVideoURL else { return }
 //                    try await self.overlayVideos(videoURL1: caDisplayLinkVideoURLUnwrapped, videoURL2: cameraVideoURL)
+                    if let urlToDelete = self.fileURLDirectory {
+                        try FileManager.default.removeItem(at: urlToDelete)
+                    }
                     guard let url = url else { return }
                     try await self.overlayVideos(videoURL1: url, videoURL2: cameraVideoURL)
                 } catch {
-                  print("Error trying: overlayVideos")
+                  print("Error for writeToVideo func: \(error)")
                 }
             }
         }
     }
 
-    @objc private func tick(_ displayLink: CADisplayLink, fileURL: URL) {
-        imageFileURLs.removeAll()
-        imageFileUrlIDs.removeAll()
+    @objc private func tick(_ displayLink: CADisplayLink) {
+//        imageFileURLs.removeAll()
+//        imageFileUrlIDs.removeAll()
 //        let actualFramesPerSecond = 1 / (displayLink.targetTimestamp - displayLink.timestamp)
 //        print("Frame: \(actualFramesPerSecond)")
         if let sourceView = sourceView {
             let render = UIGraphicsImageRenderer(size: sourceView.frame.size)
 //            let render = UIGraphicsImageRenderer(size: CGSize(width: 80, height: 180))
          
-            do {
-                try FileManager.default.createDirectory(at: fileURL, withIntermediateDirectories: true, attributes: nil)
-            } catch {
-                print("Error creating directory: \(error)")
-            }
+         
             let image = render.image { (ctx) in
                 sourceView.layer.render(in: ctx.cgContext)
             }
             if let imageData = image.pngData() {
                 let imageUrlID = "imageID\(UUID().uuidString)"
-                let imageURLPATH = fileURL.appendingPathComponent(imageUrlID).appendingPathExtension("png")
-                do {
-                    try imageData.write(to: imageURLPATH)
-//                    imageFileUrlIDs.append(imageUrlID)
-                    imageFileURLs.append(imageURLPATH)
-                    print("Writing image")
-                } catch {
-                    print("Error imageData.write(to: fileURL)")
+                if let url = fileURLDirectory {
+                    let imageURLPATH = url.appendingPathComponent(imageUrlID).appendingPathExtension("png")
+                    do {
+                        try imageData.write(to: imageURLPATH)
+//                        imageFileUrlIDs.append(imageUrlID)
+                        imageFileURLs.append(imageURLPATH)
+                        print("Writing image")
+                        print("Writing image ImageFileURL: \(imageURLPATH)")
+                    } catch {
+                        print("Error imageData.write(to: fileURL)")
+                    }
+                    //                images.append(image)
                 }
-//                images.append(image)
             }
         }
     }
@@ -127,8 +137,6 @@ final class ViewRecorder: NSObject, ObservableObject {
                                 AVVideoWidthKey: 500,
                                AVVideoHeightKey: 400] as [String : Any]
                 
-                //                            print("DDD images count: \(images.count)"))
-                
                 if let videoWriter = try? AVAssetWriter(outputURL: outputURL, fileType: .mp4) {
                     let input = AVAssetWriterInput(mediaType: .video, outputSettings: settings)
                     let adaptor = AVAssetWriterInputPixelBufferAdaptor(assetWriterInput: input, sourcePixelBufferAttributes: nil)
@@ -140,10 +148,12 @@ final class ViewRecorder: NSObject, ObservableObject {
                     videoWriter.startWriting()
                     print("DDD deez")
                     videoWriter.startSession(atSourceTime: CMTime.zero)
-                    //                let fps: Int32 = 30
-                    let fps: Int32 = 60
+                    let fps: Int32 = 30
+//                    let fps: Int32 = 60
                     //            let fps: Int32 = 120
                     let frameDuration = CMTime(value: 1, timescale: fps)
+                    
+                  
                     
                     for (index, url) in imageFileURLs.enumerated() {
             
@@ -166,21 +176,25 @@ final class ViewRecorder: NSObject, ObservableObject {
                             //                        }
                             
                         }
-                        print("DDD deez 2")
-                        input.markAsFinished()
-                        print("DDD deez 3")
-                        videoWriter.finishWriting {
-                            print("DDD deez 4")
-                            //                    DispatchQueue.main.async {
-                            //                        self.caDisplayLinkVideoURL = outputURL
-                            //                        completion()
-                            //                    }
-                            
-                            //                        self.caDisplayLinkVideoURL = outputURL
-                            completion(outputURL)
-                            
-                        }
+
                         
+                    }
+                    print("DDD deez 2")
+                    input.markAsFinished()
+                    print("DDD deez 3")
+                    videoWriter.finishWriting {
+                        print("DDD deez 4")
+                        //                    DispatchQueue.main.async {
+                        //                        self.caDisplayLinkVideoURL = outputURL
+                        //                        completion()
+                        //                    }
+                        
+                        //                        self.caDisplayLinkVideoURL = outputURL
+                        
+                        self.imageFileURLs.removeAll()
+//                        self.imageFileUrlIDs.removeAll()
+                        self.documentsDirectory.removeAllCachedResourceValues()
+                        completion(outputURL)
                     }
                 }
             }
@@ -220,8 +234,8 @@ final class ViewRecorder: NSObject, ObservableObject {
         
         let videoComposition = AVMutableVideoComposition()
         // Assuming 30 frames per second
-//        videoComposition.frameDuration = CMTimeMake(value: 1, timescale: 30)
-        videoComposition.frameDuration = CMTimeMake(value: 1, timescale: 60)
+        videoComposition.frameDuration = CMTimeMake(value: 1, timescale: 30)
+//        videoComposition.frameDuration = CMTimeMake(value: 1, timescale: 60)
 //        videoComposition.frameDuration = CMTimeMake(value: 1, timescale: 30)
         try? await videoComposition.renderSize = CGSize(
             width: max(track1.load(.naturalSize).width, track2.load(.naturalSize).width),

@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		512546FE29FAD27F003594C8 /* Pickle Point.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 51D07FCB29F396860089B505 /* Pickle Point.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		512546FE29FAD27F003594C8 /* Pickle Point Watch.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 51D07FCB29F396860089B505 /* Pickle Point Watch.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		513459F32B2264890055AD32 /* TestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 513459F22B2264890055AD32 /* TestViewController.swift */; };
 		513459F52B2265B30055AD32 /* MyView2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 513459F42B2265B30055AD32 /* MyView2.swift */; };
 		51363EAC2AF00FCE0060557C /* CameraModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51363EAB2AF00FCE0060557C /* CameraModel.swift */; };
@@ -40,7 +40,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		512546FF29FAD27F003594C8 /* PBXContainerItemProxy */ = {
+		516183732B4FC7C0006AE3A9 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 51BB2DA629E5C85400E52302 /* Project object */;
 			proxyType = 1;
@@ -56,7 +56,7 @@
 			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
 			dstSubfolderSpec = 16;
 			files = (
-				512546FE29FAD27F003594C8 /* Pickle Point.app in Embed Watch Content */,
+				512546FE29FAD27F003594C8 /* Pickle Point Watch.app in Embed Watch Content */,
 			);
 			name = "Embed Watch Content";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -83,7 +83,7 @@
 		51BB2DC829E620BE00E52302 /* CameraPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPreview.swift; sourceTree = "<group>"; };
 		51C5CADC29F4B3CF005B5AB3 /* WatchKitManager_iOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchKitManager_iOS.swift; sourceTree = "<group>"; };
 		51C5CAE029F4B966005B5AB3 /* WatchKitManager_WatchOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchKitManager_WatchOS.swift; sourceTree = "<group>"; };
-		51D07FCB29F396860089B505 /* Pickle Point.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Pickle Point.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		51D07FCB29F396860089B505 /* Pickle Point Watch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Pickle Point Watch.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		51D07FCD29F396860089B505 /* pickle_point_watchOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = pickle_point_watchOSApp.swift; sourceTree = "<group>"; };
 		51D07FCF29F396860089B505 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		51D07FD129F396870089B505 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -135,7 +135,7 @@
 			isa = PBXGroup;
 			children = (
 				51BB2DAE29E5C85400E52302 /* pickle point.app */,
-				51D07FCB29F396860089B505 /* Pickle Point.app */,
+				51D07FCB29F396860089B505 /* Pickle Point Watch.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -229,7 +229,7 @@
 			buildRules = (
 			);
 			dependencies = (
-				5125470029FAD27F003594C8 /* PBXTargetDependency */,
+				516183742B4FC7C0006AE3A9 /* PBXTargetDependency */,
 			);
 			name = "pickle point";
 			productName = "pickle point";
@@ -250,7 +250,7 @@
 			);
 			name = "pickle-point-watchOS Watch App";
 			productName = "pickle-point-watchOS Watch App";
-			productReference = 51D07FCB29F396860089B505 /* Pickle Point.app */;
+			productReference = 51D07FCB29F396860089B505 /* Pickle Point Watch.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -354,10 +354,10 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		5125470029FAD27F003594C8 /* PBXTargetDependency */ = {
+		516183742B4FC7C0006AE3A9 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 51D07FCA29F396860089B505 /* pickle-point-watchOS Watch App */;
-			targetProxy = 512546FF29FAD27F003594C8 /* PBXContainerItemProxy */;
+			targetProxy = 516183732B4FC7C0006AE3A9 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -487,7 +487,7 @@
 				DEVELOPMENT_TEAM = XUZG54S76B;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = "Pickle Point";
+				INFOPLIST_KEY_CFBundleDisplayName = PicklePoint;
 				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_NSCameraUsageDescription = "\"Please enable camera usage for video recording\"";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "\"Please enable mic for audio recording\"";
@@ -522,7 +522,7 @@
 				DEVELOPMENT_TEAM = XUZG54S76B;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = "Pickle Point";
+				INFOPLIST_KEY_CFBundleDisplayName = PicklePoint;
 				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_NSCameraUsageDescription = "\"Please enable camera usage for video recording\"";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "\"Please enable mic for audio recording\"";
@@ -565,8 +565,8 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.wyyeoh.pickle-point.watchkit";
-				PRODUCT_NAME = "Pickle Point";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.wyyeoh-picklepoint-watch.watchkit";
+				PRODUCT_NAME = "Pickle Point Watch";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -595,8 +595,8 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.wyyeoh.pickle-point.watchkit";
-				PRODUCT_NAME = "Pickle Point";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.wyyeoh-picklepoint-watch.watchkit";
+				PRODUCT_NAME = "Pickle Point Watch";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;

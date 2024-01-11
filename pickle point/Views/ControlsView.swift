@@ -214,35 +214,18 @@ struct ControlsView: View {
                         try FileManager.default.removeItem(at: file2URLToDelete)
                         print("File: outputURL.mp4 - deleted successfully.")
                         
-                        guard cm.videoURL != nil else { return }
+//                        guard cm.videoURL != nil else { return }
                         if let file3NameToDelete = cm.videoURL {
-                            
-                            //                        try FileManager.default.removeItem(at: file3NameToDelete)
-                            //                        print("File: \(String(describing: cm.videoURL)) - deleted successfully.")
-                            
-                            do {
                                 try FileManager.default.removeItem(at: file3NameToDelete)
-                            } catch {
-                                print("ERROR")
-                            }
-                            
-                            
-//                            cm.videoURL = nil
-//                            viewRecorder.finalVideoURL = nil
-//                            url = nil
-                            print("file3NameToDelete deleted")
+                                print("file3NameToDelete deleted")
                         }
-                        
                         
                     } catch {
                         print("Error deleting from FileManager: \(error.localizedDescription)")
-//                        cm.videoURL = nil
-//                        viewRecorder.finalVideoURL = nil
-//                        url = nil
                     }
                 }
                 
-                cm.videoURL = nil
+//                cm.videoURL = nil
                 viewRecorder.finalVideoURL = nil
                 url = nil
                 

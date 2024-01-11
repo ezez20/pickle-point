@@ -59,7 +59,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "51D07FCA29F396860089B505"
-            BuildableName = "Pickle Point.app"
+            BuildableName = "Pickle Point Watch.app"
             BlueprintName = "pickle-point-watchOS Watch App"
             ReferencedContainer = "container:pickle point.xcodeproj">
          </BuildableReference>
@@ -76,7 +76,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "51D07FCA29F396860089B505"
-            BuildableName = "Pickle Point.app"
+            BuildableName = "Pickle Point Watch.app"
             BlueprintName = "pickle-point-watchOS Watch App"
             ReferencedContainer = "container:pickle point.xcodeproj">
          </BuildableReference>
