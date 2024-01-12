@@ -210,4 +210,13 @@ extension ScoreBoardManager {
         }
     }
     
+    func resetScore() {
+        team1Score = 0
+        team2Score = 0
+        currentServer = 2
+        currentlyTeam1Serving = true
+        currentlyTeam2Serving = false
+        sideout = false
+    }
+    
 }

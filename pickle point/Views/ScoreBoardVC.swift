@@ -87,7 +87,7 @@ class ScoreBoardVC: UIViewController {
         // Do any additional setup after loading the view.
         print("ViewController DID LOAD")
 //        view.backgroundColor = .systemCyan
-//        view.backgroundColor = .blue
+        view.backgroundColor = .blue
 //        view.backgroundColor = .clear
         NotificationCenter.default.addObserver(self, selector: #selector(startVideoRecorder), name: NSNotification.Name("startViewRecorder"), object: nil)
         

@@ -129,8 +129,7 @@ final class ViewRecorder: NSObject, ObservableObject {
         
         guard !imageFileURLs.isEmpty else { return }
         
-        do {
-            try autoreleasepool {
+      
                 let outputURL = FileManager.default.temporaryDirectory.appendingPathComponent("output.mp4")
                 
                 let settings = [AVVideoCodecKey: AVVideoCodecType.h264,
@@ -156,29 +155,33 @@ final class ViewRecorder: NSObject, ObservableObject {
                   
                     
                     for (index, url) in imageFileURLs.enumerated() {
-            
-                        let imageData = try Data(contentsOf: url)
-                        if let image = UIImage(data: imageData) {
-                            if input.isReadyForMoreMediaData {
-                                let presentationTime = CMTimeMultiply(frameDuration, multiplier: Int32(index))
-                                print("Index time :\(Int32(index))")
-                                
-                                if let pixelBuffer = image.pixelBuffer(width: Int(image.size.width), height: Int(image.size.height)) {
-                                    adaptor.append(pixelBuffer, withPresentationTime: presentationTime)
+                        do {
+                            try autoreleasepool {
+                            let imageData = try Data(contentsOf: url)
+                                if let image = UIImage(data: imageData) {
+                                    if input.isReadyForMoreMediaData {
+                                        let presentationTime = CMTimeMultiply(frameDuration, multiplier: Int32(index))
+                                        print("Index time :\(Int32(index))")
+                                        
+                                        if let pixelBuffer = image.pixelBuffer(width: Int(image.size.width), height: Int(image.size.height)) {
+                                            adaptor.append(pixelBuffer, withPresentationTime: presentationTime)
+                                        }
+                                    }
+                                    //                            if let pixelBuffer = image.pixelBuffer(width: Int(image.size.width), height: Int(image.size.height)) {
+                                    //                                adaptor.append(pixelBuffer, withPresentationTime: presentationTime)
+                                    //                            }
+                                    
+                                    //                        if let pixelBuffer = image.pixelBuffer(width: Int(image.size.width), height: Int(image.size.height)) {
+                                    //                            adaptor.append(pixelBuffer, withPresentationTime: presentationTime)
+                                    //                        }
                                 }
                             }
-                            //                            if let pixelBuffer = image.pixelBuffer(width: Int(image.size.width), height: Int(image.size.height)) {
-                            //                                adaptor.append(pixelBuffer, withPresentationTime: presentationTime)
-                            //                            }
-                            
-                            //                        if let pixelBuffer = image.pixelBuffer(width: Int(image.size.width), height: Int(image.size.height)) {
-                            //                            adaptor.append(pixelBuffer, withPresentationTime: presentationTime)
-                            //                        }
-                            
+                        } catch {
+                            print("Error for autoreleasepool: \(error)")
                         }
-
                         
                     }
+                    
                     print("DDD deez 2")
                     input.markAsFinished()
                     print("DDD deez 3")
@@ -197,10 +200,7 @@ final class ViewRecorder: NSObject, ObservableObject {
                         completion(outputURL)
                     }
                 }
-            }
-        } catch {
-            
-        }
+        
     }
     
     func overlayVideos(videoURL1: URL, videoURL2: URL) async throws -> Void {
@@ -249,13 +249,13 @@ final class ViewRecorder: NSObject, ObservableObject {
         let layerInstruction1 = AVMutableVideoCompositionLayerInstruction(assetTrack: compositionTrack1!)
         let layerInstruction2 = AVMutableVideoCompositionLayerInstruction(assetTrack: compositionTrack2!)
         
-        let naturalSize = compositionTrack1?.naturalSize
-        let halfWidth = (naturalSize?.width ?? 0) / 2
+//        let naturalSize = compositionTrack1?.naturalSize
+//        let halfWidth = (naturalSize?.width ?? 0) / 2
 ////        let halfHeight = (naturalSize?.height ?? 0) / 2
 ////        let topLeftTransform: CGAffineTransform = .identity.translatedBy(x: 0, y: 0).scaledBy(x: 0.5, y: 0.5)
 //        let topRightTransform: CGAffineTransform = .identity.translatedBy(x: halfWidth + 100, y: 200).scaledBy(x: 2, y: 2).rotated(by: -.pi/2)
-        print("DDD HALF: \(halfWidth)")
-        let topRightTransform: CGAffineTransform = .identity.translatedBy(x: -80, y: 1000).scaledBy(x: 2, y: 2).rotated(by: -.pi/2)
+//        print("DDD HALF: \(halfWidth)")
+        let topRightTransform: CGAffineTransform = .identity.translatedBy(x: -50, y: 520).scaledBy(x: 2.8, y: 1).rotated(by: -.pi/2)
 //        print("DDD halfWidth: \(halfWidth), transform: \(topRightTransform)")
 ////        let bottomLeftTransform: CGAffineTransform = .identity.translatedBy(x: 0, y: halfHeight).scaledBy(x: 0.5, y: 0.5)
 ////        let bottomRightTransform: CGAffineTransform = .identity.translatedBy(x: halfWidth, y: halfHeight).scaledBy(x: 0.5, y: 0.5)
@@ -267,7 +267,8 @@ final class ViewRecorder: NSObject, ObservableObject {
 //        layerInstruction2.setTransform(transform, at: .zero)
 //
 //        try? await layerInstruction1.setTransform(track1.load(.preferredTransform).concatenating(topRightTransform), at: .zero)
-//        layerInstruction1.setCropRectangle(CGRect(x: 300, y: -300, width: 180, height: 100), at: .zero)
+        layerInstruction1.setTransform(topRightTransform, at: .zero)
+        layerInstruction1.setCropRectangle(CGRect(x: 370, y: 20, width: 140, height: 95), at: .zero)
 //        layerInstruction1.setCropRectangle(CGRect(x: 300, y: -120, width: 80, height: 350), at: .zero)
 //        try? await layerInstruction2.setTransform(track2.load(.preferredTransform), at: .zero)
 

@@ -102,9 +102,7 @@ struct ScoreBoardView: View {
             .position(x: geo.size.width - 30, y: 140)
             .simultaneousGesture(
                 LongPressGesture(minimumDuration: 1.0).onEnded({ _ in
-                    sbm.resetGame {
-                        sbm.timePassed = 0
-                    }
+                    sbm.resetScore()
                 })
             )
         }

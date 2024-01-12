@@ -15,7 +15,6 @@
 		514738BE2AFE817E00F3862E /* ScoreBoardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 514738BD2AFE817D00F3862E /* ScoreBoardView.swift */; };
 		515D16C72AF14A4A009494D4 /* ShareSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 515D16C62AF14A4A009494D4 /* ShareSheet.swift */; };
 		5172777F2B019C8900C47A32 /* WatchDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5172777E2B019C8900C47A32 /* WatchDelegate.swift */; };
-		51A057302B0A7CF200F32351 /* MyHostingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51A0572F2B0A7CF200F32351 /* MyHostingController.swift */; };
 		51A3C71A2A05A5BE00E01355 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51A3C7192A05A5BE00E01355 /* Constants.swift */; };
 		51A3C71B2A05A71A00E01355 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51A3C7192A05A5BE00E01355 /* Constants.swift */; };
 		51BB2DB229E5C85400E52302 /* pickle_pointApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51BB2DB129E5C85400E52302 /* pickle_pointApp.swift */; };
@@ -71,7 +70,6 @@
 		514738BD2AFE817D00F3862E /* ScoreBoardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreBoardView.swift; sourceTree = "<group>"; };
 		515D16C62AF14A4A009494D4 /* ShareSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShareSheet.swift; sourceTree = "<group>"; };
 		5172777E2B019C8900C47A32 /* WatchDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchDelegate.swift; sourceTree = "<group>"; };
-		51A0572F2B0A7CF200F32351 /* MyHostingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyHostingController.swift; sourceTree = "<group>"; };
 		51A3C7192A05A5BE00E01355 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		51BB2DAE29E5C85400E52302 /* pickle point.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "pickle point.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		51BB2DB129E5C85400E52302 /* pickle_pointApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = pickle_pointApp.swift; sourceTree = "<group>"; };
@@ -207,7 +205,6 @@
 				51363EAB2AF00FCE0060557C /* CameraModel.swift */,
 				51DE28B42B02BE9E00AC607C /* ScoreBoardManager.swift */,
 				51C5CADC29F4B3CF005B5AB3 /* WatchKitManager_iOS.swift */,
-				51A0572F2B0A7CF200F32351 /* MyHostingController.swift */,
 				51D87F592B0BC7010071276A /* ViewRecorder.swift */,
 				513459F22B2264890055AD32 /* TestViewController.swift */,
 			);
@@ -316,7 +313,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				51A057302B0A7CF200F32351 /* MyHostingController.swift in Sources */,
 				51BB2DBB29E5C85500E52302 /* Persistence.swift in Sources */,
 				51A3C71A2A05A5BE00E01355 /* Constants.swift in Sources */,
 				5144F0332B0055E80059DC4C /* RecordingView.swift in Sources */,
