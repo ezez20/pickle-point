@@ -162,6 +162,8 @@ extension ScoreBoardView {
             sbm.currentlyTeam1Serving = message["currentlyTeam1Serving"] as? Bool ?? true
             sbm.currentlyTeam2Serving = message["currentlyTeam2Serving"] as? Bool ?? false
             sbm.gameStart = message["gameStart"] as? Bool ?? false
+            
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateVC"), object: nil)
         }
     }
     

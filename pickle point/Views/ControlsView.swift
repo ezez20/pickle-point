@@ -66,7 +66,7 @@ struct ControlsView: View {
                     Image(systemName: "record.circle")
                         .resizable()
                         .frame(width: 50, height: 50)
-                        .foregroundColor(sbm.gameStart ? .red : .green)
+                        .foregroundColor(cm._captureState == .start ? .red : .green)
                 }
                 
                 HStack {
@@ -195,6 +195,7 @@ struct ControlsView: View {
         .onChange(of: viewRecorder.finalVideoURL, perform: { videoURL in
             if videoURL != nil {
                 url = videoURL
+                videoCurrentlySaving = false
                 shareVideo.toggle()
             }
         })

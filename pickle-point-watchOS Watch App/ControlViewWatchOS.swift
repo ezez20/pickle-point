@@ -128,11 +128,8 @@ struct ControlViewWatchOS: View {
                     .simultaneousGesture(
                         LongPressGesture(minimumDuration: 1.0).onEnded({ _ in
                             resetGame()
-
                             updateScoreToPhone()
-                            
                         })
-                        
                     )
                     
                     Spacer()

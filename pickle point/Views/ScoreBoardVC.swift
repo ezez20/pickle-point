@@ -15,11 +15,9 @@ class ScoreBoardVC: UIViewController {
     
     var sbm: ScoreBoardManager
     
-    // SCOREBOARD FRAME
     let scoreBoardViewFrame: UIView = {
         let view = UIView()
-        view.layer.cornerRadius = 20
-        view.backgroundColor = .secondarySystemBackground
+        view.backgroundColor = .secondarySystemGroupedBackground
         return view
     }()
     
@@ -45,7 +43,7 @@ class ScoreBoardVC: UIViewController {
     
     var team2ScoreLabel: UILabel = {
         let label = UILabel()
-        label.textColor = .systemRed
+        label.textColor = .systemGray
         label.text = "0"
         label.font = .systemFont(ofSize: 35)
         label.transform = CGAffineTransform(rotationAngle: .pi/2)
@@ -58,13 +56,13 @@ class ScoreBoardVC: UIViewController {
         imageView.image = UIImage(systemName: "soccerball")
         imageView.frame.size = CGSize(width: 10, height: 10)
         imageView.transform = CGAffineTransform(rotationAngle: .pi/2)
-        imageView.tintColor = UIColor(named: "neonGreen")
+        imageView.tintColor = .systemYellow
         return imageView
     }()
     
     let currentlyScoringLabel: UILabel = {
         let label = UILabel()
-        label.textColor = .systemYellow
+        label.textColor = .systemMint
         label.text = "2"
         label.font = .systemFont(ofSize: 35)
         label.transform = CGAffineTransform(rotationAngle: .pi/2)
@@ -82,13 +80,20 @@ class ScoreBoardVC: UIViewController {
         return label
     }()
     
+    let ppLogo: UIImageView = {
+       let imageView = UIImageView()
+        imageView.image = UIImage(named: "AppIcon")
+        imageView.contentMode = .scaleAspectFit
+        imageView.transform = imageView.transform.rotated(by: .pi/2)
+        return imageView
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         print("ViewController DID LOAD")
-//        view.backgroundColor = .systemCyan
-        view.backgroundColor = .blue
-//        view.backgroundColor = .clear
+//        view.backgroundColor = .systemBlue
+        
         NotificationCenter.default.addObserver(self, selector: #selector(startVideoRecorder), name: NSNotification.Name("startViewRecorder"), object: nil)
         
         NotificationCenter.default.addObserver(self, selector: #selector(updateTimer), name: NSNotification.Name("updateTimer"), object: nil)
@@ -141,6 +146,16 @@ class ScoreBoardVC: UIViewController {
         timerLabel.centerXAnchor.constraint(equalTo: scoreBoardViewFrame.leftAnchor, constant: 18).isActive = true
         timerLabel.centerYAnchor.constraint(equalTo: scoreBoardViewFrame.centerYAnchor).isActive = true
         timerLabel.text = String(sbm.gameTime(timePassed: sbm.timePassed))
+        
+        // ppLogo
+        ppLogo.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(ppLogo)
+        ppLogo.topAnchor.constraint(equalTo: scoreBoardViewFrame.bottomAnchor, constant: 10).isActive = true
+        ppLogo.topAnchor.constraint(equalTo: scoreBoardViewFrame.bottomAnchor, constant: 0).isActive = true
+        ppLogo.centerXAnchor.constraint(equalTo: scoreBoardViewFrame.centerXAnchor).isActive = true
+        ppLogo.topAnchor.constraint(equalTo: scoreBoardViewFrame.bottomAnchor).isActive = true
+        ppLogo.heightAnchor.constraint(equalTo: scoreBoardViewFrame.widthAnchor).isActive = true
+        
     }
     
     init(viewRecoder: ViewRecorder, sbm: ScoreBoardManager , session: AVCaptureSession?) {
@@ -156,6 +171,7 @@ class ScoreBoardVC: UIViewController {
 }
 
 extension ScoreBoardVC {
+    
     @objc func startVideoRecorder() {
         print("Start Video Recorder")
         viewRecoder.startRecording(controller: self) {
@@ -173,9 +189,27 @@ extension ScoreBoardVC {
         print("Scoreboard VC: resetTimer")
     }
     @objc func updateVC() {
-        team1ScoreLabel.text = String(sbm.team1Score)
-        team2ScoreLabel.text = String(sbm.team2Score)
-        print("updateVC: \(team2ScoreLabel)")
+        if sbm.currentlyTeam1Serving {
+            team1ScoreLabel.textColor = .systemGreen
+            team2ScoreLabel.textColor = .systemGray
+            team1ScoreLabel.text = String(sbm.team1Score)
+            team2ScoreLabel.text = String(sbm.team2Score)
+        } else {
+            team1ScoreLabel.textColor = .systemRed
+            team2ScoreLabel.textColor = .systemGray
+            team1ScoreLabel.text = String(sbm.team2Score)
+            team2ScoreLabel.text = String(sbm.team1Score)
+        }
+        
+        if sbm.sideout {
+            currentlyScoringLabel.text = "S"
+        } else {
+            currentlyScoringLabel.text = String(sbm.currentServer)
+        }
+        
+        if sbm.timePassed == 0 {
+            timerLabel.text = "0:00"
+        }
     }
     
 }

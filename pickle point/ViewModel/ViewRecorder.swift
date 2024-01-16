@@ -101,6 +101,11 @@ final class ViewRecorder: NSObject, ObservableObject {
          
          
             let image = render.image { (ctx) in
+                // Adjust sharpness of rendered image
+                sourceView.layer.contentsScale = 1.0
+                sourceView.layer.shouldRasterize = true
+                sourceView.layer.rasterizationScale = 0.5
+                
                 sourceView.layer.render(in: ctx.cgContext)
             }
             if let imageData = image.pngData() {
@@ -129,77 +134,77 @@ final class ViewRecorder: NSObject, ObservableObject {
         
         guard !imageFileURLs.isEmpty else { return }
         
-      
-                let outputURL = FileManager.default.temporaryDirectory.appendingPathComponent("output.mp4")
-                
-                let settings = [AVVideoCodecKey: AVVideoCodecType.h264,
-                                AVVideoWidthKey: 500,
-                               AVVideoHeightKey: 400] as [String : Any]
-                
-                if let videoWriter = try? AVAssetWriter(outputURL: outputURL, fileType: .mp4) {
-                    let input = AVAssetWriterInput(mediaType: .video, outputSettings: settings)
-                    let adaptor = AVAssetWriterInputPixelBufferAdaptor(assetWriterInput: input, sourcePixelBufferAttributes: nil)
-                    
-                    if videoWriter.canAdd(input) {
-                        videoWriter.add(input)
-                    }
-                    
-                    videoWriter.startWriting()
-                    print("DDD deez")
-                    videoWriter.startSession(atSourceTime: CMTime.zero)
-                    let fps: Int32 = 30
-//                    let fps: Int32 = 60
-                    //            let fps: Int32 = 120
-                    let frameDuration = CMTime(value: 1, timescale: fps)
-                    
-                  
-                    
-                    for (index, url) in imageFileURLs.enumerated() {
-                        do {
-                            try autoreleasepool {
-                            let imageData = try Data(contentsOf: url)
-                                if let image = UIImage(data: imageData) {
-                                    if input.isReadyForMoreMediaData {
-                                        let presentationTime = CMTimeMultiply(frameDuration, multiplier: Int32(index))
-                                        print("Index time :\(Int32(index))")
-                                        
-                                        if let pixelBuffer = image.pixelBuffer(width: Int(image.size.width), height: Int(image.size.height)) {
-                                            adaptor.append(pixelBuffer, withPresentationTime: presentationTime)
-                                        }
-                                    }
-                                    //                            if let pixelBuffer = image.pixelBuffer(width: Int(image.size.width), height: Int(image.size.height)) {
-                                    //                                adaptor.append(pixelBuffer, withPresentationTime: presentationTime)
-                                    //                            }
-                                    
-                                    //                        if let pixelBuffer = image.pixelBuffer(width: Int(image.size.width), height: Int(image.size.height)) {
-                                    //                            adaptor.append(pixelBuffer, withPresentationTime: presentationTime)
-                                    //                        }
+        
+        let outputURL = FileManager.default.temporaryDirectory.appendingPathComponent("output.mp4")
+        
+        let settings = [AVVideoCodecKey: AVVideoCodecType.h264,
+                        AVVideoWidthKey: 500,
+                       AVVideoHeightKey: 400] as [String : Any]
+        
+        if let videoWriter = try? AVAssetWriter(outputURL: outputURL, fileType: .mp4) {
+            let input = AVAssetWriterInput(mediaType: .video, outputSettings: settings)
+            let adaptor = AVAssetWriterInputPixelBufferAdaptor(assetWriterInput: input, sourcePixelBufferAttributes: nil)
+            
+            if videoWriter.canAdd(input) {
+                videoWriter.add(input)
+            }
+            
+            videoWriter.startWriting()
+            print("DDD deez")
+            videoWriter.startSession(atSourceTime: CMTime.zero)
+            let fps: Int32 = 30
+            //                    let fps: Int32 = 60
+            //            let fps: Int32 = 120
+            let frameDuration = CMTime(value: 1, timescale: fps)
+            
+            
+            
+            for (index, url) in imageFileURLs.enumerated() {
+                do {
+                    try autoreleasepool {
+                        let imageData = try Data(contentsOf: url)
+                        if let image = UIImage(data: imageData) {
+                            if input.isReadyForMoreMediaData {
+                                let presentationTime = CMTimeMultiply(frameDuration, multiplier: Int32(index))
+                                print("Index time :\(Int32(index))")
+                                
+                                if let pixelBuffer = image.pixelBuffer(width: Int(image.size.width), height: Int(image.size.height)) {
+                                    adaptor.append(pixelBuffer, withPresentationTime: presentationTime)
                                 }
                             }
-                        } catch {
-                            print("Error for autoreleasepool: \(error)")
+                            //                            if let pixelBuffer = image.pixelBuffer(width: Int(image.size.width), height: Int(image.size.height)) {
+                            //                                adaptor.append(pixelBuffer, withPresentationTime: presentationTime)
+                            //                            }
+                            
+                            //                        if let pixelBuffer = image.pixelBuffer(width: Int(image.size.width), height: Int(image.size.height)) {
+                            //                            adaptor.append(pixelBuffer, withPresentationTime: presentationTime)
+                            //                        }
                         }
-                        
                     }
-                    
-                    print("DDD deez 2")
-                    input.markAsFinished()
-                    print("DDD deez 3")
-                    videoWriter.finishWriting {
-                        print("DDD deez 4")
-                        //                    DispatchQueue.main.async {
-                        //                        self.caDisplayLinkVideoURL = outputURL
-                        //                        completion()
-                        //                    }
-                        
-                        //                        self.caDisplayLinkVideoURL = outputURL
-                        
-                        self.imageFileURLs.removeAll()
-//                        self.imageFileUrlIDs.removeAll()
-                        self.documentsDirectory.removeAllCachedResourceValues()
-                        completion(outputURL)
-                    }
+                } catch {
+                    print("Error for autoreleasepool: \(error)")
                 }
+                
+            }
+            
+            print("DDD deez 2")
+            input.markAsFinished()
+            print("DDD deez 3")
+            videoWriter.finishWriting {
+                print("DDD deez 4")
+                //                    DispatchQueue.main.async {
+                //                        self.caDisplayLinkVideoURL = outputURL
+                //                        completion()
+                //                    }
+                
+                //                        self.caDisplayLinkVideoURL = outputURL
+                
+                self.imageFileURLs.removeAll()
+                //                        self.imageFileUrlIDs.removeAll()
+                self.documentsDirectory.removeAllCachedResourceValues()
+                completion(outputURL)
+            }
+        }
         
     }
     
@@ -268,9 +273,16 @@ final class ViewRecorder: NSObject, ObservableObject {
 //
 //        try? await layerInstruction1.setTransform(track1.load(.preferredTransform).concatenating(topRightTransform), at: .zero)
         layerInstruction1.setTransform(topRightTransform, at: .zero)
-        layerInstruction1.setCropRectangle(CGRect(x: 370, y: 20, width: 140, height: 95), at: .zero)
+        layerInstruction1.setCropRectangle(CGRect(x: 385, y: 30, width: 100, height: 117), at: .zero)
 //        layerInstruction1.setCropRectangle(CGRect(x: 300, y: -120, width: 80, height: 350), at: .zero)
 //        try? await layerInstruction2.setTransform(track2.load(.preferredTransform), at: .zero)
+
+//        let videoLayer = CALayer()
+//        videoLayer.frame = CGRect(x: 0, y: 0, width: 1280.0, height: 720.0)
+//        videoLayer.isHidden = false
+//        videoLayer.cornerRadius = 15
+//        videoLayer.backgroundColor = UIColor(.green).cgColor
+//        videoComposition.animationTool = AVVideoCompositionCoreAnimationTool(additionalLayer: videoLayer, asTrackID: 3)
 
         instruction.layerInstructions = [layerInstruction1, layerInstruction2]
         videoComposition.instructions = [instruction]

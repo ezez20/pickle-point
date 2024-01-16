@@ -21,10 +21,11 @@ class CameraModel: NSObject, ObservableObject {
     
     private var _audioOutput: AVCaptureAudioDataOutput?
     
-    private enum _CaptureState {
+    enum _CaptureState {
         case idle, start, capturing, end
     }
-    private var _captureState = _CaptureState.idle
+    
+    var _captureState = _CaptureState.idle
     
     @Published var videoURL: URL?
     @Published var videoCurrentlySaving = false
@@ -225,7 +226,7 @@ extension CameraModel: AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAu
                 self?._assetWriterVideoInput = nil
                 self?._assetWriterAudioInput = nil
                 DispatchQueue.main.async {
-                    self?.videoCurrentlySaving = false
+//                    self?.videoCurrentlySaving = false
                     self?.videoURL = url
 //                    print("Video URL: \(String(describing: url))")
 //                    print("URLS existing: \(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))")

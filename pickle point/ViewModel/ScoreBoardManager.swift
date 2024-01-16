@@ -38,12 +38,15 @@ extension ScoreBoardManager {
     func startStopGame(completion: @escaping (Bool) -> Void) {
         gameStart.toggle()
         if gameStart {
+            
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "startViewRecorder"), object: nil)
+            
             //Start timer - Using SwiftUI/Publisher
 //            self.timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
-            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "startViewRecorder"), object: nil)
             
             // Start timer - Using UIKit
             timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(timeAppend), userInfo: nil, repeats: true)
+            
             completion(true)
         } else {
             //Stop timer - Using SwiftUI/Publisher
@@ -52,6 +55,7 @@ extension ScoreBoardManager {
             
             // Stop timer - Using UIKit
             timer.invalidate()
+            
             completion(false)
         }
     }
@@ -66,10 +70,6 @@ extension ScoreBoardManager {
     func gameTime(timePassed: Int) -> String {
         let duration = Duration.seconds(timePassed)
         return duration.formatted(.time(pattern: .minuteSecond))
-//        let minutes = timePassed / 60
-//        let seconds = timePassed % 60
-//        let minutesFormatted = minutes > 1 ? minutes : 0
-//        return String(format: "%02i:%02i", minutesFormatted, seconds)
     }
     
     func nextServer() {
@@ -101,6 +101,7 @@ extension ScoreBoardManager {
                 // To prevent auto nextServer if user initiated next server themselves.
                 if sideout == true {
                     nextServer()
+                    NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateVC"), object: nil)
                 }
             }
         } else if sideout == true {
@@ -202,6 +203,7 @@ extension ScoreBoardManager {
         
         gameResetted = true
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "resetTimer"), object: nil)
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateVC"), object: nil)
         completion()
         
         // Toggle "Game Reset" banner in ScoreBoardView
@@ -217,6 +219,8 @@ extension ScoreBoardManager {
         currentlyTeam1Serving = true
         currentlyTeam2Serving = false
         sideout = false
+        
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateVC"), object: nil)
     }
     
 }
