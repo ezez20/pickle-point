@@ -63,11 +63,21 @@ struct ControlsView: View {
                     }
                     
                 } label: {
-                    Image(systemName: "record.circle")
-                        .resizable()
-                        .frame(width: 50, height: 50)
-                        .foregroundColor(cm._captureState == .start ? .red : .green)
+                    if videoCurrentlySaving {
+                        ProgressView().progressViewStyle(CircularProgressViewStyle(tint: Color.white))
+                            .foregroundColor(.white)
+                            .rotationEffect(.degrees(90))
+                            .frame(width: 200, height: 50)
+                            .foregroundColor(.white)
+                       
+                    } else {
+                        Image(systemName: "record.circle")
+                            .resizable()
+                            .frame(width: 50, height: 50)
+                            .foregroundColor(cm._captureState != .capturing ? .green : .red)
+                    }
                 }
+                .disabled(videoCurrentlySaving ? true : false)
                 
                 HStack {
                     // Undo Point: Button
@@ -122,17 +132,17 @@ struct ControlsView: View {
             .foregroundColor(.white)
             .position(x: geo.size.width/2, y: geo.size.height - 120)
             
-            if videoCurrentlySaving {
-                VStack {
-                    Text("Video currently saving")
-                    ProgressView().progressViewStyle(CircularProgressViewStyle(tint: Color.white))
-                        .padding(10)
-                        .foregroundColor(.white)
-                        .rotationEffect(.degrees(90))
-                }
-                .foregroundColor(.white)
-                .position(x: geo.size.width/2, y: geo.size.height/2)
-            }
+//            if videoCurrentlySaving {
+//                VStack {
+//                    Text("Video currently saving")
+//                    ProgressView().progressViewStyle(CircularProgressViewStyle(tint: Color.white))
+//                        .padding(10)
+//                        .foregroundColor(.white)
+//                        .rotationEffect(.degrees(90))
+//                }
+//                .foregroundColor(.white)
+//                .position(x: geo.size.width/2, y: geo.size.height/2)
+//            }
             
         }
         .shareSheet(show: $shareVideo, items: [url])
@@ -180,10 +190,10 @@ struct ControlsView: View {
             }
         }
         .onChange(of: cm.videoCurrentlySaving) { videoSaving in
+            print("DDD videoCurrentlySaving: \(videoSaving)")
             if videoSaving {
                 videoCurrentlySaving = true
-            } else {
-                videoCurrentlySaving = false
+                print("DDD: videoCurrentlySaving \(videoCurrentlySaving)")
             }
         }
         .onChange(of: cm.videoURL, perform: { videoURL in
@@ -226,7 +236,8 @@ struct ControlsView: View {
                     }
                 }
                 
-//                cm.videoURL = nil
+                videoCurrentlySaving = false
+                cm.videoCurrentlySaving = false
                 viewRecorder.finalVideoURL = nil
                 url = nil
                 

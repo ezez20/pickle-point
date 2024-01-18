@@ -104,8 +104,9 @@ final class ViewRecorder: NSObject, ObservableObject {
                 // Adjust sharpness of rendered image
                 sourceView.layer.contentsScale = 1.0
                 sourceView.layer.shouldRasterize = true
-                sourceView.layer.rasterizationScale = 0.5
-                
+                sourceView.layer.rasterizationScale = UIScreen.main.scale
+//                sourceView.layer.rasterizationScale = 0.5
+           
                 sourceView.layer.render(in: ctx.cgContext)
             }
             if let imageData = image.pngData() {
@@ -128,13 +129,8 @@ final class ViewRecorder: NSObject, ObservableObject {
     }
 
     private func writeToVideo(completion: @escaping (URL?) -> Void) {
-        //        guard !images.isEmpty else {
-        //            return
-        //        }
-        
         guard !imageFileURLs.isEmpty else { return }
-        
-        
+  
         let outputURL = FileManager.default.temporaryDirectory.appendingPathComponent("output.mp4")
         
         let settings = [AVVideoCodecKey: AVVideoCodecType.h264,
@@ -156,9 +152,7 @@ final class ViewRecorder: NSObject, ObservableObject {
             //                    let fps: Int32 = 60
             //            let fps: Int32 = 120
             let frameDuration = CMTime(value: 1, timescale: fps)
-            
-            
-            
+    
             for (index, url) in imageFileURLs.enumerated() {
                 do {
                     try autoreleasepool {
@@ -167,18 +161,10 @@ final class ViewRecorder: NSObject, ObservableObject {
                             if input.isReadyForMoreMediaData {
                                 let presentationTime = CMTimeMultiply(frameDuration, multiplier: Int32(index))
                                 print("Index time :\(Int32(index))")
-                                
                                 if let pixelBuffer = image.pixelBuffer(width: Int(image.size.width), height: Int(image.size.height)) {
                                     adaptor.append(pixelBuffer, withPresentationTime: presentationTime)
                                 }
                             }
-                            //                            if let pixelBuffer = image.pixelBuffer(width: Int(image.size.width), height: Int(image.size.height)) {
-                            //                                adaptor.append(pixelBuffer, withPresentationTime: presentationTime)
-                            //                            }
-                            
-                            //                        if let pixelBuffer = image.pixelBuffer(width: Int(image.size.width), height: Int(image.size.height)) {
-                            //                            adaptor.append(pixelBuffer, withPresentationTime: presentationTime)
-                            //                        }
                         }
                     }
                 } catch {
@@ -191,16 +177,8 @@ final class ViewRecorder: NSObject, ObservableObject {
             input.markAsFinished()
             print("DDD deez 3")
             videoWriter.finishWriting {
-                print("DDD deez 4")
-                //                    DispatchQueue.main.async {
-                //                        self.caDisplayLinkVideoURL = outputURL
-                //                        completion()
-                //                    }
-                
-                //                        self.caDisplayLinkVideoURL = outputURL
-                
+                print("videoWriter: finished writing")
                 self.imageFileURLs.removeAll()
-                //                        self.imageFileUrlIDs.removeAll()
                 self.documentsDirectory.removeAllCachedResourceValues()
                 completion(outputURL)
             }
@@ -212,7 +190,9 @@ final class ViewRecorder: NSObject, ObservableObject {
         print("Overlaying Videos")
         let composition = AVMutableComposition()
         
+        // Scoreboard - videoURL1 (videoAsset1)
         let videoAsset1 = AVAsset(url: videoURL1)
+        // Camera - videoURL2 (videoAsset2)
         let videoAsset2 = AVAsset(url: videoURL2)
         
         let videoAsset1Tracks = try? await videoAsset1.loadTracks(withMediaType: .video)
@@ -224,9 +204,10 @@ final class ViewRecorder: NSObject, ObservableObject {
         guard let track2 = videoAsset2Tracks?.first else {
             fatalError("Error getting track2 from videoAsset1Tracks")
         }
-        
+    
         let compositionTrack1 = composition.addMutableTrack(withMediaType: .video, preferredTrackID: kCMPersistentTrackID_Invalid)
         let compositionTrack2 = composition.addMutableTrack(withMediaType: .video, preferredTrackID: kCMPersistentTrackID_Invalid)
+        let compositionTrack3 = composition.addMutableTrack(withMediaType: .audio, preferredTrackID: kCMPersistentTrackID_Invalid)
         
         
         try? await compositionTrack1?.insertTimeRange(CMTimeRangeMake(start: .zero, duration: videoAsset1.load(.duration)),
@@ -235,7 +216,10 @@ final class ViewRecorder: NSObject, ObservableObject {
         try? await compositionTrack2?.insertTimeRange(CMTimeRangeMake(start: .zero, duration: videoAsset2.load(.duration)),
                                                       of: track2,
                                                       at: .zero)
-        
+        // Load AUDIO from: "Camera - videoURL2 (videoAsset2)"
+        try? await compositionTrack3?.insertTimeRange(CMTimeRangeMake(start: CMTime.zero, duration: videoAsset2.load(.duration)),
+                                                      of: videoAsset2.loadTracks(withMediaType: .audio)[0],
+                                                      at: .zero)
         
         let videoComposition = AVMutableVideoComposition()
         // Assuming 30 frames per second
@@ -246,7 +230,6 @@ final class ViewRecorder: NSObject, ObservableObject {
             width: max(track1.load(.naturalSize).width, track2.load(.naturalSize).width),
             height: max(track1.load(.naturalSize).height, track2.load(.naturalSize).height)
         )
-        
         
         let instruction = AVMutableVideoCompositionInstruction()
         instruction.timeRange = CMTimeRangeMake(start: .zero, duration: composition.duration)
@@ -290,11 +273,18 @@ final class ViewRecorder: NSObject, ObservableObject {
         guard let exporter = AVAssetExportSession(asset: composition, presetName: AVAssetExportPresetHighestQuality) else {
             fatalError("Error unwrapping AVAssetExportSession")
         }
+
+//        let trackMix = AVMutableAudioMixInputParameters(track: compositionTrack3)
+//        let audioMix = AVMutableAudioMix()
+//        audioMix.inputParameters = [trackMix]
         
         exporter.outputFileType = .mp4
         let outputURL = FileManager.default.temporaryDirectory.appendingPathComponent("outputURL.mp4")
         exporter.outputURL = outputURL
         exporter.videoComposition = videoComposition
+//
+
+      
         
         await exporter.export()
         print("DDD AWAIT")

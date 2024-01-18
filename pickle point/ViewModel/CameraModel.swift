@@ -168,6 +168,7 @@ extension CameraModel: AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAu
             let adapter = AVAssetWriterInputPixelBufferAdaptor(assetWriterInput: videoInput, sourcePixelBufferAttributes: nil)
             if writer.canAdd(videoInput) {
                 writer.add(videoInput)
+                print("writer.canAdd")
             }
             
             let audioSettings = _audioOutput?.recommendedAudioSettingsForAssetWriter(writingTo: .mov)
@@ -175,6 +176,7 @@ extension CameraModel: AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAu
             audioInput.expectsMediaDataInRealTime = true
             if writer.canAdd(audioInput) {
                 writer.add(audioInput)
+              
             }
             
             _assetWriter = writer
@@ -210,7 +212,6 @@ extension CameraModel: AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAu
             break
             
         case .end:
-            // Set up ending writer and saving URL
             DispatchQueue.main.async {
                 self.videoCurrentlySaving = true
             }
@@ -218,18 +219,16 @@ extension CameraModel: AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAu
             guard let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("\(_filename).mov") else { break }
             _assetWriterVideoInput?.markAsFinished()
             _assetWriterAudioInput?.markAsFinished()
-
             _assetWriter?.finishWriting { [weak self] in
                 print("_captureState: .idle")
                 self?._captureState = .idle
                 self?._assetWriter = nil
                 self?._assetWriterVideoInput = nil
                 self?._assetWriterAudioInput = nil
+                
                 DispatchQueue.main.async {
-//                    self?.videoCurrentlySaving = false
+                    self?.videoCurrentlySaving = true
                     self?.videoURL = url
-//                    print("Video URL: \(String(describing: url))")
-//                    print("URLS existing: \(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))")
                 }
             }
             

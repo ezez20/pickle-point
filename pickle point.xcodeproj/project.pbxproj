@@ -92,6 +92,7 @@
 		51DC5E022B14FE1000843FAD /* MyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyView.swift; sourceTree = "<group>"; };
 		51DE28B42B02BE9E00AC607C /* ScoreBoardManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreBoardManager.swift; sourceTree = "<group>"; };
 		51DE43012B04120800A4EDE9 /* ControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlsView.swift; sourceTree = "<group>"; };
+		51E3F74E2B5994C80020A57E /* pickle-point-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "pickle-point-Info.plist"; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -141,6 +142,7 @@
 		51BB2DB029E5C85400E52302 /* pickle point */ = {
 			isa = PBXGroup;
 			children = (
+				51E3F74E2B5994C80020A57E /* pickle-point-Info.plist */,
 				51BB2DB129E5C85400E52302 /* pickle_pointApp.swift */,
 				51D19E472B0700BE00F09556 /* Views */,
 				51D19E482B07017700F09556 /* ViewModel */,
@@ -483,6 +485,7 @@
 				DEVELOPMENT_TEAM = XUZG54S76B;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "pickle-point-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = PicklePoint;
 				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_NSCameraUsageDescription = "\"Please enable camera usage for video recording\"";
@@ -518,6 +521,7 @@
 				DEVELOPMENT_TEAM = XUZG54S76B;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "pickle-point-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = PicklePoint;
 				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_NSCameraUsageDescription = "\"Please enable camera usage for video recording\"";
