@@ -50,18 +50,10 @@ struct ControlsView: View {
                     // User hits record - video
                     sbm.startStopGame { gameStarted in
                         if gameStarted {
-                            cm.start_Capture {
-                                print("Camera capture started")
-//                                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "startViewRecorder"), object: nil)
-                            }
                         } else {
-                            print("sbm.startStopGame: \(gameStarted)")
-                            cm.end_Capture {
-                                print("Camera capture ended")
-                            }
+                            cm.end_Capture {}
                         }
                     }
-                    
                 } label: {
                     if videoCurrentlySaving {
                         ProgressView().progressViewStyle(CircularProgressViewStyle(tint: Color.white))
@@ -69,16 +61,14 @@ struct ControlsView: View {
                             .rotationEffect(.degrees(90))
                             .frame(width: 200, height: 50)
                             .foregroundColor(.white)
-                       
                     } else {
                         Image(systemName: "record.circle")
                             .resizable()
                             .frame(width: 50, height: 50)
-                            .foregroundColor(cm._captureState != .capturing ? .green : .red)
+                            .foregroundColor(sbm.gameStart ? .red : .green)
                     }
                 }
-                .disabled(videoCurrentlySaving ? true : false)
-                
+
                 HStack {
                     // Undo Point: Button
                     Button {
@@ -131,40 +121,17 @@ struct ControlsView: View {
             .frame(width: 150, height: 120)
             .foregroundColor(.white)
             .position(x: geo.size.width/2, y: geo.size.height - 120)
-            
-//            if videoCurrentlySaving {
-//                VStack {
-//                    Text("Video currently saving")
-//                    ProgressView().progressViewStyle(CircularProgressViewStyle(tint: Color.white))
-//                        .padding(10)
-//                        .foregroundColor(.white)
-//                        .rotationEffect(.degrees(90))
-//                }
-//                .foregroundColor(.white)
-//                .position(x: geo.size.width/2, y: geo.size.height/2)
-//            }
+            .disabled(videoCurrentlySaving ? true : false)
             
         }
         .shareSheet(show: $shareVideo, items: [url])
         .onAppear {
             sbm.timer.invalidate()
-//            sbm.timer.upstream.connect().cancel()
             if vmWKM.session.isReachable && vmWKM.session.activationState.rawValue == 2 {
                 watchIsReachable = true
             } else {
                 watchIsReachable = false
             }
-            
-//            let fileName1URLToDelete = FileManager.default.temporaryDirectory.appendingPathComponent("output.mp4")
-//            print("FIlemanager debug: \(fileName1URLToDelete)")
-//            DispatchQueue.global(qos: .utility).async {
-//                do {
-//                    try FileManager.default.removeItem(at: fileName1URLToDelete)
-//                } catch {
-//                    print("ERROR")
-//                }
-//            }
-//            print("FIlemanager delete debug: \(fileName1URLToDelete)")
         }
         .onReceive(vmWKM.$messageBackToControlView) { message in
             print("Message recieved on iPhone ControlsView: \(message)")
@@ -176,14 +143,11 @@ struct ControlsView: View {
                 let message = message["recordStart"] as? Bool ?? false
                 if message == true {
                     cm.start_Capture {
-                        sbm.startStopGame { _ in
-                            print("Game started")
-                        }
+                        sbm.startStopGame { _ in }
                     }
                 } else {
                     cm.end_Capture {
-                        sbm.startStopGame() { _ in
-                        }
+                        sbm.startStopGame() { _ in }
                     }
                 }
                 

@@ -26,7 +26,6 @@ final class ViewRecorder: NSObject, ObservableObject {
     @Published var finalVideoURL: URL?
     @Published var videoCurrentlySaving = false
     
-
     func startRecording(controller: ScoreBoardVC, completion: @escaping () -> Void) {
         self.sourceView = controller.view
 //        self.sourceView = controller.scoreBoardViewFrame

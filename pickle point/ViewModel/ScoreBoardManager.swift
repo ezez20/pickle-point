@@ -38,15 +38,15 @@ extension ScoreBoardManager {
     func startStopGame(completion: @escaping (Bool) -> Void) {
         gameStart.toggle()
         if gameStart {
-            
             NotificationCenter.default.post(name: NSNotification.Name(rawValue: "startViewRecorder"), object: nil)
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "startCameraRecorder"), object: nil)
             
             //Start timer - Using SwiftUI/Publisher
 //            self.timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
             
             // Start timer - Using UIKit
             timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(timeAppend), userInfo: nil, repeats: true)
-            
+            print("sbm: Game Started")
             completion(true)
         } else {
             //Stop timer - Using SwiftUI/Publisher
@@ -55,7 +55,7 @@ extension ScoreBoardManager {
             
             // Stop timer - Using UIKit
             timer.invalidate()
-            
+            print("sbm: Game Ended")
             completion(false)
         }
     }

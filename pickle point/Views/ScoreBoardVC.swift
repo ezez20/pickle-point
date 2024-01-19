@@ -154,7 +154,6 @@ class ScoreBoardVC: UIViewController {
         ppLogo.centerXAnchor.constraint(equalTo: scoreBoardViewFrame.centerXAnchor).isActive = true
         ppLogo.topAnchor.constraint(equalTo: scoreBoardViewFrame.bottomAnchor).isActive = true
         ppLogo.heightAnchor.constraint(equalTo: scoreBoardViewFrame.widthAnchor).isActive = true
-        
     }
     
     init(viewRecoder: ViewRecorder, sbm: ScoreBoardManager , session: AVCaptureSession?) {
@@ -172,12 +171,12 @@ class ScoreBoardVC: UIViewController {
 extension ScoreBoardVC {
     
     @objc func startVideoRecorder() {
-        print("Start Video Recorder")
+        print("ScoreBoardVC: Start Video Recorder")
         viewRecoder.startRecording(controller: self) {
         }
     }
     @objc func updateTimer() {
-        print("Deez update timer")
+        print("ScoreBoardVC: updateTimer")
         timerLabel.text = String(sbm.gameTime(timePassed: sbm.timePassed))
     }
     @objc func resetTimer() {
@@ -188,6 +187,7 @@ extension ScoreBoardVC {
         print("Scoreboard VC: resetTimer")
     }
     @objc func updateVC() {
+        print("ScoreBoardVC: updateVC")
         if sbm.currentlyTeam1Serving {
             team1ScoreLabel.textColor = .systemGreen
             team2ScoreLabel.textColor = .systemGray
