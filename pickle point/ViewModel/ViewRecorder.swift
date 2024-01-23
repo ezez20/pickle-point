@@ -21,7 +21,8 @@ final class ViewRecorder: NSObject, ObservableObject {
     var caDisplayLinkVideoURL: URL?
     var documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
     var fileURLDirectory: URL?
-    
+    var timer = Timer()
+    var _exporter: AVAssetExportSession?
     
     @Published var finalVideoURL: URL?
     @Published var videoCurrentlySaving = false
@@ -128,9 +129,10 @@ final class ViewRecorder: NSObject, ObservableObject {
     }
 
     private func writeToVideo(completion: @escaping (URL?) -> Void) {
+     
         guard !imageFileURLs.isEmpty else { return }
   
-        let outputURL = FileManager.default.temporaryDirectory.appendingPathComponent("output.mp4")
+        let outputURL = FileManager.default.temporaryDirectory.appendingPathComponent("sbScreenshotsFile.mp4")
         
         let settings = [AVVideoCodecKey: AVVideoCodecType.h264,
                         AVVideoWidthKey: 500,
@@ -272,25 +274,43 @@ final class ViewRecorder: NSObject, ObservableObject {
         guard let exporter = AVAssetExportSession(asset: composition, presetName: AVAssetExportPresetHighestQuality) else {
             fatalError("Error unwrapping AVAssetExportSession")
         }
+        
+        _exporter = exporter
 
 //        let trackMix = AVMutableAudioMixInputParameters(track: compositionTrack3)
 //        let audioMix = AVMutableAudioMix()
 //        audioMix.inputParameters = [trackMix]
         
-        exporter.outputFileType = .mp4
-        let outputURL = FileManager.default.temporaryDirectory.appendingPathComponent("outputURL.mp4")
-        exporter.outputURL = outputURL
-        exporter.videoComposition = videoComposition
-//
+        _exporter?.outputFileType = .mp4
+        let outputURL = FileManager.default.temporaryDirectory.appendingPathComponent("overlayedFinalVideoFile.mp4")
+        _exporter?.outputURL = outputURL
+        _exporter?.videoComposition = videoComposition
 
-      
-        
+        DispatchQueue.main.async {
+            self.timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.updateExportProgress), userInfo: nil, repeats: true)
+        }
+        self.timer.fire()
         await exporter.export()
+      
         print("DDD AWAIT")
         
         DispatchQueue.main.async {
             print("DDD DONE")
             self.finalVideoURL = outputURL
+        }
+    }
+    
+    @objc func updateExportProgress() {
+        if _exporter?.progress != 1.0 {
+            if let progress = _exporter?.progress {
+                print("Progress: \(progress)")
+                let progressData:[String: Float] = ["progressData": progress]
+                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateCircularProgressView"), object: nil, userInfo: progressData)
+            }
+        } else {
+            timer.invalidate()
+            let progressData:[String: Float] = ["progressData": 1.0]
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateCircularProgressView"), object: nil, userInfo: progressData)
         }
     }
     

@@ -13,6 +13,7 @@
 		51363EAC2AF00FCE0060557C /* CameraModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51363EAB2AF00FCE0060557C /* CameraModel.swift */; };
 		5144F0332B0055E80059DC4C /* RecordingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5144F0322B0055E80059DC4C /* RecordingView.swift */; };
 		514738BE2AFE817E00F3862E /* ScoreBoardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 514738BD2AFE817D00F3862E /* ScoreBoardView.swift */; };
+		51473A682B5EEE5300EC4E12 /* CircularProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51473A672B5EEE5300EC4E12 /* CircularProgressView.swift */; };
 		515D16C72AF14A4A009494D4 /* ShareSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 515D16C62AF14A4A009494D4 /* ShareSheet.swift */; };
 		5172777F2B019C8900C47A32 /* WatchDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5172777E2B019C8900C47A32 /* WatchDelegate.swift */; };
 		51A3C71A2A05A5BE00E01355 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51A3C7192A05A5BE00E01355 /* Constants.swift */; };
@@ -68,6 +69,7 @@
 		51363EAB2AF00FCE0060557C /* CameraModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraModel.swift; sourceTree = "<group>"; };
 		5144F0322B0055E80059DC4C /* RecordingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordingView.swift; sourceTree = "<group>"; };
 		514738BD2AFE817D00F3862E /* ScoreBoardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreBoardView.swift; sourceTree = "<group>"; };
+		51473A672B5EEE5300EC4E12 /* CircularProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularProgressView.swift; sourceTree = "<group>"; };
 		515D16C62AF14A4A009494D4 /* ShareSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShareSheet.swift; sourceTree = "<group>"; };
 		5172777E2B019C8900C47A32 /* WatchDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchDelegate.swift; sourceTree = "<group>"; };
 		51A3C7192A05A5BE00E01355 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
@@ -197,6 +199,7 @@
 				51DC5E002B14EA7D00843FAD /* ScoreBoardVC.swift */,
 				51DC5E022B14FE1000843FAD /* MyView.swift */,
 				513459F42B2265B30055AD32 /* MyView2.swift */,
+				51473A672B5EEE5300EC4E12 /* CircularProgressView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -317,6 +320,7 @@
 			files = (
 				51BB2DBB29E5C85500E52302 /* Persistence.swift in Sources */,
 				51A3C71A2A05A5BE00E01355 /* Constants.swift in Sources */,
+				51473A682B5EEE5300EC4E12 /* CircularProgressView.swift in Sources */,
 				5144F0332B0055E80059DC4C /* RecordingView.swift in Sources */,
 				514738BE2AFE817E00F3862E /* ScoreBoardView.swift in Sources */,
 				51DE28B52B02BE9E00AC607C /* ScoreBoardManager.swift in Sources */,

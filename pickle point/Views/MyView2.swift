@@ -8,17 +8,23 @@
 import Foundation
 import SwiftUI
 
-//struct MyView2: UIViewControllerRepresentable {
-//    
-//    func makeUIViewController(context: Context) -> TestViewController {
-//        let vc = TestViewController()
-//        return vc
-//    }
-//    
-//    func updateUIViewController(_ uiViewController: TestViewController, context: Context) {
-//        //
-//    }
-//    
-//    typealias UIViewControllerType = TestViewController
-//
-//}
+struct MyView2: UIViewRepresentable {
+    
+    let view = CircularProgressView()
+    var viewRecorder: ViewRecorder
+    
+    func makeUIView(context: Context) -> UIView {
+        print("CircularProgressView")
+        return view
+    }
+    
+    func updateUIView(_ uiView: UIView, context: Context) {
+        //
+        print("updateUIView")
+ 
+    }
+    
+    typealias UIViewType = UIView
+    
+
+}

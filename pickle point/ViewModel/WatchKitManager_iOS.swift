@@ -79,6 +79,7 @@ extension Notification.Name {
     static let startViewRecorder = Notification.Name("startViewRecorder")
     static let startCameraRecorder = Notification.Name("startCameraRecorder")
     static let updateTimer = Notification.Name("updateTimer")
+    static let updateCircularProgressView = Notification.Name("updateCircularProgressView")
     static let stopViewRecorder = Notification.Name("stopViewRecorder")
     static let resetTimer = Notification.Name("resetTimer")
     static let updateVC = Notification.Name("updateVC")

@@ -221,6 +221,7 @@ extension CameraModel: AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAu
             guard let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("\(_filename).mov") else { break }
             _assetWriterVideoInput?.markAsFinished()
             _assetWriterAudioInput?.markAsFinished()
+
             _assetWriter?.finishWriting { [weak self] in
                 print("_captureState: .idle")
                 self?._captureState = .idle

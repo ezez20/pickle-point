@@ -44,7 +44,7 @@ struct ControlsView: View {
             .frame(width: 80, height: 250)
             .position(x: geo.size.width - 30, y: 220)
             
-            VStack(spacing: 10) {
+          
                 // Record-Stop video: Button
                 Button {
                     // User hits record - video
@@ -55,20 +55,23 @@ struct ControlsView: View {
                         }
                     }
                 } label: {
-                    if videoCurrentlySaving {
-                        ProgressView().progressViewStyle(CircularProgressViewStyle(tint: Color.white))
-                            .foregroundColor(.white)
-                            .rotationEffect(.degrees(90))
-                            .frame(width: 200, height: 50)
-                            .foregroundColor(.white)
-                    } else {
+                    if !sbm.gameStart && !videoCurrentlySaving  {
                         Image(systemName: "record.circle")
                             .resizable()
                             .frame(width: 50, height: 50)
-                            .foregroundColor(sbm.gameStart ? .red : .green)
+                            .foregroundColor(.red)
+                       
+                    } else {
+                        Image(systemName: "circle.fill")
+                            .resizable()
+                            .frame(width: 20, height: 20)
+                            .foregroundColor(.red)
+                            .padding()
                     }
                 }
-
+                .position(x: geo.size.width/2, y: geo.size.height - 170)
+            
+                
                 HStack {
                     // Undo Point: Button
                     Button {
@@ -91,7 +94,7 @@ struct ControlsView: View {
                             .resizable()
                             .renderingMode(.template)
                             .foregroundColor(Color("neonGreen"))
-                            .frame(width: 80, height: 80)
+                            .frame(width: 70, height: 70)
                             .padding(10)
                     }
                     .rotationEffect(.degrees(90))
@@ -117,12 +120,18 @@ struct ControlsView: View {
                         
                     }
                 }
+                .frame(width: 150, height: 120)
+                .foregroundColor(.white)
+                .opacity(videoCurrentlySaving ? 0.2 : 1.0)
+                .disabled(videoCurrentlySaving ? true : false)
+                .position(x: geo.size.width/2, y: geo.size.height - 80)
+
+            if videoCurrentlySaving {
+                MyView2(viewRecorder: viewRecorder)
+                    .frame(width: 60, height: 60)
+                    .position(x: geo.size.width/2, y: geo.size.height - 170)
             }
-            .frame(width: 150, height: 120)
-            .foregroundColor(.white)
-            .position(x: geo.size.width/2, y: geo.size.height - 120)
-            .disabled(videoCurrentlySaving ? true : false)
-            
+           
         }
         .shareSheet(show: $shareVideo, items: [url])
         .onAppear {
@@ -142,15 +151,22 @@ struct ControlsView: View {
                 // Record video toggle
                 let message = message["recordStart"] as? Bool ?? false
                 if message == true {
-                    cm.start_Capture {
-                        sbm.startStopGame { _ in }
-                    }
-                } else {
-                    cm.end_Capture {
-                        sbm.startStopGame() { _ in }
+                    sbm.startStopGame { gameStarted in
+                        if gameStarted {
+                        } else {
+                            cm.end_Capture {}
+                        }
                     }
                 }
-                
+//                if message == true {
+//                    cm.start_Capture {
+//                        sbm.startStopGame { _ in }
+//                    }
+//                } else {
+//                    cm.end_Capture {
+//                        sbm.startStopGame() { _ in }
+//                    }
+//                }
             }
         }
         .onChange(of: cm.videoCurrentlySaving) { videoSaving in
@@ -169,7 +185,9 @@ struct ControlsView: View {
         .onChange(of: viewRecorder.finalVideoURL, perform: { videoURL in
             if videoURL != nil {
                 url = videoURL
+//                videoCurrentlySaving = false
                 videoCurrentlySaving = false
+                cm.videoCurrentlySaving = false
                 shareVideo.toggle()
             }
         })
@@ -178,21 +196,20 @@ struct ControlsView: View {
             if sheetShowing == false {
                 DispatchQueue.global(qos: .utility).async {
                     do {
-                        let fileName1ToDelete = "output.mp4"
+                        let fileName1ToDelete = "sbScreenshotsFile.mp4"
                         let fileName1URLToDelete = FileManager.default.temporaryDirectory.appendingPathComponent(fileName1ToDelete)
-                        print("DEBUG 2 trying to delete: \(fileName1URLToDelete)")
                         try FileManager.default.removeItem(at: fileName1URLToDelete)
-                        print("File: output.mp4 - deleted successfully.")
+                        print("File: sbScreenshotsFile.mp4 - deleted successfully.")
                         
-                        let fileName2ToDelete = "outputURL.mp4"
+                        let fileName2ToDelete = "overlayedFinalVideoFile.mp4"
                         let file2URLToDelete = FileManager.default.temporaryDirectory.appendingPathComponent(fileName2ToDelete)
                         try FileManager.default.removeItem(at: file2URLToDelete)
-                        print("File: outputURL.mp4 - deleted successfully.")
+                        print("File: overlayedFinalVideoFile.mp4 - deleted successfully.")
                         
 //                        guard cm.videoURL != nil else { return }
                         if let file3NameToDelete = cm.videoURL {
                                 try FileManager.default.removeItem(at: file3NameToDelete)
-                                print("file3NameToDelete deleted")
+                                print("File: \(file3NameToDelete) - deleted successfully")
                         }
                         
                     } catch {
@@ -200,8 +217,8 @@ struct ControlsView: View {
                     }
                 }
                 
-                videoCurrentlySaving = false
-                cm.videoCurrentlySaving = false
+//                videoCurrentlySaving = false
+//                cm.videoCurrentlySaving = false
                 viewRecorder.finalVideoURL = nil
                 url = nil
                 
