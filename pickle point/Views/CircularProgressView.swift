@@ -12,8 +12,7 @@ import QuartzCore
 class CircularProgressView: UIView {
     
     private var progressLayer = CAShapeLayer()
-    private var tracklayer = CAShapeLayer()
-    let animation = CABasicAnimation(keyPath: "strokeEnd")
+    let animation = CABasicAnimation(keyPath: "animationKey")
     var newValue: Double = 0.0 {
         didSet {
             print("new value: \(newValue)")
@@ -26,7 +25,6 @@ class CircularProgressView: UIView {
         }
     }
 
-    
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.drawProgressView()
@@ -50,7 +48,6 @@ class CircularProgressView: UIView {
     }
     
     private func drawProgressView() {
-//        self.drawsView(using: tracklayer, startingPoint: 10.0, endingPoint: 1.0)
         self.drawsView(shapeLayer: progressLayer, startingPoint: 10.0, endingPoint: 0.0)
     }
     
@@ -75,7 +72,7 @@ class CircularProgressView: UIView {
         animation.toValue = value //end animation at point specified
         animation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.linear)
         progressLayer.strokeEnd = CGFloat(value)
-        progressLayer.add(animation, forKey: "animateCircle")
+        progressLayer.add(animation, forKey: "animateProgressViewKey")
     }
     
     @objc func update(_ notification: NSNotification) {
@@ -86,7 +83,7 @@ class CircularProgressView: UIView {
             animation.fromValue = oldvalue
             animation.toValue = newValue
             progressLayer.strokeEnd = CGFloat(newValue)
-            progressLayer.add(animation, forKey: "animateCircle")
+            progressLayer.add(animation, forKey: "animateProgressViewKey")
         }
     }
 }
