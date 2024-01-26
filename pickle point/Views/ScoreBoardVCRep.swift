@@ -1,5 +1,5 @@
 //
-//  MyView.swift
+//  ScoreBoardVCRep.swift
 //  pickle point
 //
 //  Created by Ezra Yeoh on 11/27/23.
@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-struct MyView: UIViewControllerRepresentable {
+struct ScoreBoardVCRep: UIViewControllerRepresentable {
     
     var viewRecoder: ViewRecorder
     var cameraModel: CameraModel

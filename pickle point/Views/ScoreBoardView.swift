@@ -40,17 +40,21 @@ struct ScoreBoardView: View {
                 .foregroundColor(.white)
                 .shadow(color: .yellow, radius: 10)
                 .position(x: geo.size.width - 20, y: geo.size.height/2)
+                // Uncomment below if using: SwiftUI/Publisher
 //                .onReceive(sbm.timer) { _ in
 //                    sbm.timePassed += 1
 //                }
             
             if sbm.gameResetted != true {
-                Text(sbm.sideout ? "Side Out" : "")
-                    .font(.title)
-                    .foregroundColor(.white)
-                    .shadow(color: .green, radius: 10)
-                    .rotationEffect(.degrees(90))
-                    .position(x: geo.size.width - 50, y: geo.size.height/2)
+                
+                if sbm.undoPointBool == false {
+                    Text(sbm.sideout ? "Side Out" : "")
+                        .font(.title)
+                        .foregroundColor(.white)
+                        .shadow(color: .green, radius: 10)
+                        .rotationEffect(.degrees(90))
+                        .position(x: geo.size.width - 50, y: geo.size.height/2)
+                }
                 
                 Text(sbm.showServerLabel ? sbm.serverLabel : "")
                     .font(.title)
@@ -58,7 +62,15 @@ struct ScoreBoardView: View {
                     .shadow(color: sbm.currentlyTeam1Serving ? .green : .red, radius: 10)
                     .rotationEffect(.degrees(90))
                     .position(x: geo.size.width - 50, y: geo.size.height/2)
+                
             }
+            
+            Text(sbm.undoPointBool ? "Undo Point" : "")
+                .font(.title)
+                .foregroundColor(.white)
+                .shadow(color: .yellow, radius: 10)
+                .rotationEffect(.degrees(90))
+                .position(x: geo.size.width - 50, y: geo.size.height/2)
             
             Text(sbm.gameResetted ? "Game Reset" : "")
                 .font(.title)

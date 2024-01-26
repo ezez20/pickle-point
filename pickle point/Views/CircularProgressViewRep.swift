@@ -1,5 +1,5 @@
 //
-//  MyView2.swift
+//  CircularProgressViewRep.swift
 //  pickle point
 //
 //  Created by Ezra Yeoh on 12/7/23.
@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-struct MyView2: UIViewRepresentable {
+struct CircularProgressViewRep: UIViewRepresentable {
     
     let view = CircularProgressView()
     var viewRecorder: ViewRecorder
@@ -21,7 +21,6 @@ struct MyView2: UIViewRepresentable {
     func updateUIView(_ uiView: UIView, context: Context) {
         //
         print("updateUIView")
- 
     }
     
     typealias UIViewType = UIView

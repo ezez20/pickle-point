@@ -43,7 +43,7 @@ class ScoreBoardVC: UIViewController {
     
     var team2ScoreLabel: UILabel = {
         let label = UILabel()
-        label.textColor = .systemGray
+        label.textColor = .systemRed
         label.text = "0"
         label.font = .systemFont(ofSize: 35)
         label.transform = CGAffineTransform(rotationAngle: .pi/2)
@@ -190,12 +190,12 @@ extension ScoreBoardVC {
         print("ScoreBoardVC: updateVC")
         if sbm.currentlyTeam1Serving {
             team1ScoreLabel.textColor = .systemGreen
-            team2ScoreLabel.textColor = .systemGray
+            team2ScoreLabel.textColor = .systemRed
             team1ScoreLabel.text = String(sbm.team1Score)
             team2ScoreLabel.text = String(sbm.team2Score)
         } else {
             team1ScoreLabel.textColor = .systemRed
-            team2ScoreLabel.textColor = .systemGray
+            team2ScoreLabel.textColor = .systemGreen
             team1ScoreLabel.text = String(sbm.team2Score)
             team2ScoreLabel.text = String(sbm.team1Score)
         }
@@ -209,6 +209,7 @@ extension ScoreBoardVC {
         if sbm.timePassed == 0 {
             timerLabel.text = "0:00"
         }
+        
     }
     
 }

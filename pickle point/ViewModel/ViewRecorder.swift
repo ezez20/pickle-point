@@ -300,6 +300,30 @@ final class ViewRecorder: NSObject, ObservableObject {
         }
     }
     
+    func deleteFilesInFileManager(cm: CameraModel) {
+        DispatchQueue.global(qos: .utility).async {
+            do {
+                let fileName1ToDelete = "sbScreenshotsFile.mp4"
+                let fileName1URLToDelete = FileManager.default.temporaryDirectory.appendingPathComponent(fileName1ToDelete)
+                try FileManager.default.removeItem(at: fileName1URLToDelete)
+                print("File: sbScreenshotsFile.mp4 - deleted successfully.")
+                
+                let fileName2ToDelete = "overlayedFinalVideoFile.mp4"
+                let file2URLToDelete = FileManager.default.temporaryDirectory.appendingPathComponent(fileName2ToDelete)
+                try FileManager.default.removeItem(at: file2URLToDelete)
+                print("File: overlayedFinalVideoFile.mp4 - deleted successfully.")
+                
+                if let file3NameToDelete = cm.videoURL {
+                        try FileManager.default.removeItem(at: file3NameToDelete)
+                        print("File: \(file3NameToDelete) - deleted successfully")
+                }
+                
+            } catch {
+                print("Error deleting from FileManager: \(error.localizedDescription)")
+            }
+        }
+    }
+    
     @objc func updateExportProgress() {
         if _exporter?.progress != 1.0 {
             if let progress = _exporter?.progress {
@@ -349,22 +373,5 @@ extension UIImage {
     }
   
 }
-
-//extension View {
-//    func snapshot(_ size: CGSize) -> UIView? {
-//        let controller = UIHostingController(rootView: self)
-//        controller.view.backgroundColor = .clear
-//        guard let view = controller.view else {
-//            fatalError("UIView: Error for snapshot")
-//        }
-//        let renderer = UIGraphicsImageRenderer(size: view.bounds.size)
-//        let image = renderer.image { _ in
-//            view.drawHierarchy(in: view.bounds, afterScreenUpdates: true)
-//            print("View rect: \(view.bounds)")
-//        }
-//
-//        return UIImageView(image: image)
-//    }
-//}
 
 

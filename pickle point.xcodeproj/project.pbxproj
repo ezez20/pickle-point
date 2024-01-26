@@ -9,11 +9,12 @@
 /* Begin PBXBuildFile section */
 		512546FE29FAD27F003594C8 /* Pickle Point Watch.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 51D07FCB29F396860089B505 /* Pickle Point Watch.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		513459F32B2264890055AD32 /* TestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 513459F22B2264890055AD32 /* TestViewController.swift */; };
-		513459F52B2265B30055AD32 /* MyView2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 513459F42B2265B30055AD32 /* MyView2.swift */; };
+		513459F52B2265B30055AD32 /* CircularProgressViewRep.swift in Sources */ = {isa = PBXBuildFile; fileRef = 513459F42B2265B30055AD32 /* CircularProgressViewRep.swift */; };
 		51363EAC2AF00FCE0060557C /* CameraModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51363EAB2AF00FCE0060557C /* CameraModel.swift */; };
 		5144F0332B0055E80059DC4C /* RecordingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5144F0322B0055E80059DC4C /* RecordingView.swift */; };
 		514738BE2AFE817E00F3862E /* ScoreBoardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 514738BD2AFE817D00F3862E /* ScoreBoardView.swift */; };
 		51473A682B5EEE5300EC4E12 /* CircularProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51473A672B5EEE5300EC4E12 /* CircularProgressView.swift */; };
+		51473A6A2B61B3E000EC4E12 /* LastMoveModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51473A692B61B3E000EC4E12 /* LastMoveModel.swift */; };
 		515D16C72AF14A4A009494D4 /* ShareSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 515D16C62AF14A4A009494D4 /* ShareSheet.swift */; };
 		5172777F2B019C8900C47A32 /* WatchDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5172777E2B019C8900C47A32 /* WatchDelegate.swift */; };
 		51A3C71A2A05A5BE00E01355 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51A3C7192A05A5BE00E01355 /* Constants.swift */; };
@@ -34,7 +35,7 @@
 		51D07FDA29F396F60089B505 /* ControlViewWatchOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D07FD929F396F60089B505 /* ControlViewWatchOS.swift */; };
 		51D87F5A2B0BC7010071276A /* ViewRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D87F592B0BC7010071276A /* ViewRecorder.swift */; };
 		51DC5E012B14EA7D00843FAD /* ScoreBoardVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51DC5E002B14EA7D00843FAD /* ScoreBoardVC.swift */; };
-		51DC5E032B14FE1000843FAD /* MyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51DC5E022B14FE1000843FAD /* MyView.swift */; };
+		51DC5E032B14FE1000843FAD /* ScoreBoardVCRep.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51DC5E022B14FE1000843FAD /* ScoreBoardVCRep.swift */; };
 		51DE28B52B02BE9E00AC607C /* ScoreBoardManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51DE28B42B02BE9E00AC607C /* ScoreBoardManager.swift */; };
 		51DE43022B04120800A4EDE9 /* ControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51DE43012B04120800A4EDE9 /* ControlsView.swift */; };
 /* End PBXBuildFile section */
@@ -65,11 +66,12 @@
 
 /* Begin PBXFileReference section */
 		513459F22B2264890055AD32 /* TestViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestViewController.swift; sourceTree = "<group>"; };
-		513459F42B2265B30055AD32 /* MyView2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyView2.swift; sourceTree = "<group>"; };
+		513459F42B2265B30055AD32 /* CircularProgressViewRep.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularProgressViewRep.swift; sourceTree = "<group>"; };
 		51363EAB2AF00FCE0060557C /* CameraModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraModel.swift; sourceTree = "<group>"; };
 		5144F0322B0055E80059DC4C /* RecordingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordingView.swift; sourceTree = "<group>"; };
 		514738BD2AFE817D00F3862E /* ScoreBoardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreBoardView.swift; sourceTree = "<group>"; };
 		51473A672B5EEE5300EC4E12 /* CircularProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularProgressView.swift; sourceTree = "<group>"; };
+		51473A692B61B3E000EC4E12 /* LastMoveModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LastMoveModel.swift; sourceTree = "<group>"; };
 		515D16C62AF14A4A009494D4 /* ShareSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShareSheet.swift; sourceTree = "<group>"; };
 		5172777E2B019C8900C47A32 /* WatchDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchDelegate.swift; sourceTree = "<group>"; };
 		51A3C7192A05A5BE00E01355 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
@@ -91,7 +93,7 @@
 		51D07FD929F396F60089B505 /* ControlViewWatchOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlViewWatchOS.swift; sourceTree = "<group>"; };
 		51D87F592B0BC7010071276A /* ViewRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewRecorder.swift; sourceTree = "<group>"; };
 		51DC5E002B14EA7D00843FAD /* ScoreBoardVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreBoardVC.swift; sourceTree = "<group>"; };
-		51DC5E022B14FE1000843FAD /* MyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyView.swift; sourceTree = "<group>"; };
+		51DC5E022B14FE1000843FAD /* ScoreBoardVCRep.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreBoardVCRep.swift; sourceTree = "<group>"; };
 		51DE28B42B02BE9E00AC607C /* ScoreBoardManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreBoardManager.swift; sourceTree = "<group>"; };
 		51DE43012B04120800A4EDE9 /* ControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlsView.swift; sourceTree = "<group>"; };
 		51E3F74E2B5994C80020A57E /* pickle-point-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "pickle-point-Info.plist"; sourceTree = SOURCE_ROOT; };
@@ -197,8 +199,8 @@
 				51DE43012B04120800A4EDE9 /* ControlsView.swift */,
 				515D16C62AF14A4A009494D4 /* ShareSheet.swift */,
 				51DC5E002B14EA7D00843FAD /* ScoreBoardVC.swift */,
-				51DC5E022B14FE1000843FAD /* MyView.swift */,
-				513459F42B2265B30055AD32 /* MyView2.swift */,
+				51DC5E022B14FE1000843FAD /* ScoreBoardVCRep.swift */,
+				513459F42B2265B30055AD32 /* CircularProgressViewRep.swift */,
 				51473A672B5EEE5300EC4E12 /* CircularProgressView.swift */,
 			);
 			path = Views;
@@ -212,6 +214,7 @@
 				51C5CADC29F4B3CF005B5AB3 /* WatchKitManager_iOS.swift */,
 				51D87F592B0BC7010071276A /* ViewRecorder.swift */,
 				513459F22B2264890055AD32 /* TestViewController.swift */,
+				51473A692B61B3E000EC4E12 /* LastMoveModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -324,14 +327,15 @@
 				5144F0332B0055E80059DC4C /* RecordingView.swift in Sources */,
 				514738BE2AFE817E00F3862E /* ScoreBoardView.swift in Sources */,
 				51DE28B52B02BE9E00AC607C /* ScoreBoardManager.swift in Sources */,
-				51DC5E032B14FE1000843FAD /* MyView.swift in Sources */,
+				51DC5E032B14FE1000843FAD /* ScoreBoardVCRep.swift in Sources */,
 				51BB2DB429E5C85400E52302 /* ContentView.swift in Sources */,
 				51BB2DC929E620BE00E52302 /* CameraPreview.swift in Sources */,
 				51363EAC2AF00FCE0060557C /* CameraModel.swift in Sources */,
+				51473A6A2B61B3E000EC4E12 /* LastMoveModel.swift in Sources */,
 				51C5CADD29F4B3CF005B5AB3 /* WatchKitManager_iOS.swift in Sources */,
 				51BB2DBE29E5C85500E52302 /* pickle_point.xcdatamodeld in Sources */,
 				51D87F5A2B0BC7010071276A /* ViewRecorder.swift in Sources */,
-				513459F52B2265B30055AD32 /* MyView2.swift in Sources */,
+				513459F52B2265B30055AD32 /* CircularProgressViewRep.swift in Sources */,
 				51DE43022B04120800A4EDE9 /* ControlsView.swift in Sources */,
 				51BB2DB229E5C85400E52302 /* pickle_pointApp.swift in Sources */,
 				51DC5E012B14EA7D00843FAD /* ScoreBoardVC.swift in Sources */,

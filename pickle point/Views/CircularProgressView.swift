@@ -24,12 +24,12 @@ class CircularProgressView: UIView {
             print("oldvalue: \(oldvalue)")
         }
     }
-
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.drawProgressView()
-    
-        NotificationCenter.default.addObserver(self, selector: #selector(update), name: NSNotification.Name("updateCircularProgressView"), object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(updateProgressView), name: NSNotification.Name("updateCircularProgressView"), object: nil)
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -52,30 +52,30 @@ class CircularProgressView: UIView {
     }
     
     private func drawsView(shapeLayer: CAShapeLayer, startingPoint: CGFloat, endingPoint: CGFloat) {
-//        self.backgroundColor = UIColor.systemYellow
+        //        self.backgroundColor = UIColor.systemYellow
         
         shapeLayer.path = self.viewCGPath
         shapeLayer.fillColor = UIColor.systemYellow.cgColor
         shapeLayer.strokeColor = UIColor.systemCyan.cgColor
         shapeLayer.lineWidth = startingPoint
         shapeLayer.strokeEnd = endingPoint
-//        shape.backgroundColor = UIColor.systemYellow.cgColor
+        //        shape.backgroundColor = UIColor.systemYellow.cgColor
         self.layer.addSublayer(shapeLayer)
         shapeLayer.position = CGPoint(x: frame.midX - (frame.midX/2) , y: frame.midY - (frame.midY/2))
     }
     
     func setProgressWithAnimation(duration: TimeInterval, value: Float) {
         print("setProgressWithAnimation: \(value)")
-       
-//        animation.duration = duration
-        animation.fromValue = 0 //start animation at point 0
-        animation.toValue = value //end animation at point specified
+        
+        //        animation.duration = duration
+        animation.fromValue = 0 // Start animation at point
+        animation.toValue = value // End animation at point
         animation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.linear)
         progressLayer.strokeEnd = CGFloat(value)
         progressLayer.add(animation, forKey: "animateProgressViewKey")
     }
     
-    @objc func update(_ notification: NSNotification) {
+    @objc func updateProgressView(_ notification: NSNotification) {
         if let data = notification.userInfo?["progressData"] as? Float {
             print("Float Data: \(data)")
             newValue = Double(data)

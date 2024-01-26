@@ -21,7 +21,7 @@ class ScoreBoardManager: ObservableObject {
     @Published var undoCurrentServer = 2
     @Published var undoCurrentlyTeam1Serving = true
     @Published var undoCurrentlyTeam2Serving = false
-    @Published var undoSideout = false
+    @Published var undoPointBool = false
     
     @Published var serverLabel = "Server ONE"
     @Published var showServerLabel = false
@@ -29,8 +29,13 @@ class ScoreBoardManager: ObservableObject {
     
     @Published var gameStart = false
     @Published var timePassed = 0
+    
+    //Uncomment Timer if - Using SwiftUI/Publisher
 //    @Published var timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     var timer = Timer()
+    
+    var savedMoves = [LastMoveModel]()
+    var currentMove = 0
 }
 
 extension ScoreBoardManager {
@@ -74,6 +79,7 @@ extension ScoreBoardManager {
     
     func nextServer() {
         // Increment server number.
+        saveLastMove()
         currentServer += 1
         
         // If "currentServer ONE or TWO", show "serverLabel".
@@ -87,37 +93,48 @@ extension ScoreBoardManager {
                 showServerLabel = true
                 print("DDD")
             }
-            DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [self] in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [self] in
                 showServerLabel = false
             }
         }
         
         // If "SideOut", present scoreboard changes.
         if currentServer == 3 {
+            print("sideout 1")
             showServerLabel = false
             sideout = true
+      
             // To skip to next server.
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [self] in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [self] in
                 // To prevent auto nextServer if user initiated next server themselves.
                 if sideout == true {
                     nextServer()
                     NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateVC"), object: nil)
+                    print("sideout dispatch")
                 }
             }
         } else if sideout == true {
             currentServer = 1
             sideout = false
+     
+            print("sideout 2")
         }
         
         // During "sideout", switch current team serving.
         if sideout == true {
             currentlyTeam1Serving.toggle()
             currentlyTeam2Serving.toggle()
+            print("During toggle team1: \(currentlyTeam1Serving)")
+            print("During toggle team2: \(currentlyTeam2Serving)")
+        
+            print("sideout 3")
         }
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateVC"), object: nil)
     }
     
     func addPoint() {
+        saveLastMove()
+        print("Current move: \(currentMove)")
         guard sideout == false else { return }
         if currentlyTeam1Serving {
             team1Score += 1
@@ -126,69 +143,42 @@ extension ScoreBoardManager {
         }
         print("Scoreboard Manager team 1 score: \(team1Score)")
         
-        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "switchImage"), object: nil)
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateVC"), object: nil)
     }
     
     func saveLastMove() {
-        undoTeam1Score = team1Score
-        undoTeam2Score = team2Score
-        undoCurrentServer = currentServer
-        undoCurrentlyTeam1Serving = currentlyTeam1Serving
-        undoCurrentlyTeam2Serving = currentlyTeam2Serving
-        undoSideout = sideout
+        let modelToSave = LastMoveModel(undoTeam1Score: team1Score, undoTeam2Score: team2Score, undoCurrentServer: currentServer, undoCurrentlyTeam1Serving: currentlyTeam1Serving, undoCurrentlyTeam2Serving: currentlyTeam2Serving, undoSideout: sideout)
+        print("LastMoveModel to save: \(modelToSave)")
+        savedMoves.append(modelToSave)
+        currentMove += 1
     }
     
     func undoPoint() {
-        if sideout == false {
-            if currentlyTeam1Serving && currentServer == undoCurrentServer {
-                if team1Score >= undoTeam1Score {
-                    team1Score -= 1
-                }
-                
-                if team1Score <= 0 {
-                    team1Score = 0
-                }
-            }
-            
-            if currentlyTeam2Serving && currentServer == undoCurrentServer {
-                if team2Score >= undoTeam2Score {
-                    team2Score -= 1
-                }
-                
-                if team2Score <= 0 {
-                    team2Score = 0
-                }
-            }
+        showServerLabel = false
+        undoPointBool = true
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1)  {
+            self.undoPointBool = false
         }
         
-        if currentServer != undoCurrentServer {
-            currentServer = undoCurrentServer
-        }
+        guard currentMove != 0 else { return }
+        currentMove -= 1
         
-        if currentlyTeam1Serving != undoCurrentlyTeam1Serving {
-            currentlyTeam1Serving = undoCurrentlyTeam1Serving
-        }
+        team1Score = savedMoves[currentMove].undoTeam1Score
+        team2Score = savedMoves[currentMove].undoTeam2Score
+        currentServer = savedMoves[currentMove].undoCurrentServer
+        currentlyTeam1Serving = savedMoves[currentMove].undoCurrentlyTeam1Serving
+        currentlyTeam2Serving = savedMoves[currentMove].undoCurrentlyTeam2Serving
         
-        if currentlyTeam2Serving != undoCurrentlyTeam2Serving {
-            currentlyTeam2Serving = undoCurrentlyTeam2Serving
-        }
+        sideout = savedMoves[currentMove].undoSideout
+        savedMoves.remove(at: currentMove)
         
-        if sideout != undoSideout {
-            sideout = undoSideout
-    
-        }
-        
+        // If during sideout, trigger undoPoint to go back to previous server/team.
         if sideout == true {
-            if currentlyTeam1Serving {
-                currentlyTeam2Serving = true
-                currentlyTeam1Serving = false
-            }
-            if currentlyTeam2Serving {
-                currentlyTeam1Serving = true
-                currentlyTeam2Serving = false
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                self.undoPoint()
             }
         }
+        
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateVC"), object: nil)
     }
     
@@ -202,17 +192,21 @@ extension ScoreBoardManager {
         timePassed = 0
         
         gameResetted = true
+        currentMove = 0
+        savedMoves.removeAll()
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "resetTimer"), object: nil)
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateVC"), object: nil)
         completion()
         
         // Toggle "Game Reset" banner in ScoreBoardView
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [self] in
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [self] in
             gameResetted = false
         }
     }
     
     func resetScore() {
+        saveLastMove()
+        
         team1Score = 0
         team2Score = 0
         currentServer = 2
@@ -220,6 +214,10 @@ extension ScoreBoardManager {
         currentlyTeam2Serving = false
         sideout = false
         
+        gameResetted = true
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [self] in
+            gameResetted = false
+        }
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateVC"), object: nil)
     }
     
