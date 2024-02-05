@@ -8,7 +8,5 @@
 import Foundation
 
 struct K {
-    
     static let watchOSMessage = ["addPoint", ""]
-    
 }

@@ -1,5 +1,5 @@
 //
-//  CameraModel2.swift
+//  CameraViewModel.swift
 //  pickle point
 //
 //  Created by Ezra Yeoh on 10/30/23.
@@ -7,25 +7,29 @@
 
 import AVFoundation
 import UIKit
+import Photos
 
-class CameraModel: NSObject, ObservableObject {
+class CameraViewModel: NSObject, ObservableObject {
 
     var session = AVCaptureSession()
     private var _videoOutput: AVCaptureVideoDataOutput?
     private var _assetWriter: AVAssetWriter?
     private var _assetWriterVideoInput: AVAssetWriterInput?
     private var _assetWriterAudioInput: AVAssetWriterInput?
-    private var _adpater: AVAssetWriterInputPixelBufferAdaptor?
+    var _adpater: AVAssetWriterInputPixelBufferAdaptor?
     var _filename = ""
     private var _time: Double = 0
     
     private var _audioOutput: AVCaptureAudioDataOutput?
     
-    enum _CaptureState {
+    enum CaptureState {
         case idle, start, capturing, end
     }
     
-    var _captureState = _CaptureState.idle
+    var captureState = CaptureState.idle
+    var videoAuthStatus = AVAuthorizationStatus.notDetermined
+    var audiovAuthStatus = AVAuthorizationStatus.notDetermined
+    var avAuthStatus = AVAuthorizationStatus.notDetermined
     
     @Published var videoURL: URL?
     @Published var videoCurrentlySaving = false
@@ -39,13 +43,13 @@ class CameraModel: NSObject, ObservableObject {
     }
     
     func start_Capture(completion: @escaping () -> (Void)) {
-        _captureState = .start
+        captureState = .start
         print("CameraModel: _captureState: started")
         completion()
     }
     
     func end_Capture(completion: @escaping () -> (Void)) {
-        _captureState = .end
+        captureState = .end
         print("CameraModel: _captureState ended")
         completion()
     }
@@ -56,27 +60,33 @@ class CameraModel: NSObject, ObservableObject {
     
 }
 
-extension CameraModel: AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAudioDataOutputSampleBufferDelegate {
+extension CameraViewModel: AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAudioDataOutputSampleBufferDelegate {
     
-    private func checkVideoAudioAuthorizationStatus() {
+    func checkVideoAudioAuthorizationStatus() {
         
         switch AVCaptureDevice.authorizationStatus(for: .video) {
         case .notDetermined:
             print("AVCaptureDevice authorizationStatus for Video: Not determined...requesting access.")
+            videoAuthStatus = .notDetermined
             AVCaptureDevice.requestAccess(for: .video) { granted in
                 if granted {
                     print("AVCaptureDevice authorizationStatus for Video: Request Access granted")
+                    self.videoAuthStatus = .authorized
                     self.setupVideo_CaptureSession()
                 }
             }
+            break
         case .restricted:
             print("AVCaptureDevice authorizationStatus for Video: restricted")
+            videoAuthStatus = .restricted
             break
         case .denied:
             print("AVCaptureDevice authorizationStatus for Video: denied")
+            videoAuthStatus = .denied
             break
         case .authorized:
             print("AVCaptureDevice authorizationStatus for Video: authorized")
+            videoAuthStatus = .authorized
             setupVideo_CaptureSession()
         @unknown default:
             print("AVCaptureDevice authorizationStatus for Video: Fatal Error on checking AVCaptureDevice: Video authorizationStatus")
@@ -86,24 +96,36 @@ extension CameraModel: AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAu
         switch AVCaptureDevice.authorizationStatus(for: .audio) {
         case .notDetermined:
             print("AVCaptureDevice authorizationStatus for Audio: Not determined...requesting access.")
+            audiovAuthStatus = .notDetermined
             AVCaptureDevice.requestAccess(for: .audio) { granted in
                 if granted {
                     print("AVCaptureDevice.authorizationStatus for Audio: AVCaptureDevice for Audio: Request Access granted")
+                    self.audiovAuthStatus = .authorized
                     self.setupAudio_CaptureSession()
                 }
             }
+            break
         case .restricted:
             print("AVCaptureDevice.authorizationStatus for Audio: restricted")
+            audiovAuthStatus = .restricted
             break
         case .denied:
             print("AVCaptureDevice.authorizationStatus for Audio: denied")
+            audiovAuthStatus = .denied
             break
         case .authorized:
             print("AVCaptureDevice.authorizationStatus for Audio: authorized")
+            audiovAuthStatus = .authorized
             setupAudio_CaptureSession()
         @unknown default:
             print("AVCaptureDevice.authorizationStatus for Audio: Fatal Error on checking AVCaptureDevice: Audio authorizationStatus")
             fatalError()
+        }
+        
+        if videoAuthStatus == .authorized && audiovAuthStatus == .authorized {
+            avAuthStatus = .authorized
+        } else {
+            avAuthStatus = .denied
         }
     }
     
@@ -158,7 +180,7 @@ extension CameraModel: AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAu
     
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         let timestamp = CMSampleBufferGetPresentationTimeStamp(sampleBuffer).seconds
-        switch _captureState {
+        switch captureState {
         case .start:
             // VIDEO: Setting up AVAssetWriter for writting of input/output
             _filename = "PickePoint - \(UUID().uuidString)"
@@ -189,7 +211,7 @@ extension CameraModel: AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAu
             _assetWriterAudioInput = audioInput
             _adpater = adapter
             _time = timestamp
-            _captureState = .capturing
+            captureState = .capturing
             
             // AVAssetWriter: Start WRITING/SESSION
             let recordingTime = CMSampleBufferGetPresentationTimeStamp(sampleBuffer)
@@ -224,7 +246,7 @@ extension CameraModel: AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAu
 
             _assetWriter?.finishWriting { [weak self] in
                 print("_captureState: .idle")
-                self?._captureState = .idle
+                self?.captureState = .idle
                 self?._assetWriter = nil
                 self?._assetWriterVideoInput = nil
                 self?._assetWriterAudioInput = nil
@@ -237,6 +259,15 @@ extension CameraModel: AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAu
         default:
             break
         }
+    }
+    
+    func idleCapture() {
+        self.videoCurrentlySaving = false
+        self.captureState = .idle
+        self._assetWriter = nil
+        self._assetWriterVideoInput = nil
+        self._assetWriterAudioInput = nil
+        self.videoURL = nil
     }
     
 }

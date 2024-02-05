@@ -9,7 +9,10 @@ import SwiftUI
 
 @main
 struct pickle_pointApp: App {
+    
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+
+    
     let persistenceController = PersistenceController.shared
 
     var body: some Scene {
@@ -18,6 +21,7 @@ struct pickle_pointApp: App {
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
         }
     }
+
 }
 
 class AppDelegate: NSObject, UIApplicationDelegate {
@@ -46,6 +50,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         print("didFinishLaunchingWithOptions")
+        
         return true
     }
     

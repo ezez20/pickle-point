@@ -1,5 +1,5 @@
 //
-//  CameraPreview.swift
+//  CameraPreviewView.swift
 //  pickle point
 //
 //  Created by Ezra Yeoh on 4/11/23.
@@ -49,7 +49,7 @@ struct Viewfinder: UIViewRepresentable {
     
 }
 
-struct CameraPreview: View {
+struct CameraPreviewView: View {
     
     var session: AVCaptureSession?
     var body: some View {

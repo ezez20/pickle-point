@@ -11,7 +11,7 @@ import SwiftUI
 struct ScoreBoardVCRep: UIViewControllerRepresentable {
     
     var viewRecoder: ViewRecorder
-    var cameraModel: CameraModel
+    var cameraModel: CameraViewModel
     var scoreBoardManager: ScoreBoardManager
     
     func makeUIViewController(context: Context) -> ScoreBoardVC {

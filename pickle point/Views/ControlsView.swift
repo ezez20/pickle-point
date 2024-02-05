@@ -1,5 +1,5 @@
 //
-//  ControlView2.swift
+//  ControlView.swift
 //  pickle point
 //
 //  Created by Ezra Yeoh on 11/14/23.
@@ -21,13 +21,17 @@ struct ControlsView: View {
     // Observered Classes
     @ObservedObject var sbm: ScoreBoardManager
     @ObservedObject var vmWKM: WatchKitManager_iOS
-    @ObservedObject var cm: CameraModel
+    @ObservedObject var cm: CameraViewModel
     @ObservedObject var viewRecorder: ViewRecorder
+    @ObservedObject var circularViewProgress: CircularProgressView
+    
+    @State private var showCmPlAlert = false
     
     var body: some View {
         
         GeometryReader { geo in
             
+            // Apple Watch connect Button
             Button {
                 // Connect to WatchOS
                 print("Apple Watch button pressed")
@@ -53,22 +57,33 @@ struct ControlsView: View {
                     }
                 }
             } label: {
-                if !sbm.gameStart && !videoCurrentlySaving  {
+                if cm.captureState == .idle && viewRecorder.videoCurrentlySaving != true && cm.videoCurrentlySaving != true  {
                     Image(systemName: "record.circle")
                         .resizable()
                         .frame(width: 50, height: 50)
                         .foregroundColor(.red)
                     
                 } else {
-                    Image(systemName: "circle.fill")
-                        .resizable()
-                        .frame(width: 20, height: 20)
-                        .foregroundColor(.red)
-                        .padding()
+                    if cm.captureState == .capturing || cm.captureState == .start {
+                        Image(systemName: "circle.fill")
+                            .resizable()
+                            .frame(width: 20, height: 20)
+                            .foregroundColor(.red)
+                            .padding()
+                    }
                 }
             }
             .position(x: geo.size.width/2, y: geo.size.height - 170)
             
+            // CustomProgressView
+            if cm.videoCurrentlySaving == true || viewRecorder.videoCurrentlySaving == true {
+                CustomProgressView(circularViewProgress: circularViewProgress)
+                    .frame(width: 60, height: 60)
+                    .rotationEffect(.degrees(90))
+                    .position(x: geo.size.width/2, y: geo.size.height - 170)
+            }
+            
+            // Game Control Views/HStack
             HStack {
                 // Undo Point: Button
                 Button {
@@ -117,19 +132,55 @@ struct ControlsView: View {
             }
             .frame(width: 150, height: 120)
             .foregroundColor(.white)
-            .opacity(videoCurrentlySaving ? 0.2 : 1.0)
-            .disabled(videoCurrentlySaving ? true : false)
+            .opacity(viewRecorder.videoCurrentlySaving || cm.videoCurrentlySaving ? 0.2 : 1.0)
             .position(x: geo.size.width/2, y: geo.size.height - 80)
-            
-            if videoCurrentlySaving {
-                CircularProgressViewRep(viewRecorder: viewRecorder)
-                    .frame(width: 60, height: 60)
-                    .position(x: geo.size.width/2, y: geo.size.height - 170)
-            }
             
         }
         .disabled(sbm.sideout ? true : false)
+        .disabled(viewRecorder.videoCurrentlySaving || cm.videoCurrentlySaving || cm.avAuthStatus != .authorized || viewRecorder.phpStatus != .authorized ? true : false)
         .shareSheet(show: $shareVideo, items: [url])
+        .onChange(of: cm.videoCurrentlySaving) { videoSaving in
+            print("DDD videoCurrentlySaving: \(videoSaving)")
+            if videoSaving {
+                videoCurrentlySaving = true
+                print("DDD: videoCurrentlySaving \(videoCurrentlySaving)")
+            }
+        }
+        .onChange(of: cm.videoURL, perform: { videoURL in
+            if videoURL != nil {
+                print("CM Video URL: \(String(describing: videoURL))")
+                viewRecorder.stop(cm.videoURL)
+                viewRecorder.stop(cm.videoURL)
+            }
+        })
+        .onChange(of: viewRecorder.finalVideoURL, perform: { videoURL in
+            if videoURL != nil {
+                url = videoURL
+                videoCurrentlySaving = false
+                cm.videoCurrentlySaving = false
+                shareVideo.toggle()
+            }
+        })
+        .onChange(of: shareVideo) { sheetShowing in
+            // Make url = nil, if sheet is dismissed
+            if sheetShowing == false {
+                viewRecorder.deleteFilesInFileManager(cm: cm)
+                viewRecorder.finalVideoURL = nil
+                cm.videoURL = nil
+                url = nil
+                sbm.resetGame { print("Game reset") }
+            } else {
+                circularViewProgress.customPickleBallViewCount = "L-1 (1)"
+            }
+        }
+        .onChange(of: vmWKM.session.activationState.rawValue) { activationState in
+            print("viewModelPhone activation: \(activationState)")
+            if activationState == 2 {
+                watchIsReachable = true
+            } else {
+                watchIsReachable = false
+            }
+        }
         .onAppear {
             sbm.timer.invalidate()
             if vmWKM.session.isReachable && vmWKM.session.activationState.rawValue == 2 {
@@ -137,6 +188,8 @@ struct ControlsView: View {
             } else {
                 watchIsReachable = false
             }
+            videoCurrentlySaving = false
+            url = nil
         }
         .onReceive(vmWKM.$messageBackToControlView) { message in
             print("Message recieved on iPhone ControlsView: \(message)")
@@ -156,45 +209,10 @@ struct ControlsView: View {
                 }
             }
         }
-        .onChange(of: cm.videoCurrentlySaving) { videoSaving in
-            print("DDD videoCurrentlySaving: \(videoSaving)")
-            if videoSaving {
-                videoCurrentlySaving = true
-                print("DDD: videoCurrentlySaving \(videoCurrentlySaving)")
-            }
-        }
-        .onChange(of: cm.videoURL, perform: { videoURL in
-            if videoURL != nil {
-                print("CM Video URL: \(String(describing: videoURL))")
-                viewRecorder.stop(cm.videoURL)
-            }
-        })
-        .onChange(of: viewRecorder.finalVideoURL, perform: { videoURL in
-            if videoURL != nil {
-                url = videoURL
-                videoCurrentlySaving = false
-                cm.videoCurrentlySaving = false
-                shareVideo.toggle()
-            }
-        })
-        .onChange(of: shareVideo) { sheetShowing in
-            // Make url = nil, if sheet is dismissed
-            if sheetShowing == false {
-                viewRecorder.deleteFilesInFileManager(cm: cm)
-                viewRecorder.finalVideoURL = nil
-                url = nil
-                
-                sbm.resetGame { print("Game reset") }
-            }
-        }
-        .onChange(of: vmWKM.session.activationState.rawValue) { activationState in
-            print("viewModelPhone activation: \(activationState)")
-            if activationState == 2 {
-                watchIsReachable = true
-            } else {
-                watchIsReachable = false
-            }
-        }
+//        .alert("Please allow access for Camera and Photo Library usage to continue", isPresented: $showCmPlAlert) {
+//            Button("Open Settings", role: .none) {  UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!) }
+//            Button("Cancel", role: .cancel) { }
+//                }
         
     }
     
@@ -231,7 +249,8 @@ struct ControlView2_Previews: PreviewProvider {
         ControlsView(
             sbm: ScoreBoardManager(),
             vmWKM: WatchKitManager_iOS(),
-            cm: CameraModel(), viewRecorder: ViewRecorder()
+            cm: CameraViewModel(), viewRecorder: ViewRecorder(),
+            circularViewProgress: CircularProgressView()
         )
     }
 }

@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  ScoreBoardVC.swift
 //  pickle point
 //
 //  Created by Ezra Yeoh on 11/27/23.
@@ -53,7 +53,7 @@ class ScoreBoardVC: UIViewController {
     
     let pickleBallImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(systemName: "soccerball")
+        imageView.image = UIImage(named: "L-1 (11)")
         imageView.frame.size = CGSize(width: 10, height: 10)
         imageView.transform = CGAffineTransform(rotationAngle: .pi/2)
         imageView.tintColor = .systemYellow
@@ -132,6 +132,8 @@ class ScoreBoardVC: UIViewController {
         pickleBallImageView.translatesAutoresizingMaskIntoConstraints = false
         pickleBallImageView.topAnchor.constraint(equalTo: team2ScoreLabel.bottomAnchor, constant: 0).isActive = true
         pickleBallImageView.centerXAnchor.constraint(equalTo: scoreBoardViewFrame.centerXAnchor, constant: 10).isActive = true
+        pickleBallImageView.widthAnchor.constraint(equalToConstant: 20).isActive = true
+        pickleBallImageView.heightAnchor.constraint(equalToConstant: 20).isActive = true
         
         // currentlyScoringLabel
         scoreBoardViewFrame.addSubview(currentlyScoringLabel)

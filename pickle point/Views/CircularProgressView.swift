@@ -9,10 +9,12 @@ import Foundation
 import UIKit
 import QuartzCore
 
-class CircularProgressView: UIView {
+class CircularProgressView: UIView, ObservableObject {
     
     private var progressLayer = CAShapeLayer()
     let animation = CABasicAnimation(keyPath: "animationKey")
+    @Published var customPickleBallViewCount = "L-1 (1)"
+    
     var newValue: Double = 0.0 {
         didSet {
             print("new value: \(newValue)")
@@ -84,6 +86,24 @@ class CircularProgressView: UIView {
             animation.toValue = newValue
             progressLayer.strokeEnd = CGFloat(newValue)
             progressLayer.add(animation, forKey: "animateProgressViewKey")
+            
+            DispatchQueue.main.async { [self] in
+                switch newValue {
+                case 0...0.09: customPickleBallViewCount = "L-1 (1)"
+                case 0.09...0.18: customPickleBallViewCount = "L-1 (2)"
+                case 0.18...0.27: customPickleBallViewCount = "L-1 (3)"
+                case 0.27...0.36: customPickleBallViewCount = "L-1 (4)"
+                case 0.36...0.45: customPickleBallViewCount = "L-1 (5)"
+                case 0.45...0.54: customPickleBallViewCount = "L-1 (6)"
+                case 0.54...0.63: customPickleBallViewCount = "L-1 (7)"
+                case 0.63...0.72: customPickleBallViewCount = "L-1 (8)"
+                case 0.72...0.81: customPickleBallViewCount = "L-1 (9)"
+                case 0.81...0.90: customPickleBallViewCount = "L-1 (10)"
+                case 0.90...0.99: customPickleBallViewCount = "L-1 (11)"
+                default:
+                    break
+                }
+            }
         }
     }
 }

@@ -53,7 +53,7 @@ struct ScoreBoardView: View {
                         .foregroundColor(.white)
                         .shadow(color: .green, radius: 10)
                         .rotationEffect(.degrees(90))
-                        .position(x: geo.size.width - 50, y: geo.size.height/2)
+                        .position(x: geo.size.width - 80, y: 140)
                 }
                 
                 Text(sbm.showServerLabel ? sbm.serverLabel : "")
@@ -61,7 +61,7 @@ struct ScoreBoardView: View {
                     .foregroundColor(.white)
                     .shadow(color: sbm.currentlyTeam1Serving ? .green : .red, radius: 10)
                     .rotationEffect(.degrees(90))
-                    .position(x: geo.size.width - 50, y: geo.size.height/2)
+                    .position(x: geo.size.width - 80, y: 140)
                 
             }
             
@@ -70,14 +70,14 @@ struct ScoreBoardView: View {
                 .foregroundColor(.white)
                 .shadow(color: .yellow, radius: 10)
                 .rotationEffect(.degrees(90))
-                .position(x: geo.size.width - 50, y: geo.size.height/2)
+                .position(x: geo.size.width - 80, y: 140)
             
             Text(sbm.gameResetted ? "Game Reset" : "")
                 .font(.title)
                 .foregroundColor(.white)
                 .shadow(color: .red, radius: 10)
                 .rotationEffect(.degrees(90))
-                .position(x: geo.size.width - 50, y: geo.size.height/2)
+                .position(x: geo.size.width - 80, y: 140)
             
             VStack(alignment: .center, spacing: 5) {
                 
@@ -93,10 +93,10 @@ struct ScoreBoardView: View {
                     .shadow(color: sbm.currentlyTeam2Serving ? .green : .red, radius: 10)
                     .rotationEffect(.degrees(90))
                 
-                VStack {
-                    Image(systemName: "soccerball")
-                        .fixedSize()
-                        .frame(width: 10, height: 10)
+                VStack(spacing: 2) {
+                    Image("L-1 (11)")
+                        .resizable()
+                        .frame(width: 20, height: 20)
                         .foregroundColor(.green)
                         .rotationEffect(.degrees(90))
                     
@@ -155,6 +155,7 @@ extension ScoreBoardView {
     }
     
     func updateMessageBackFromWatch(message: [String : Any]) {
+        guard !message.isEmpty else { return }
         if viewModelPhone.session.isReachable {
             print("updateMessageBackFromWatch")
             // If "side out", this will trigger the "side out" switch.

@@ -194,6 +194,8 @@ extension ScoreBoardManager {
         gameResetted = true
         currentMove = 0
         savedMoves.removeAll()
+        timer.invalidate()
+        gameStart = false
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "resetTimer"), object: nil)
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateVC"), object: nil)
         completion()
@@ -221,4 +223,22 @@ extension ScoreBoardManager {
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateVC"), object: nil)
     }
     
+    func userInactivatedGame() {
+        team1Score = 0
+        team2Score = 0
+        currentServer = 2
+        currentlyTeam1Serving = true
+        currentlyTeam2Serving = false
+        sideout = false
+        timePassed = 0
+        
+        gameResetted = false
+        currentMove = 0
+        savedMoves.removeAll()
+        timer.invalidate()
+        gameStart = false
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "resetTimer"), object: nil)
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateVC"), object: nil)
+        
+    }
 }
