@@ -25,6 +25,7 @@ struct ControlsView: View {
     @ObservedObject var viewRecorder: ViewRecorder
     @ObservedObject var circularViewProgress: CircularProgressView
     
+    // Alert Variables
     @State private var showCmPlAlert = false
     
     var body: some View {
@@ -53,7 +54,10 @@ struct ControlsView: View {
                 sbm.startStopGame { gameStarted in
                     if gameStarted {
                     } else {
-                        cm.end_Capture {}
+                        cm.end_Capture {
+                            viewRecorder.stop()
+                        }
+                        
                     }
                 }
             } label: {
@@ -131,9 +135,10 @@ struct ControlsView: View {
                 }
             }
             .frame(width: 150, height: 120)
+            .position(x: geo.size.width/2, y: geo.size.height - 80)
             .foregroundColor(.white)
             .opacity(viewRecorder.videoCurrentlySaving || cm.videoCurrentlySaving ? 0.2 : 1.0)
-            .position(x: geo.size.width/2, y: geo.size.height - 80)
+            .opacity(viewRecorder.videoCurrentlySaving || cm.videoCurrentlySaving || cm.avAuthStatus != .authorized || viewRecorder.phpStatus != .authorized ? 0.2 : 1.0)
             
         }
         .disabled(sbm.sideout ? true : false)
@@ -149,8 +154,7 @@ struct ControlsView: View {
         .onChange(of: cm.videoURL, perform: { videoURL in
             if videoURL != nil {
                 print("CM Video URL: \(String(describing: videoURL))")
-                viewRecorder.stop(cm.videoURL)
-                viewRecorder.stop(cm.videoURL)
+                viewRecorder.startRenderingVideos(cm.videoURL)
             }
         })
         .onChange(of: viewRecorder.finalVideoURL, perform: { videoURL in
@@ -164,10 +168,20 @@ struct ControlsView: View {
         .onChange(of: shareVideo) { sheetShowing in
             // Make url = nil, if sheet is dismissed
             if sheetShowing == false {
-                viewRecorder.deleteFilesInFileManager(cm: cm)
-                viewRecorder.finalVideoURL = nil
-                cm.videoURL = nil
+                print("onChange: shareVideo FALSE")
+//                viewRecorder.deleteFilesInFileManager(cm: cm) 
+                viewRecorder.hardResetViewRecorder(cm)
+//                viewRecorder.finalVideoURL = nil
+                DispatchQueue.main.async {
+                    cm.videoURL = nil
+                    print("PDEBUG1-2: \(viewRecorder.videoCurrentlySaving)")
+                    print("PDEBUG2-2: \(viewRecorder.imageFileURLs.count)")
+                    print("PDEBUG3-2: \(viewRecorder.documentsDirectory)")
+                    print("PDEBUG4-2: \(cm.videoCurrentlySaving)")
+                    print("PDEBUG4-2: \(cm.videoURL)")
+                }
                 url = nil
+                viewRecorder.checkPHPLibraryAuthorization()
                 sbm.resetGame { print("Game reset") }
             } else {
                 circularViewProgress.customPickleBallViewCount = "L-1 (1)"
@@ -199,20 +213,16 @@ struct ControlsView: View {
                 
                 // Record video toggle
                 let message = message["recordStart"] as? Bool ?? false
-                if message == true {
-                    sbm.startStopGame { gameStarted in
-                        if gameStarted {
-                        } else {
-                            cm.end_Capture {}
-                        }
+                sbm.startStopGame { gameStarted in
+                    if gameStarted {
+                    } else {
+                        cm.end_Capture { }
+                        viewRecorder.stop()
                     }
                 }
+                
             }
         }
-//        .alert("Please allow access for Camera and Photo Library usage to continue", isPresented: $showCmPlAlert) {
-//            Button("Open Settings", role: .none) {  UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!) }
-//            Button("Cancel", role: .cancel) { }
-//                }
         
     }
     

@@ -10,9 +10,9 @@ import CoreData
 
 struct ContentView: View {
     
-    @StateObject private var cameraViewModel = CameraViewModel()
-    @StateObject var scoreBoardManager = ScoreBoardManager()
-    @StateObject var watchKitManager = WatchKitManager_iOS()
+    @StateObject private var cm = CameraViewModel()
+    @StateObject var sbm = ScoreBoardManager()
+    @StateObject var wkm = WatchKitManager_iOS()
     @StateObject var viewRecorder = ViewRecorder()
     @StateObject var circularViewProgress = CircularProgressView()
     
@@ -28,12 +28,11 @@ struct ContentView: View {
             switch userFlow {
             case .home:
                 ZStack {
-                    RecordingView(cameraViewModel: cameraViewModel, scoreBoardManager: scoreBoardManager, watchKitManager: watchKitManager, viewRecorder: viewRecorder)
+                    RecordingView(cameraViewModel: cm, scoreBoardManager: sbm, watchKitManager: wkm, viewRecorder: viewRecorder)
                         .ignoresSafeArea(.all, edges: .all)
                     
-                    ControlsView(sbm: scoreBoardManager, vmWKM: watchKitManager, cm: cameraViewModel, viewRecorder: viewRecorder, circularViewProgress: circularViewProgress)
+                    ControlsView(sbm: sbm, vmWKM: wkm, cm: cm, viewRecorder: viewRecorder, circularViewProgress: circularViewProgress)
                         .ignoresSafeArea(.all, edges: .bottom)
-                        .opacity(viewRecorder.videoCurrentlySaving || cameraViewModel.videoCurrentlySaving || cameraViewModel.avAuthStatus != .authorized || viewRecorder.phpStatus != .authorized ? 0.2 : 1.0)
                     
                     if showCmPlAlert {
                         VStack(alignment: .center) {
@@ -71,7 +70,7 @@ struct ContentView: View {
         .onAppear {
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [self] in
                 userFlow = .home
-                if cameraViewModel.avAuthStatus != .authorized || viewRecorder.phpStatus != .authorized {
+                if cm.avAuthStatus != .authorized || viewRecorder.phpStatus != .authorized {
                     showCmPlAlert = true
                 } else {
                     showCmPlAlert = false
@@ -84,18 +83,21 @@ struct ContentView: View {
         switch scenephase {
         case .active:
             print("scenePhase: active")
-            cameraViewModel.videoCurrentlySaving = false
+            cm.videoCurrentlySaving = false
             viewRecorder.videoCurrentlySaving = false
             viewRecorder.checkPHPLibraryAuthorization()
-            cameraViewModel.checkVideoAudioAuthorizationStatus()
+            cm.checkVideoAudioAuthorizationStatus()
+            print("PDEBUG1: \(viewRecorder.videoCurrentlySaving)")
+            print("PDEBUG2: \(viewRecorder.imageFileURLs.count)")
+            print("PDEBUG3: \(viewRecorder.documentsDirectory)")
+            print("PDEBUG4: \(cm.videoCurrentlySaving)")
+            print("PDEBUG4: \(cm.videoURL)")
+            print("PDEBUG6: \(viewRecorder.displayLink)")
         case .inactive:
             print("scenePhase: inactive")
-            cameraViewModel.idleCapture()
-            viewRecorder.hardResetViewRecorder(cameraViewModel)
-            viewRecorder._exporter?.cancelExport()
-            scoreBoardManager.userInactivatedGame()
         case .background:
             print("scenePhase: background")
+            viewRecorder.hardResetViewRecorder(cm)
             print("DDDD: \(viewRecorder.videoCurrentlySaving)")
         @unknown default:
             print("scenePhase: unknown default")

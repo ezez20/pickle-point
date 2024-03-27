@@ -9,23 +9,25 @@ import SwiftUI
 
 struct RecordingView: View {
     
-    var cameraViewModel: CameraViewModel
-    var scoreBoardManager: ScoreBoardManager
-    var watchKitManager: WatchKitManager_iOS
-    var viewRecorder: ViewRecorder
+    @ObservedObject var cameraViewModel: CameraViewModel
+    @ObservedObject var scoreBoardManager: ScoreBoardManager
+    @ObservedObject var watchKitManager: WatchKitManager_iOS
+    @ObservedObject var viewRecorder: ViewRecorder
+    
+    @State var scoreboardShowBool = false
     
     var body: some View {
         
         GeometryReader { geo in
             ZStack {
-                if cameraViewModel.avAuthStatus == .authorized {
+                if cameraViewModel.avAuthStatus == .authorized && viewRecorder.phpStatus == .authorized && scoreboardShowBool {
                     ScoreBoardVCRep(viewRecoder: viewRecorder, cameraModel: cameraViewModel, scoreBoardManager: scoreBoardManager)
                         .frame(width: geo.size.width, height: geo.size.height)
                         .ignoresSafeArea(.all, edges: .all)
                 }
                 
-                CameraPreviewView(session: cameraViewModel.session)
-                    .ignoresSafeArea(.all, edges: .all)
+//                CameraPreviewView(session: cameraViewModel.session)
+//                    .ignoresSafeArea(.all, edges: .all)
 
                 ScoreBoardView(sbm: scoreBoardManager, viewModelPhone: watchKitManager)
                     .ignoresSafeArea(.all, edges: .all)
@@ -33,6 +35,11 @@ struct RecordingView: View {
                 
             }
             .background(.black)
+        }
+        .onAppear {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [self] in
+                scoreboardShowBool = true
+            }
         }
        
     }

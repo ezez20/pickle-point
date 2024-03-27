@@ -36,6 +36,7 @@
 		51D07FDA29F396F60089B505 /* ControlViewWatchOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D07FD929F396F60089B505 /* ControlViewWatchOS.swift */; };
 		51D87F5A2B0BC7010071276A /* ViewRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D87F592B0BC7010071276A /* ViewRecorder.swift */; };
 		51D9F2302B65CF360076557C /* CustomProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D9F22F2B65CF360076557C /* CustomProgressView.swift */; };
+		51DB0F5B2B714E3600A9142B /* ScoreBoardVC2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51DB0F5A2B714E3600A9142B /* ScoreBoardVC2.swift */; };
 		51DC5E012B14EA7D00843FAD /* ScoreBoardVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51DC5E002B14EA7D00843FAD /* ScoreBoardVC.swift */; };
 		51DC5E032B14FE1000843FAD /* ScoreBoardVCRep.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51DC5E022B14FE1000843FAD /* ScoreBoardVCRep.swift */; };
 		51DE28B52B02BE9E00AC607C /* ScoreBoardManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51DE28B42B02BE9E00AC607C /* ScoreBoardManager.swift */; };
@@ -96,6 +97,7 @@
 		51D07FD929F396F60089B505 /* ControlViewWatchOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlViewWatchOS.swift; sourceTree = "<group>"; };
 		51D87F592B0BC7010071276A /* ViewRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewRecorder.swift; sourceTree = "<group>"; };
 		51D9F22F2B65CF360076557C /* CustomProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomProgressView.swift; sourceTree = "<group>"; };
+		51DB0F5A2B714E3600A9142B /* ScoreBoardVC2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreBoardVC2.swift; sourceTree = "<group>"; };
 		51DC5E002B14EA7D00843FAD /* ScoreBoardVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreBoardVC.swift; sourceTree = "<group>"; };
 		51DC5E022B14FE1000843FAD /* ScoreBoardVCRep.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreBoardVCRep.swift; sourceTree = "<group>"; };
 		51DE28B42B02BE9E00AC607C /* ScoreBoardManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreBoardManager.swift; sourceTree = "<group>"; };
@@ -218,6 +220,7 @@
 				51473A672B5EEE5300EC4E12 /* CircularProgressView.swift */,
 				51D9F22F2B65CF360076557C /* CustomProgressView.swift */,
 				51C696FF2B6C191D005ED57C /* StartupLogoView.swift */,
+				51DB0F5A2B714E3600A9142B /* ScoreBoardVC2.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -351,6 +354,7 @@
 				51C5CADD29F4B3CF005B5AB3 /* WatchKitManager_iOS.swift in Sources */,
 				51BB2DBE29E5C85500E52302 /* pickle_point.xcdatamodeld in Sources */,
 				51C697002B6C191D005ED57C /* StartupLogoView.swift in Sources */,
+				51DB0F5B2B714E3600A9142B /* ScoreBoardVC2.swift in Sources */,
 				51D87F5A2B0BC7010071276A /* ViewRecorder.swift in Sources */,
 				513459F52B2265B30055AD32 /* CircularProgressViewRep.swift in Sources */,
 				51DE43022B04120800A4EDE9 /* ControlsView.swift in Sources */,
@@ -514,7 +518,7 @@
 				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_NSCameraUsageDescription = "\"Please enable camera usage for video recording\"";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "\"Please enable mic for audio recording\"";
-				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "\"Please enable PicklePoint to access your photo library to save videos\"";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -550,7 +554,7 @@
 				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_NSCameraUsageDescription = "\"Please enable camera usage for video recording\"";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "\"Please enable mic for audio recording\"";
-				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "\"Please enable PicklePoint to access your photo library to save videos\"";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

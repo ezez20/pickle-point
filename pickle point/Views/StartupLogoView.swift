@@ -10,13 +10,17 @@ import SwiftUI
 struct StartupLogoView: View {
     
     var body: some View {
-        ZStack {
-            Color("customBlue")
-            Image("appstore_AppIcons2")
-                .resizable()
-                .frame(width: 100, height: 100)
+        GeometryReader { geo in
+            ZStack {
+                Color("customBlue")
+                    .ignoresSafeArea()
+        
+                Image("PicklePoint_StartupScreen")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+            }
+            .frame(width: geo.size.width, height: geo.size.height)
         }
-      
     }
 }
 

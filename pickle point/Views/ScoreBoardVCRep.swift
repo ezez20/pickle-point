@@ -14,15 +14,17 @@ struct ScoreBoardVCRep: UIViewControllerRepresentable {
     var cameraModel: CameraViewModel
     var scoreBoardManager: ScoreBoardManager
     
-    func makeUIViewController(context: Context) -> ScoreBoardVC {
-        let vc = ScoreBoardVC(viewRecoder: viewRecoder, sbm: scoreBoardManager, session: cameraModel.session)
+    func makeUIViewController(context: Context) -> ScoreBoardVC2 {
+//        let vc = ScoreBoardVC(viewRecoder: viewRecoder, sbm: scoreBoardManager, session: cameraModel.session)
+//        return vc
+        let vc = ScoreBoardVC2(viewRecoder: viewRecoder, sbm: scoreBoardManager, session: cameraModel.session)
         return vc
     }
     
-    func updateUIViewController(_ uiViewController: ScoreBoardVC, context: Context) {
+    func updateUIViewController(_ uiViewController: ScoreBoardVC2, context: Context) {
         //
     }
     
-    typealias UIViewControllerType = ScoreBoardVC
+    typealias UIViewControllerType = ScoreBoardVC2
 
 }

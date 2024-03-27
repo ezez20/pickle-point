@@ -50,8 +50,12 @@ class CameraViewModel: NSObject, ObservableObject {
     
     func end_Capture(completion: @escaping () -> (Void)) {
         captureState = .end
-        print("CameraModel: _captureState ended")
-        completion()
+       
+        if captureState == .end {
+            print("CameraModel: _captureState ended")
+            completion()
+        }
+        
     }
     
     @objc func startCameraRecorder() {
@@ -180,13 +184,17 @@ extension CameraViewModel: AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptu
     
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         let timestamp = CMSampleBufferGetPresentationTimeStamp(sampleBuffer).seconds
+      
         switch captureState {
         case .start:
             // VIDEO: Setting up AVAssetWriter for writting of input/output
             _filename = "PickePoint - \(UUID().uuidString)"
             guard let videoPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("\(_filename).mov") else { break }
             guard let writer = try? AVAssetWriter(outputURL: videoPath, fileType: .mov) else { break }
-            let settings = _videoOutput?.recommendedVideoSettingsForAssetWriter(writingTo: .mov)
+//            let settings = _videoOutput?.recommendedVideoSettingsForAssetWriter(writingTo: .mp4)
+            let settings = [AVVideoCodecKey: AVVideoCodecType.h264,
+                            AVVideoWidthKey: 1920,
+                           AVVideoHeightKey: 1080] as [String : Any]
             let videoInput = AVAssetWriterInput(mediaType: .video, outputSettings: settings) // [AVVideoCodecKey: AVVideoCodecType.h264, AVVideoWidthKey: 1920, AVVideoHeightKey: 1080])
             videoInput.mediaTimeScale = CMTimeScale(bitPattern: 600)
             videoInput.expectsMediaDataInRealTime = true
@@ -214,17 +222,29 @@ extension CameraViewModel: AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptu
             captureState = .capturing
             
             // AVAssetWriter: Start WRITING/SESSION
-            let recordingTime = CMSampleBufferGetPresentationTimeStamp(sampleBuffer)
-            let startTimeDelay = CMTimeMakeWithSeconds(0.3, preferredTimescale: 1000000000)
-            let startTimeToUse = CMTimeAdd(recordingTime, startTimeDelay)
+//            let recordingTime = CMSampleBufferGetPresentationTimeStamp(sampleBuffer)
+//            let startTimeDelay = CMTimeMakeWithSeconds(0.5, preferredTimescale: 1000000000)
+//            let startTimeToUse = CMTimeAdd(recordingTime, startTimeDelay)
+//
             writer.startWriting()
-            writer.startSession(atSourceTime: startTimeToUse)
+//            print("Format description: \(sampleBuffer.formatDescription)")
+            writer.startSession(atSourceTime: CMSampleBufferGetPresentationTimeStamp(sampleBuffer))
+//            writer.startSession(atSourceTime: startTimeToUse)
         case .capturing:
             // VIDEO: setup for capturing sampleBuffer
+        
             if output == _videoOutput {
                 guard let cmSampleBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { break }
                 if _assetWriterVideoInput?.isReadyForMoreMediaData == true {
+                    
+                    print("Timestamp for output: \(timestamp)")
+                    
+                    print("Camera Model Presentation Time: \(CMSampleBufferGetPresentationTimeStamp(sampleBuffer))")
+                    
+//                    _assetWriterVideoInput?.append(sampleBuffer)
                     _adpater?.append(cmSampleBuffer, withPresentationTime: CMSampleBufferGetPresentationTimeStamp(sampleBuffer))
+                    
+                    print("startFrameTime camera: \(CMSampleBufferGetPresentationTimeStamp(sampleBuffer).seconds)")
                 }
             }
             // AUDIO: setup for capturing sampleBuffer
@@ -240,6 +260,7 @@ extension CameraViewModel: AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptu
                 self.videoCurrentlySaving = true
             }
             guard _assetWriterVideoInput?.isReadyForMoreMediaData == true, _assetWriter?.status != .failed else { break }
+            
             guard let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("\(_filename).mov") else { break }
             _assetWriterVideoInput?.markAsFinished()
             _assetWriterAudioInput?.markAsFinished()
